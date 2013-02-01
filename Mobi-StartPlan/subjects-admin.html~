@@ -1,0 +1,503 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+  <head>
+    <title>Administrative Interface</title>
+    <style type="text/css">
+    a, span {
+	color: #0000CE;
+    }
+
+     textarea {
+	 resize: none;
+     }
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script type="text/javascript">
+function g(a){var b=typeof a;if(b=="object")if(a){if(a instanceof Array||!(a instanceof Object)&&Object.prototype.toString.call(a)=="[object Array]"||typeof a.length=="number"&&typeof a.splice!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("splice"))return"array";if(!(a instanceof Object)&&(Object.prototype.toString.call(a)=="[object Function]"||typeof a.call!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("call")))return"function"}else return"null";
+else if(b=="function"&&typeof a.call=="undefined")return"object";return b};function h(a){a=String(a);var b;b=/^\s*$/.test(a)?false:/^[\],:{}\s\u2028\u2029]*$/.test(a.replace(/\\["\\\/bfnrtu]/g,"@").replace(/"[^"\\\n\r\u2028\u2029\x00-\x08\x10-\x1f\x80-\x9f]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:[\s\u2028\u2029]*\[)+/g,""));if(b)try{return eval("("+a+")")}catch(c){}throw Error("Invalid JSON string: "+a);}function i(a){var b=[];j(new k,a,b);return b.join("")}function k(){}
+function j(a,b,c){switch(typeof b){case "string":l(a,b,c);break;case "number":c.push(isFinite(b)&&!isNaN(b)?b:"null");break;case "boolean":c.push(b);break;case "undefined":c.push("null");break;case "object":if(b==null){c.push("null");break}if(g(b)=="array"){var f=b.length;c.push("[");for(var d="",e=0;e<f;e++){c.push(d);j(a,b[e],c);d=","}c.push("]");break}c.push("{");f="";for(d in b)if(b.hasOwnProperty(d)){e=b[d];if(typeof e!="function"){c.push(f);l(a,d,c);c.push(":");j(a,e,c);f=","}}c.push("}");break;
+case "function":break;default:throw Error("Unknown type: "+typeof b);}}var m={'"':'\\"',"\\":"\\\\","/":"\\/","\u0008":"\\b","\u000c":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\u000b"},n=/\uffff/.test("\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g;function l(a,b,c){c.push('"',b.replace(n,function(f){if(f in m)return m[f];var d=f.charCodeAt(0),e="\\u";if(d<16)e+="000";else if(d<256)e+="00";else if(d<4096)e+="0";return m[f]=e+d.toString(16)}),'"')};window.JSON||(window.JSON={});if(typeof window.JSON.serialize!=="function")window.JSON.serialize=i;if(typeof window.JSON.parse!=="function")window.JSON.parse=h;
+
+</script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>
+    <script type="text/javascript">
+var map = null;
+var serverUrl = "http://raven.eecs.harvard.edu/~hq/";
+var potluck = false;
+var startPin = null;
+var endPin = null;
+var findLayer = null;
+var tid;
+
+      function GetMap()
+      {
+      map = new VEMap('mapDiv');
+      var mapOptions = new VEMapOptions();
+      mapOptions.DashboardColor = 'black';
+      mapOptions.UseEnhancedRoadStyle = true;
+//      map.SetCredentials("AmoK7LJck9Ce_JO_n_NAiDlRv88YZROwdvPzWdLi57iP3XQeGon28HJVdnHsUSkp");
+      map.LoadMap(new VELatLong(42.37355775, -71.1188900), 15, 'r', false, VEMapMode.Mode2D, true, 0, mapOptions);
+
+      // Layer for find
+      findLayer = new VEShapeLayer();
+      findLayer.SetTitle("findLayer");
+      map.AddShapeLayer(findLayer);
+      }   
+
+      function AddPushpin(ll,title, desc, canDrag, custom)
+      {
+      if(ll == null) ll = map.GetCenter();
+      
+      var shape = new VEShape(VEShapeType.Pushpin, ll);
+      shape.SetTitle(title);
+      shape.SetDescription(desc);
+      if(custom != null){
+	  shape.SetCustomIcon(custom);
+      }
+      map.AddShape(shape);
+      shape.Draggable = canDrag;
+      return shape;
+      }
+
+function FindNearby()      {
+    // TODO: can choose a where
+      
+    var txt = $('#txtWhat').val();
+    findLayer.DeleteAllShapes();
+ 
+      try
+	  {
+	      map.Find(txt, null, null, findLayer,0,10,true,true,true,true, processFind);
+	  }
+      catch(e){
+	  alert(e.message);
+      }
+
+}
+
+
+function processFind(a,b,c,d,e){
+    if(b!= null && b.length > 1){
+	var shape;
+	var numResults = a.GetShapeCount();
+	//alert("num shapes: " + numResults);
+	for (var i = 0; i < a.GetShapeCount(); i++) {
+	    shape = a.GetShapeByIndex(i);
+	    //    alert(shape.GetTitle());
+	    shape.SetCustomIcon("<img src ='pin2.gif'>"); 
+	    // shape.SetZIndex(1000, 1000);
+	}
+    }
+}
+
+
+
+
+      
+      function initTour(){
+      $("#tour").show();
+      potluck = false;
+
+      
+      GetMap();
+      startPin = AddPushpin(null, 'start location', 'start pushpin', true, "pin-start.png");
+      endPin = AddPushpin(null, 'end location', 'end pushpin', true, "pin-end.png");
+      startPin.onenddrag = OnTop('#startLocation');
+      endPin.onenddrag = OnTop('#endLocation');
+      }
+
+
+function OnTop(name){
+    return function RightOnTop(e){
+	// check overlap with objects from search nearby
+	var shape;
+	var numResults = findLayer.GetShapeCount();
+	var overlap = false;
+	for (var i = 0; i < numResults; i++) {
+	    shape = findLayer.GetShapeByIndex(i);
+	    var lngdiff = Math.abs(shape.GetPoints()[0].Latitude - e.LatLong.Latitude);
+	    var latdiff = Math.abs(shape.GetPoints()[0].Longitude - e.LatLong.Longitude);
+	    
+	    if(lngdiff < 0.0004 && latdiff < 0.0004){
+		// populate title
+		e.Shape.SetTitle(shape.GetTitle());
+		e.Shape.SetPoints(shape.GetPoints());
+		$(name).val(shape.GetTitle());
+	    }
+	}
+    }
+}
+
+function setEndToStart(){
+    var startTitle = $('#startLocation').val();
+    endPin.SetTitle(startTitle);
+    endPin.SetPoints(startPin.GetPoints());
+    $('#endLocation').val(startTitle);
+}
+
+function location(name, lat, long){
+    this.name = name;
+    this.lat = lat;
+    this.long = long;
+}
+
+function getLocation(pin, name){
+    var loc = pin.GetPoints()[0];
+    return new location($(name).val(), loc.Latitude, loc.Longitude);
+}
+
+function getConstraints(field, name){
+    var compares = new Array();
+    var key = "#" + field + " :input[name=\"" + 'compare' + name + "\"]"; 
+    var compareInputs = $(key);
+    compareInputs.each(function(){
+	    if($(this).val() != ""){
+		compares.push($(this).val());
+	    }
+	});
+
+    var units = new Array();
+    var key = "#" + field + " :input[name=\"" + 'unit' + name + "\"]"; 
+    var unitInputs = $(key);
+    unitInputs.each(function(){
+	    if($(this).val() != ""){
+		units.push($(this).val());
+	    }
+	});
+
+
+    var categories = new Array();
+    var key = "#" + field + " :input[name=\"" + 'category' + name + "\"]"; 
+    var categoryInputs = $(key);
+    categoryInputs.each(function(){
+	    if($(this).val() != ""){
+		categories.push($(this).val());
+	    }
+	});
+
+
+
+    var vals = new Array();
+    var key = "#" + field + " :input[name=\"" + 'val' + name + "\"]"; 
+    var valInputs = $(key);
+    valInputs.each(function(){
+	    if($(this).val() != ""){
+		vals.push($(this).val());
+	    }
+	});
+
+   // put it all together
+ var inputsList = [];
+ for(var i = 0; i < vals.length; i++){
+     if(units[i] == 'hours'){
+	 inputsList.push(new constraint(categories[i], units[i], compares[i], parseFloat(vals[i])));
+     }else if(units[i] == 'activities'){
+	 inputsList.push(new constraint(categories[i], units[i], compares[i], parseInt(vals[i])));
+     }
+ }					     
+    return inputsList;
+}
+      
+
+function Answer(){
+}
+
+function gatherSubmit(){
+    var answer = new Answer();
+    answer.activity = $('#tour_activity').val();
+    answer.description = $('#tour_description').val();
+    answer.categories = getSet('tour_categories', 'categorySet');
+    answer.constraints = getConstraints('tour_verbal', 'preferenceSet');
+    answer.start =  getLocation(startPin, '#startLocation');
+    answer.end = getLocation(endPin, '#endLocation');
+    answer.beginTime = $('#startTime').val();
+    answer.endTime = parseInt($('#endTime').val());
+	if(answer.endTime < answer.beginTime){
+		  answer.endTime += 60*24;
+
+      }
+    answer.transit = $('#transit').val();
+    answer.creator = $('#creator').val();
+    answer.type = "turktour";
+		    answer.zoom = map.GetZoomLevel();
+    
+    return answer;
+}
+
+
+function submitTask(){
+    var answer = gatherSubmit();
+      $.ajax({
+	      type: "POST",
+		  url: serverUrl + "createTurkTourTask.php",
+		  data: ({
+			  activity : answer.activity,
+		              creator : answer.creator,
+		             transit: answer.transit,
+		         zoom: answer.zoom,
+			      description : answer.description, 
+			      categories : JSON.stringify(answer.categories),
+			      constraints: JSON.stringify(answer.constraints),
+			      start: JSON.stringify(answer.start),
+			      end: JSON.stringify(answer.end),
+			      beginTime: answer.beginTime,
+			      endTime: answer.endTime,
+			      type: answer.type}),
+		success: function(msg){
+		alert("Your have created the task!" + msg);
+		// load the task
+		updateTasklist();
+	    }
+	});
+    return;
+}
+
+function submitUpdateTask(){
+    $.ajax({
+	    type: "POST",
+		url: serverUrl + "updateTask.php",
+		data: ({id: tid, 
+			activity : $('#tour_activity').val(),
+			    description : $('#tour_description').val(),
+			    categories : getSet('tour_categories', 'categorySet'),
+			    verbal: getSet('tour_verbal', 'preferenceSet'),
+			    type: "turktour"}),
+		success: function(msg){
+		//		alert(msg);
+		alert("Your have updated the task!");
+		// load the task
+		updateTasklist();
+	    }
+	});
+    return;
+}
+
+function getSet(field, name){
+    var inputsList = new Array();
+    var key = "#" + field + " :input[name=\"" + name + "\"]"; 
+    //    alert(key);
+    var inputs = $(key);
+    inputs.each(function(){
+	    if($(this).val() != ""){
+		inputsList.push($(this).val());
+	    }
+	});
+    return inputsList;
+}
+
+function updateTasklist(){
+     $.ajax({
+      type: "GET",
+      url: serverUrl + "showSubjectsTourTasks.php",
+      data: ({type: "turktour"}),
+      success: function(table){
+//           alert(table);
+          $('#tasklist').html(table);
+      }
+      });
+    return;
+}
+
+function removeTask(taskId){
+    var r=confirm("Are you sure you want to delete this task?");
+    if (r==true)
+	{
+	    $.ajax({
+		    type: "POST",
+			url: serverUrl + "deleteSubjectsTourTask.php",
+			data: ({type: "turktour", id: taskId}),
+			success: function(msg){
+			    //           alert(msg);
+			alert("The task is deleted!");
+			updateTasklist();
+		    }});
+	    return;
+	    
+	}
+    else
+	{
+	}
+}
+
+function editTask(taskId){
+    // store the task id;
+    tid = taskId;
+
+     $.ajax({
+      type: "GET",
+      url: serverUrl + "loadTaskInfo.php", 
+      data: ({type: "tour", id: taskId}),
+      success: function(obj){
+          // assume json object we can work with
+//alert(obj);
+          var info = eval('(' + obj + ')');
+            loadEditInterface(info);
+      }
+      });
+    return;
+}
+
+function loadEditInterface(info){
+    $("#tour").show();
+    $('#createoredit').html("Edit an existing event");
+    $('#tour_activity').val(info.name);
+    $('#tour_description').val(info.description);
+    $('#tour_categories').empty();
+    var cat = eval('(' + info.categories + ')');
+    for(var i = 0; i < cat.length; i++){
+	createField('tour_categories', 'categorySet', cat[i], 60);
+    }
+
+    $('#tour_verbal').empty();
+    var pref = eval('(' + info.constraints_verbal + ')');
+    for(var i = 0; i < pref.length; i++){
+	createField('tour_verbal', 'preferenceSet', pref[i], 100);
+    }
+
+    // make it an update task
+    $("#submitter").unbind();
+    $("#submitter").click(function() {submitUpdateTask(); return false;});
+}
+
+
+function createField(field, name, val, size){
+ var c = "<input type=\"text\" name=\"" + name + "\" value=\"" + val +  "\" size=\"" + size + "\"></input>";
+ var fname = '#' + field;
+ $(fname).append(c);
+ $(fname).append("<br/>"); 
+}
+
+
+function createSelectField(name, opts){
+    var s = $(document.createElement('select'));
+    s.attr('name', name);
+    s.css('width', '100px');
+    for(var i = 0; i < opts.length; i++){
+	var o = $(document.createElement('option'));
+	o.val(opts[i]);
+	o.text(opts[i]);
+	s.append(o);
+    }
+    return s;
+}
+
+function createConstraintField(field, name, val, size){
+ var fname = '#' + field;
+ $(fname).append(createSelectField('compare' + name, ['at most', 'at least', 'exactly']));
+ var ix = $(document.createElement('input'));
+ ix.attr('name', 'val' + name);		       
+ $(fname).append(ix);
+ $(fname).append(createSelectField('unit' + name, ['hours', 'activities']));
+ $(fname).append(' on ');
+ $(fname).append(createSelectField('category' + name, getCategories()));
+ $(fname).append("<br/>"); 
+}
+
+function getCategories(){
+    var inputsList = new Array();
+    var inputs = $('#tour_categories' + ' :input[name="categorySet"]');
+    inputs.each(function(){
+	    inputsList.push($(this).val());
+	});
+    return inputsList;
+}
+
+function include(arr,obj) {
+    return (arr.indexOf(obj) != -1);
+}
+
+function constraint(category, unit, compare, value){
+    this.cat = category;
+    this.unit =  unit;
+    this.compare = compare;
+    this.value = value;
+}
+
+function generatePredicate(constraintDesc){
+    var cat = constraintDesc.cat;
+    var unit = constraintDesc.unit;
+    var compare = constraintDesc.compare;
+    var v = constraintDesc.value;
+    return function(x){
+	var total = 0;
+	for(var i = 0; i < x.length; i++){
+	    if(include(x.categories, cat)){
+		if(unit == 'hours'){
+		    total += x.duration;
+		}else if(unit == 'activities'){
+		    total += 1;
+		}
+	    }
+	}
+	// now check
+	if(compare == 'at most'){
+	    return total <= v;
+	}else if(compare == 'at least'){
+	    return total >= v;
+	}else if(compare == 'exactly'){
+	    return total == v;
+	}
+    }
+}
+
+function activity(name, description, commentary, location, subactivities, duration, categories){
+    this.name = name;
+    this.description = description;
+    this.commentary = commentary;
+    this.location = location;
+    this.subactivities = subactivities;
+    this.duration = duration;
+    this.categories = categories;
+}
+
+function searchKeyPress(evt){
+    var evtobj = evt;
+    if((evtobj.keyCode && evtobj.keyCode == 13)){//|| (evtobj.which && evtobj.which == 13) ){
+	document.getElementById('find').click();
+	return true;
+    }
+
+    return true;
+}
+
+
+function setTimeField(name){
+    for(var i = 0; i < 24; i++){
+	for(var j = 0; j <= 45; j +=15){
+	    var o = $(document.createElement('option'));
+	    o.val(i*60 + j);
+	    var is = i;
+	    var js = j;
+
+	    if(j == 0) js = '00';
+	    if(i < 12){
+		o.text(is + ":" + js + " AM");
+	    }else{
+		if(i == 12){
+		    o.text(is + ":" + js + " PM");
+		}else{
+		    o.text((is-12) + ":" + js + " PM");
+		}
+	    }
+
+	    $(name).append(o);
+	}
+    }
+}
+
+$(document).ready(function(){
+      updateTasklist();
+    });
+
+
+
+    </script>
+  </head>
+  <body>
+    <b>Existing subjects's trips</b>: <br/><div id='tasklist'><table><tr><td>1</td><td>2</td></tr><tr><td>1</td><td>2</td></tr></table></div>
+    <br/><hr/>
+    </div>
+  </body>
+  </html>

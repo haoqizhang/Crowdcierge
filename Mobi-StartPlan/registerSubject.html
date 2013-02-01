@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+  <head>
+    <title>Administrative Interface</title>
+    <style type="text/css">
+    a, span {
+	color: #0000CE;
+    }
+
+     textarea {
+	 resize: none;
+     }
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script type="text/javascript">
+function g(a){var b=typeof a;if(b=="object")if(a){if(a instanceof Array||!(a instanceof Object)&&Object.prototype.toString.call(a)=="[object Array]"||typeof a.length=="number"&&typeof a.splice!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("splice"))return"array";if(!(a instanceof Object)&&(Object.prototype.toString.call(a)=="[object Function]"||typeof a.call!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("call")))return"function"}else return"null";
+else if(b=="function"&&typeof a.call=="undefined")return"object";return b};function h(a){a=String(a);var b;b=/^\s*$/.test(a)?false:/^[\],:{}\s\u2028\u2029]*$/.test(a.replace(/\\["\\\/bfnrtu]/g,"@").replace(/"[^"\\\n\r\u2028\u2029\x00-\x08\x10-\x1f\x80-\x9f]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:[\s\u2028\u2029]*\[)+/g,""));if(b)try{return eval("("+a+")")}catch(c){}throw Error("Invalid JSON string: "+a);}function i(a){var b=[];j(new k,a,b);return b.join("")}function k(){}
+function j(a,b,c){switch(typeof b){case "string":l(a,b,c);break;case "number":c.push(isFinite(b)&&!isNaN(b)?b:"null");break;case "boolean":c.push(b);break;case "undefined":c.push("null");break;case "object":if(b==null){c.push("null");break}if(g(b)=="array"){var f=b.length;c.push("[");for(var d="",e=0;e<f;e++){c.push(d);j(a,b[e],c);d=","}c.push("]");break}c.push("{");f="";for(d in b)if(b.hasOwnProperty(d)){e=b[d];if(typeof e!="function"){c.push(f);l(a,d,c);c.push(":");j(a,e,c);f=","}}c.push("}");break;
+case "function":break;default:throw Error("Unknown type: "+typeof b);}}var m={'"':'\\"',"\\":"\\\\","/":"\\/","\u0008":"\\b","\u000c":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\u000b"},n=/\uffff/.test("\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g;function l(a,b,c){c.push('"',b.replace(n,function(f){if(f in m)return m[f];var d=f.charCodeAt(0),e="\\u";if(d<16)e+="000";else if(d<256)e+="00";else if(d<4096)e+="0";return m[f]=e+d.toString(16)}),'"')};window.JSON||(window.JSON={});if(typeof window.JSON.serialize!=="function")window.JSON.serialize=i;if(typeof window.JSON.parse!=="function")window.JSON.parse=h;
+
+</script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>
+    <script type="text/javascript">
+
+var serverUrl = "http://people.csail.mit.edu/hqz/mobi/";
+
+      
+      function initTour(){
+      $("#tour").show();
+      potluck = false;
+
+      }
+
+
+
+function submitTask(){
+     
+      $.ajax({
+	      type: "POST",
+		  url: serverUrl + "createSubject.php",
+		  data: ({
+                 email : $('#email').val(),
+                  name : $('#name').val(),
+sendmail : $('#sendmail').attr("checked")
+     }),
+		success: function(msg){
+alert(msg);
+		alert("Your have registered the user");
+		// load the task
+		updateUserlist();
+	    }
+	});
+    return;
+}
+
+
+
+function updateUserlist(){
+     $.ajax({
+      type: "GET",
+      url: serverUrl + "showSubjects.php",
+      
+      success: function(table){
+          $('#userlist').html(table);
+      }
+      });
+    return;
+}
+
+function dailyEmail(){
+	    $.ajax({
+		    type: "POST",
+			url: serverUrl + "sendSubjectDaily.php",
+			success: function(msg){
+			alert("daily digest email has been sent!");
+		    }
+		});
+	    return;
+}
+
+function removeUser(userId){
+    var r=confirm("Are you sure you want to delete this subject");
+    if (r==true)
+	{
+	    $.ajax({
+		    type: "POST",
+			url: serverUrl + "deleteSubject.php",
+			data: ({id: userId}),
+			success: function(msg){
+			           alert(msg);
+			alert("The user is deleted!");
+			updateUserlist();
+		    }});
+	    return;
+	    
+	}
+    else
+	{
+	}
+}
+
+
+$(document).ready(function(){
+	initTour();
+     $("#submitter").click(function() {submitTask(); return false;});
+      updateUserlist();
+    });
+
+
+
+    </script>
+  </head>
+  <body>
+   
+    <b>Existing users</b>: <br/><div id='userlist'><table></table></div>
+    <br/><hr/>
+<div>
+<button style='background:#ffab07;color:white;border:1px solid black' onclick='dailyEmail()'>Send daily digest email to all users (and remind the ones who didn't yet signup to do so)</button> 
+</div>
+<hr/>
+    <div id='tour'>
+      Register a new subject<br/><br/>
+      <p>Name<br/> <input type="text" size="111" id="name"></input></p>
+      <p>Email<br/> <input type="text" size="111" id="email"></input></p>
+      <input type="checkbox" id="sendmail" CHECKED/>Send email with next steps.<br />
+
+      <form id="tourForm" action="submit.php" method="post">
+	<input type="hidden" id="result" name="result"/>
+	<input type="button" id="submitter" name="submitter" value="Submit"/>
+      </form>
+    </div>
+    </body>
+  </html>
