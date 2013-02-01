@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
+<head>
+  <title>Mobi Turk Tour</title>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css"/>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="view_turktour_frames.js"></script>  
+</head>
+<body>
+<button onclick="generateAllGraphs()">Show all graphs</button>
+<button onclick="constraintsGraph()">Show constraint violation only</button>
+<button onclick="editGraphHIT()">Show what each HIT did with their edit</button>
+<button onclick="editGraphItinerary()">Show what each HIT did on itinerary edits</button>
+<button onclick="itineraryGraph()">Show what each HIT did to the itinerary</button>
+<button onclick="streamEditGraph()">Show what each HIT contributed to stream, original or edit</button>
+
+<div id="data"></div>
+</body>
+</html>

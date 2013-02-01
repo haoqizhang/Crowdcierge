@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
+  <head>
+    <title>Administrative Interface</title>
+    <style type="text/css">
+
+
+      button { background: #ffab07;
+      border: 1px outset black;
+      color: white;
+      font-size: 100%;
+      margin-top: 5px;
+      margin-bottom:5px;
+      }
+      p { margin-top:10px;}
+      a, span {	color: #0000CE; }
+       .reviewStyle { color: #000000;}
+      .page {
+      width: 780px;
+      }
+      body {
+      /* background: none repeat scroll 0 0 #D3F1F2;*/
+      background: #D3F1F2;
+      }
+      textarea {
+      resize: none;
+      }
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" media="all" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css"/>
+    <script type="text/javascript">
+    function g(a){var b=typeof a;if(b=="object")if(a){if(a instanceof Array||!(a instanceof Object)&&Object.prototype.toString.call(a)=="[object Array]"||typeof a.length=="number"&&typeof a.splice!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("splice"))return"array";if(!(a instanceof Object)&&(Object.prototype.toString.call(a)=="[object Function]"||typeof a.call!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("call")))return"function"}else return"null";
+    else if(b=="function"&&typeof a.call=="undefined")return"object";return b};function h(a){a=String(a);var b;b=/^\s*$/.test(a)?false:/^[\],:{}\s\u2028\u2029]*$/.test(a.replace(/\\["\\\/bfnrtu]/g,"@").replace(/"[^"\\\n\r\u2028\u2029\x00-\x08\x10-\x1f\x80-\x9f]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:[\s\u2028\u2029]*\[)+/g,""));if(b)try{return eval("("+a+")")}catch(c){}throw Error("Invalid JSON string: "+a);}function i(a){var b=[];j(new k,a,b);return b.join("")}function k(){}
+function j(a,b,c){switch(typeof b){case "string":l(a,b,c);break;case "number":c.push(isFinite(b)&&!isNaN(b)?b:"null");break;case "boolean":c.push(b);break;case "undefined":c.push("null");break;case "object":if(b==null){c.push("null");break}if(g(b)=="array"){var f=b.length;c.push("[");for(var d="",e=0;e<f;e++){c.push(d);j(a,b[e],c);d=","}c.push("]");break}c.push("{");f="";for(d in b)if(b.hasOwnProperty(d)){e=b[d];if(typeof e!="function"){c.push(f);l(a,d,c);c.push(":");j(a,e,c);f=","}}c.push("}");break;
+case "function":break;default:throw Error("Unknown type: "+typeof b);}}var m={'"':'\\"',"\\":"\\\\","/":"\\/","\u0008":"\\b","\u000c":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\u000b"},n=/\uffff/.test("\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g;function l(a,b,c){c.push('"',b.replace(n,function(f){if(f in m)return m[f];var d=f.charCodeAt(0),e="\\u";if(d<16)e+="000";else if(d<256)e+="00";else if(d<4096)e+="0";return m[f]=e+d.toString(16)}),'"')};window.JSON||(window.JSON={});if(typeof window.JSON.serialize!=="function")window.JSON.serialize=i;if(typeof window.JSON.parse!=="function")window.JSON.parse=h;
+    </script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>
+    <script type="text/javascript" src="signup.js"></script>
+  </head>
+  <body>
+
+  <h1><b><div style="color:#0000CE" id="createoredit">Mobi <span style="color:#ffab07">Sign-up</span><span id='stepcount' class='topspan' style='float:right;font-size:25px;margin-right:100px;'>Step 1 of 5</span></div></b></h1>
+
+    <div class='page' id='page1'>
+      <span style="color:black">Welcome to Mobi!</span> The following steps will ask you about where you are going and what you are looking for, so that your friends and the people we hire can best plan a custom-tailored itinerary for a day of your trip.
+      <p>Your name: <input type="text" size="40" id="creator"></input></p>
+      <p>Your email: <input type="text" size="40" id="creatoremail"></input></p>
+      <p>What North American city are you visiting for which you'd like people to plan a day trip for you?<br/>(if the city you are visiting isn't listed, just let us know)<br/><input type="text" class="ui-autocomplete-input" name="city" size="40" id="city"></input></p>
+      
+      Please review the following information about what participation in this research study entails:<br/>
+<!-- f2f2f2 -->
+
+      <div style="background:white;border:solid 1px #DADADA;overflow-x:hidden;padding:15px;position:relative;height:280px;width:680px;font:14px/20px Georgia, Garamond, Serif;">
+	<!-- <textarea rows="10" cols="80" readonly="readonly">-->
+	<b>Purpose of the research:</b> To understand how you, your friends, and people we hire can use Mobi to plan itineraries for a day of a trip.
+	<br/><br/>
+	<b>What you will do in this research</b>: If you decide to participate, you will:
+	<ul>
+	  <li>Sign up by providing details on what you are looking for in this day trip. This is then given to your friends and people we hire, who will plan a day of your trip during the 
+	    one-week period immediately after you sign up. You will be able to make edits as you see fit throughout the planning process.</li>
+	  <li>Recruit your friends to help plan your trip for you using Mobi.</li>
+	  <li>Keep track of how the plans are coming along over the course of the week (you will receive digest emails) and make suggestions or changes as you see fit.</li>
+	  <li>Review the two final itineraries and complete a followup survey.</li>
+	</ul>
+	<b>Time required</b>: About 10-15 minutes to sign up and about 20-25 minutes for
+	the post-survey. A few minutes a day to check on how the itineraries are coming along.
+	<br/><br/>
+	<b>Benefits</b>: You get two custom-tailored itineraries as well as a collection of activities of potential interest. You will also receive a <b>$30 Amazon gift card</b> upon completing the followup survey!
+	<br/><br/>
+	<b>Confidentiality</b>: Data collected will contain personal identifiers, but no personal information will be shared publicly nor published.
+	<br/><br/>
+	<b>Participation and withdrawal</b>: Your participation is completely voluntary, and you may quit at any time without penalty. You may skip any questions or tasks you do not want to answer or complete. In participating, you agree to not post anything illegal nor any personally identifiable information beyond what is requested.
+	<br/><br/>
+	<b>To Contact the Researcher</b>: If you have questions or concerns about this research, please contact:<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Haoqi Zhang<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email: hq@eecs.harvard.edu<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Phone: 9174452626<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Address: 33 Oxford St. Room 219, Cambridge, MA 02138<br/><br/>
+ You may also contact the faculty member supervising this work: David Parkes (parkes@eecs.harvard.edu), 33 Oxford St. Room 233, Cambridge, MA 02138<br/>
+	<br/>
+	<b>Whom to contact about your rights in this research, for questions, concerns, suggestions, or complaints that are not being addressed by the researcher, or research-related harm:</b>    Jane Calhoun, Harvard University Committee on the Use of Human Subjects in Research, 1414 Massachusetts Avenue, Second Floor, Cambridge, MA  02138.  Phone:  617-495-5459.  E-mail: jcalhoun@fas.harvard.edu
+	<!-- </textarea>-->
+      </div>
+<!--      <a href="" style="color:#0000CE;margin-left:560px;">Printer-friendly version</a> -->
+      <div style="margin-top:10px;"><input type="checkbox" id="consent"/>&nbsp;I've reviewed the information and understand what participation entails. I consent to participating in this study.</div>
+      <div style="margin-left:340px;"><button onClick="nextPage()">Next</button></div>
+    </div>
+    <div id="page2">
+      <div style="margin-bottom:10px">What time would you like to start your day?&nbsp;<select id='startTime'></select></div>
+      <div style="margin-bottom:10px">What time would you like to end your day?&nbsp;<select id='endTime'></select></div>
+      Where are you staying? (if you don't know yet, just leave it blank) <!-- If you don't know yet, just enter any location (e.g., "downtown") and we will start planning your day from there.--><br/>
+      <input onblur='autoNearby()' id='startLocation'/><br/>
+      <div style='color:black'>Please drag the start location pin <img style='vertical-align:text-bottom' src='pin-start.png'/> to its correct location. Suggestions (when available) are shown as <img style='vertical-align:text-bottom' src='pin2.gif'/>.</div>  
+      <div id='mapDiv' style="position:relative;z-index:0;width:680px; height:400px;"></div>    <br/>
+   <div>Will you have a car or will you take public transit? 
+     <select id="transit"><option value="" selected=selected></option><option value="false">I will have a
+     car.</option><option value="true">I will take public
+     transit.</option></select>
+
+</div><br/>   
+      <div style="margin-left:340px;">
+      <button onClick="previousPage()">Go back</button>&nbsp;<button onClick="nextPage()">Next</button>
+</div>
+    </div>
+
+    <div id='page3' class='page'>
+      <p><!-- Please describe in a paragraph what you'd like to do during the day trip. Be
+	sure to specify the kind of activities you are looking for,
+	things you like and/or dislike, what kinds of food you'd like to
+	eat, who you are traveling with, and so on, as you think would
+	help the people who are going to be making suggestions and
+	planning an itinerary of your day trip for
+	you.--><b>What I am looking for:</b><br/><br/> <textarea rows="14" style="font-size:18px;width:700px" 
+				 id="tour_description"></textarea></p>
+      <div style="margin-left:340px;">
+      <button onClick="previousPage()">Go back</button>&nbsp;<button onClick="nextPage()">Next</button>
+</div>
+    </div>
+    <div id='page4' class='page'>
+      <p><b>Tags</b> helps the people planning for you to offer
+	suggestions that correspond to the different types of
+	activities you are interested in. Tags can be anything, for
+	example, 'shopping in downtown,' 'lunch under 20 bucks,'
+	'museums,' and so on.</p>
+      <p><b>Itinerary requirements</b> allow you to enter particular conditions 
+	that you'd like the itinerary to satisfy, based on the tags you enter. For example, 
+	a requirement may be that "I want to spend at least an hour shopping in downtown" or 
+	"I want at least two museum activities."</p>
+      <br/>
+      Please add one or more tags:<br/><button onClick="createField('tour_categories', 'categorySet', '', 30)">add a tag</button><br/>
+      <div id="tour_categories"></div>
+      Please enter any requirements that you wish people planning the event to note:<br/>
+      <button onClick="createConstraintField('tour_verbal', 'preferenceSet', '', 100)">add a requirement</button><br/>
+      <div id="tour_verbal"></div><br/>
+      
+
+      <div style="margin-left:340px;">
+      <button onClick="previousPage()">Go back</button>&nbsp;<button onClick="nextPage()">Next</button>
+</div>
+
+    </div>
+    <div class='page' id='review'>
+      Please review your information below. If everything looks good,
+      hit submit! Otherwise, simply go back and make any changes you
+      see fit. You will be able to make changes later as others are 
+      planning for you, too.
+      <div style="background:white;border:solid 1px #DADADA;overflow-x:hidden;padding:15px;position:relative;height:400px;width:680px;font:14px/20px Georgia, Garamond, Serif;">
+<!--      <div style="border:solid 1px black;padding:3px;position:relative;left:20px;height:600px;width:600px;font:14px/20px Georgia, Garamond, Serif;overflow:scroll;">-->
+	<!-- <textarea rows="10" cols="80" readonly="readonly">-->
+	<b>Where you are going</b>: <span class='reviewStyle' id='reviewCity'></span>
+	<br/>
+	<b>Duration</b>: <span class='reviewStyle' id='reviewDuration'></span>
+	<br/>
+	<b>Transportation</b>: <span class='reviewStyle' id="reviewTransit"></span><br/>
+	<b>Where you are staying or starting your day</b>: <span class='reviewStyle' id='reviewStartLocation'></span>	<br/>
+	<div id='reviewMapDiv' style="position:relative;z-index:0;width:600px; height:200px;"></div>    <br/>
+	<b>What you are looking for</b>: <span class='reviewStyle' id='reviewDescription'></span>
+	<br/>
+	<b>Tags for activities of interest</b>: <span class='reviewStyle' id='reviewCategories'></span> 
+	<br/>
+	<b>Specific requirements</b>:<br/> <span class='reviewStyle' id='reviewConstraints'></span>
+	
+      </div><br/>
+      <div style="margin-left:340px;">
+	<button onClick="previousPage()">Go back</button>&nbsp;
+	<button id="submitter" name="submitter">Submit my information</button>
+      </div>
+
+      <form id="tourForm" action="submit.php" method="post"> 
+	<input type="hidden" id="result" name="result"/>
+      </form>
+    </div>
+    <div class='page' style='font-size:18px' id='finished'>
+<span style="color:black;font-size:24px">Congratulations, you've just signed up for Mobi!</span><br/><br/>Please check your email (<span style="color:#0000CE" id='finishEmail'></span>) for links to your personal Mobi pages,
+ and for suggestions on how to recruit your friends. <b>Make sure you recruit your friends ASAP!</b> We will go ahead and hire some folks to start planning an itinerary for you right now.<br/><br/>
+Should you have any questions or experience any difficulties, please feel free to send us an 
+<a style="color:#0000CE" href="mailto:hq@eecs.harvard.edu">email</a>.
+    </div>
+  </body>
+</html>

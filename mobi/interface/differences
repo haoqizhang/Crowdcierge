@@ -1,0 +1,117 @@
+31a32,39
+> <!-- span {
+> display:-moz-inline-stack;
+> display:inline-block;
+> zoom:1;
+> *display:inline;
+> } -->
+> 
+> 
+108c116,117
+<     <div id="mobi-content" style="height:745px;display:none;overflow:auto; text-align: center; ">
+---
+>     <!-- changed from 745 -->
+>     <div id="mobi-content" style="height:690px;display:none;overflow:auto; text-align: center; ">
+118,119c127,129
+< 	<!-- hq: changed form 599 to 650 -->
+< 	<div style="height: 725px; margin-left: 0px; position: relative; width: 700px; z-index: 10; " id="header_layer">
+---
+> 	<!-- hq: changed form 735 -->
+> 	
+> 	<div style="height: 680px; margin-left: 0px; position: relative; width: 700px; z-index: 10; " id="header_layer">
+125c135
+<           <div id="id1" style="height: 550px; left: 600px; position: absolute; top: 46px; width: 276px; z-index: 1; " class="style_SkipStroke stroke_0">
+---
+>           <div id="id1" style="height: 550px; left: 600px; position: absolute; top: 36px; width: 276px; z-index: 1; " class="style_SkipStroke stroke_0">
+132c142,143
+< 		<div class="wrapper" style="height: 500px; width: 246px; overflow: auto"><div id='stateDisplay' style="height: 500px; width: 200px;"></div></div>
+---
+> 		<div class="wrapper" style="height: 500px; width: 246px; overflow: auto">
+> 		  <div id='stateDisplay' style="height: 500px; width: 200px"></div></div>
+146c157
+<           <div style="height: 49px; width:800px;  position: absolute; left: 68px; top: 28px; z-index: 1; " class="tinyText">
+---
+>           <div style="height: 49px; width:800px;  position: absolute; left: 68px; top: 18px; z-index: 1; " class="tinyText">
+153c164
+<           <div style="height: 49px; width: 210px;  height: 49px; left: 625px; position: absolute; top: 15px; width: 210px; z-index: 1; " class="tinyText">
+---
+>           <div style="height: 49px; width: 210px;  height: 49px; left: 625px; position: absolute; top: 5px; width: 210px; z-index: 1; " class="tinyText">
+160c171
+<          <div style="height: 49px; width: 510px;  height: 49px; left: 600px; position: absolute; top: 635px; z-index: 1; " class="tinyText">
+---
+>          <div style="height: 49px; width: 510px;  height: 49px; left: 600px; position: absolute; top: 625px; z-index: 1; " class="tinyText">
+171c182
+<           <div id="id2" style="height: 550px; left: 900px; position: absolute; top: 46px; width: 272px; z-index: 1" class="style_SkipStroke stroke_1">
+---
+>           <div id="id2" style="height: 550px; left: 900px; position: absolute; top: 36px; width: 272px; z-index: 1" class="style_SkipStroke stroke_1">
+183,188c194,199
+<               <div  style="height: 460px; width: 245px; overflow: auto">
+< 		<div class="paragraph_style"><div style="line-height: 18px; " class="style_1"><br /></div></div>
+< 	       <div class='wrapper'>
+< 		  <ul id="sortable"></ul>
+< 	       </div>
+<               </div>
+---
+> 		<div  style="height: 460px; width: 245px; overflow: auto">
+> 		  <div class="paragraph_style"><div style="line-height: 18px; " class="style_1"><br /></div></div>
+> 		  <div class='wrapper'> 
+> 		    <ul id="sortable"></ul>
+> 		  </div>
+> 		</div>
+194c205
+<          <div style="height: 49px; width: 210px;  height: 49px; left: 925px; position: absolute; top: 15px; width: 210px; z-index: 1; " class="tinyText">
+---
+>          <div style="height: 49px; width: 210px;  height: 49px; left: 925px; position: absolute; top: 5px; width: 210px; z-index: 1; " class="tinyText">
+201c212
+<          <div id="id3" style="height: 79px; left: 50px; position: absolute; top: 33px; width: 470px; z-index: 1; " class="style_SkipStroke_1">
+---
+>          <div id="id3" style="height: 79px; left: 50px; position: absolute; top: 23px; width: 470px; z-index: 1; " class="style_SkipStroke_1">
+213c224
+< <div style="margin-top:6px;margin-bottom:6px">
+---
+> 	       <div style="margin-top:6px;margin-bottom:6px">
+215,217c226
+< </div><hr/>
+< 
+< 	      
+---
+> 	       </div><hr/>
+221,223c230
+< 	       <br/><div class="wrapper"><div id="choices" style="height: 95px; width: 470px; overflow:auto;"></div></div>
+< 	       
+< 	       
+---
+> 	       <br/><div class="wrapper"><div id="choices" style="height: 85px; width: 470px; overflow:auto;"></div></div>
+231c238
+< 		 <div id="preferences" style="height: 95px; width: 470px; overflow:auto;"></div>
+---
+> 		 <div id="preferences" style="height: 85px; width: 470px; overflow:auto;"></div>
+233,234d239
+< 
+< 
+240d244
+< 
+248d251
+< 	     
+250d252
+< 
+255d256
+< 
+266d266
+< 
+281c281
+< 
+---
+>       
+283c283
+< 
+---
+>     
+290c290
+< 
+---
+>     
+292c292
+<   </body>
+---
+>  </body>

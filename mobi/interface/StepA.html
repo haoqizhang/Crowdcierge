@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    <meta name="Generator" content="iWeb 2.0.4" />
+    <meta name="iWeb-Build" content="local-build-20110312" />
+    <meta name="viewport" content="width=700" />
+    <title>Step2</title>
+    <link rel="stylesheet" type="text/css" media="screen,print" href="Step2_files/Step2.css" />
+    <!--[if IE]><link rel='stylesheet' type='text/css' media='screen,print' href='Step2_files/Step2IE.css'/><![endif]-->
+    <script type="text/javascript" src="Scripts/iWebSite.js"></script>
+    <script type="text/javascript" src="Scripts/Widgets/SharedResources/WidgetCommon.js"></script>
+    <script type="text/javascript" src="Scripts/Widgets/Navbar/navbar.js"></script>
+    <script type="text/javascript" src="Scripts/iWebImage.js"></script>
+    <script type="text/javascript" src="Step2_files/Step2.js"></script>
+	
+	<style type="text/css">
+
+     #sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+ 
+
+   
+    a {
+	color: #0000CE;
+    }
+     
+     textarea {
+	 resize: none;
+     }
+    </style>
+  </head>
+  <body>	
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+<script>
+
+var activity;
+var description;
+var categories;
+var verbal;
+var tid = '1081b0f0ddb27fe181dfd422809888d7';  // TODO: get task_id from parameters
+var uid = null; // TODO: get user id from parameters
+var username = null;
+var email = null;
+var requestId = null;
+var requestEmail = null;
+var state; // state of the world
+var preferenceOrdering = null; // ordering on previous preferences
+var userKeys = [];//todo, more efficient
+var planByCategory = true;
+
+// TODO: load work others have done so far
+function showProgress(){
+     $.ajax({
+      type: "GET",
+      url: "http://people.csail.mit.edu/hqz/mobi/showProgress.php",
+      data: ({type: "potluck", id: tid}),
+      success: function(table){
+          // assume json object we can work with
+//alert(obj);
+          $('#tasklist').html(table);
+	     }
+	 });
+    return;
+}
+
+
+
+// load category and general task info from database
+function loadTaskInfo(){
+     $.ajax({
+      type: "GET",
+      url: "http://people.csail.mit.edu/hqz/mobi/loadTaskInfo.php",
+      data: ({type: "potluck", id: tid}),
+      success: function(obj){
+          // assume json object we can work with
+//alert(obj);
+          var info = eval('(' + obj + ')');
+            loadData(info);
+            loadInterface();
+      }
+      });
+    return;
+}
+
+function loadTaskState(){
+   $.ajax({
+      type: "GET",
+      url: "http://people.csail.mit.edu/hqz/mobi/loadTaskState.php",
+      data: ({type: "potluck", id: tid}),
+      success: function(obj){
+      if(obj == ""){
+        // nothing to load
+      }else{
+          // read in the state
+          state = eval('(' + obj + ')');
+          state = eval('(' + state.state + ')');
+          loadState();
+      }
+   }
+      });
+    return;
+}
+
+function loadState(){
+    // load user keys
+    userKeys = [];
+    for(var i = 0; i < state.users.length; i++){
+	userKeys[state.users[i].userId] = i;
+    }
+
+// load the menu by catergory
+    var menu = "<b>Menu</b><br/>";
+    if(!planByCategory){
+     for(var i = 0; i < state.users.length; i++){
+ 	for(var j = 0; j < state.users[i].choices.length; j++){
+ 	    if(state.users[i].choices[j].selected){
+		menu += state.users[i].choices[j].description + " (" + state.users[i].choices[j].type + ") -- " + state.users[i].name + "<br/>";
+ 	    }
+ 	}
+     }
+    }else{
+	// or by type of food:
+	for(var k = 0; k < categories.length; k++){
+	    menu += "<div id='menuCategory" + k + "'><u>" + categories[k] + "</u><br/>";
+	    for(var i = 0; i < state.users.length; i++){
+		for(var j = 0; j < state.users[i].choices.length; j++){
+		    if(state.users[i].choices[j].type == categories[k] && state.users[i].choices[j].selected){
+			// 	    if(state.users[i].choices[j].selected){
+			menu += state.users[i].choices[j].description + "-- " + state.users[i].name + "<br/>";
+		    }
+		}
+	    }
+	    
+	    menu += "</div><br/>";
+	}
+    }
+
+   // load resources
+    var availableResources = "<br/><u>Things people may be willing to bring instead:</u><br/>";
+    for(var i = 0; i < state.users.length; i++){
+	for(var j = 0; j < state.users[i].choices.length; j++){
+	    if(!state.users[i].choices[j].selected){
+		availableResources += "<button onClick=\"request(" + i + "," + j + ")\">request this!</button>" + state.users[i].choices[j].description + " (" + state.users[i].choices[j].type + ") -- " + state.users[i].name + "<br/>";
+	    }
+	}
+    }
+
+
+
+    // load the constraints
+    var peoplesPreferences = "<br/><u>People's preferences (you can drag them to put the most important ones on top!)</u><br/>";
+    for(var i = 0; i < state.preferenceOrdering.length; i++){
+ 	var pl = state.users[userKeys[state.preferenceOrdering[i].userId]].preferences;
+ 	for(var j = 0; j < pl.length; j++){
+	    if(state.preferenceOrdering[i].id == pl[j].id){
+		var preferenceInfo = pl[j].description + " -- " + 
+ 		    state.users[userKeys[state.preferenceOrdering[i].userId]].name + "<br/>";
+		// 		peoplesPreferences += preferenceInfo;
+		// add it to sortable
+		var e = "<input type=\"checkbox\" name=\"choiceSelected\"></input>";
+
+		$('#sortable').append("<li id='po" + i +"' class=\"ui-state-default\"><div style='border:2px solid;margin:2px;padding:2px;width:400px'>" + preferenceInfo + "</div></li>");
+ 		break;
+ 	    }
+ 	}
+    }
+
+           
+    $('#stateDisplay').empty();
+  $('#stateDisplay').append(menu);
+  $('#availableResources').append(availableResources);
+  $('#peoplesPreferences').append(peoplesPreferences);
+// load the things people can bring
+// load the constraints/preferences...
+
+// $('#stateDisplay').html(JSON.stringify(state.users));
+}
+
+    // does item help the constraint
+   function helps(i){
+	
+    }
+
+// or does it hurt it
+    function hurts(i){
+
+    }
+
+// make a request
+function request(userIndex, dishIndex){
+    requestId = state.users[userIndex].userId;
+    requestEmail = state.users[userIndex].email;
+
+   $('#requestTo').html(state.users[userIndex].name);
+   var end = "";
+   if(username == null){
+   }else{
+       end = "\n\nBest, " + "\n" + username;
+   }
+   $('#requestMsg').html("Hi " + (state.users[userIndex].name.split(' '))[0] + ",\n\nI saw that you noted that you may be willing to bring " + state.users[userIndex].choices[dishIndex].description + " instead of something you are currently planning to bring. I think having " + state.users[userIndex].choices[dishIndex].description + " would be really wonderful!" + end);
+ 
+}
+
+function loadData(data){
+activity = data.name;
+ description = data.description;
+ categories = eval('(' + data.categories + ')');
+ verbal = eval('(' + data.constraints_verbal + ')');
+
+  $("#activity").html(data.name.replace(/\n/g, "<br/>"));
+  $("#description").html(data.description.replace(/\n+$/, '').replace(/\n/g, "<br/>"));
+
+  $("#verbal").html(verbal.join("<br/>"));
+}
+
+// TODO give an interface to enter new information from an individual
+function loadInterface(){
+createChoiceField('choices');
+//createChoiceField('provisional');
+createField('preferences', 'preferenceSet', '', 100);
+ // what dishes can you bring.... (and what category they are in)
+
+  // is there a dish you'd like to bring for sure? 
+
+  // what preferences do you have.... box
+
+
+
+}
+
+function createChoiceField(field){
+    var fname = '#' + field;
+ var c = "<input type=\"text\" name=\"choiceSet\" size=\"60\"></input>";
+ var d = "<select name=\"choiceCategory\">"
+ for(var i = 0; i < categories.length; i++){
+     d += "<option value=\'" + i + "\'>" + categories[i] + "</option>";
+ }
+ d += "</select> ";
+ var e = "<input type=\"checkbox\" name=\"choiceSelected\"></input>";
+
+ $(fname).append(c); 
+ $(fname).append(d); 
+ $(fname).append(e); 
+ $(fname).append("<br/>"); 
+
+}
+
+function checkFields(){
+    var inputs = $('#choices :input[name="choiceSet"]');
+    
+    inputs.each(function(){
+	    alert($(this).val());
+	});
+
+    var types = $('#choices :input[name="choiceCategory"]');
+    types.each(function(){
+	    alert($(this).val());
+	});
+}
+
+function choice(item, type, selected){
+    this.description = item;
+    this.type = type;
+    this.id = null;		    
+    this.selected = selected;
+    this.preferencesAddressed = null;
+    this.preferencesViolated = null;
+}
+
+function preference(description){
+   this.description = description;
+   this.id = null;		    
+}
+
+function getChoices(field){
+    var fname = '#' + field;
+    var inputsList = new Array();
+    var inputs = $(fname + ' :input[name="choiceSet"]');
+    inputs.each(function(){
+	    inputsList.push($(this).val());
+	    
+	});
+
+    var typesList = new Array();
+    var types = $(fname + ' :input[name="choiceCategory"]');
+    types.each(function(){
+	    typesList.push($(this).val());
+	});
+
+    var selectedList = new Array();
+    var selects = $(fname + ' :input[name="choiceSelected"]');
+    selects.each(function(){
+	    selectedList.push($(this).attr("checked"));
+	});
+
+    var clist = new Array();
+    for(var i = 0; i < inputsList.length; i++){
+	if(inputsList[i] != ""){
+	    clist.push(new choice(inputsList[i], categories[typesList[i]], selectedList[i]));
+	}
+    }
+    return clist;
+}
+
+function getPreferenceSet(field, name){
+    var inputsList = new Array();
+    var key = "#" + field + " :input[name=\"" + name + "\"]"; 
+    var inputs = $(key);
+    inputs.each(function(){
+	    if($(this).val() != ""){
+		inputsList.push(new preference($(this).val()));
+	    }
+	});
+    return inputsList;
+}
+
+
+
+function Answer(){}
+
+function gatherAnswers(){
+    var answer = new Answer();
+    answer.name = $('#name').val();
+    answer.email = $('#email').val();
+    answer.choices = getChoices('choices');
+    answer.preferences = getPreferenceSet('preferences', 'preferenceSet');
+    answer.preferenceOrdering = getPreferenceOrdering();
+    return JSON.stringify(answer);
+}
+
+function getPreferenceOrdering(){
+    var pa = $('#sortable').sortable('toArray');
+    var pr =  pa.map(function(x){ return state.preferenceOrdering[x.substring(2)];});
+    return pr;
+}
+
+function submitTask(){
+    var answer = gatherAnswers();
+    return;
+    //    alert(answer);
+     $.ajax({
+	    type: "POST",
+		url: "http://people.csail.mit.edu/hqz/mobi/submitEntry.php",
+		data: ({
+			userId : uid,
+			    answer: answer,
+			    taskId: tid, 
+			    type: "potluck"}),
+		success: function(msg){
+		 alert("You have submitted your entry!");
+		 loadTaskState(); 
+		 //		 alert(msg);
+		// TODO: load on page
+		// updateTasklist();
+	    }
+	 });
+    return;
+}
+
+function createField(field, name, val, size){
+ var c = "<input type=\"text\" name=\"" + name + "\" value=\"" + val +  "\" size=\"" + size + "\"></input>";
+ var fname = '#' + field;
+ $(fname).append(c);
+ $(fname).append("<br/>"); 
+}
+
+function readUrlParameters(){
+   var params = getURLParams();		       
+   if(params.tid){
+     tid = params.tid;
+   }
+
+   if(params.uid){
+       uid = params.uid;
+       loadUserInfo();		       
+   }
+ 
+  return;
+}
+
+function loadUserInfo() {
+
+     $.ajax({
+	    type: "GET",
+		url: "http://people.csail.mit.edu/hqz/mobi/loadUserInfo.php",
+		data: ({
+			userId : uid,
+		       taskId: tid, 
+		       type: "potluck"}),
+		success: function(obj){
+		 if(obj != ""){
+		       var info = eval('(' + obj + ')');
+		       username = info.name;
+		       email = info.email;
+		       $('#email').val(email);
+		       $('#name').val(username);
+		 }      
+	    }
+	 });
+    return;
+
+}
+
+function unescapeURL(s) {
+    return decodeURIComponent(s.replace(/\+/g, "%20"))
+}
+
+function getURLParams() {
+    var params = {}
+    var m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g)
+    if (m) {
+        for (var i = 0; i < m.length; i++) {
+            var a = m[i].match(/.([^=]+)=(.*)/)
+            params[unescapeURL(a[1])] = unescapeURL(a[2])
+        }
+    }
+    return params
+}
+
+$(document).ready(function(){
+	    $( "#sortable" ).sortable();
+	    $( "#sortable" ).disableSelection();
+   readUrlParameters(); // get userId and taskId
+   loadTaskInfo(); // Load basic information on the task from the host
+   loadTaskState(); // Load where we are current at with task
+			    
+    $("#submitter").click(function() {submitTask(); return false;});
+});
+
+function sendMessage(){
+     $.ajax({
+	    type: "POST",
+		 url: "http://people.csail.mit.edu/hqz/mobi/sendMail.php",
+		data: ({
+			userId : uid,
+		       taskId: tid, 
+			    msg : $('#requestMsg').val(),
+			    to : requestEmail,
+			type: "potluck"}),
+		success: function(obj){
+		 //		 alert(obj);		      
+		       
+	    }
+	 });
+    return;
+
+}
+
+function rtrim(str, chars) {
+			    chars = chars || "\\s";
+			    return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
+}
+
+
+
+if (!Array.prototype.map)
+    {
+	Array.prototype.map = function(fun /*, thisp*/)
+	{
+	    var len = this.length;
+	    if (typeof fun != "function")
+		throw new TypeError();
+
+	    var res = new Array(len);
+	    var thisp = arguments[1];
+	    for (var i = 0; i < len; i++)
+		{
+		    if (i in this)
+			res[i] = fun.call(thisp, this[i], i, this);
+		}
+	    return res;
+	};
+    }
+
+function g(a){var b=typeof a;if(b=="object")if(a){if(a instanceof Array||!(a instanceof Object)&&Object.prototype.toString.call(a)=="[object Array]"||typeof a.length=="number"&&typeof a.splice!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("splice"))return"array";if(!(a instanceof Object)&&(Object.prototype.toString.call(a)=="[object Function]"||typeof a.call!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("call")))return"function"}else return"null";
+else if(b=="function"&&typeof a.call=="undefined")return"object";return b};function h(a){a=String(a);var b;b=/^\s*$/.test(a)?false:/^[\],:{}\s\u2028\u2029]*$/.test(a.replace(/\\["\\\/bfnrtu]/g,"@").replace(/"[^"\\\n\r\u2028\u2029\x00-\x08\x10-\x1f\x80-\x9f]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:[\s\u2028\u2029]*\[)+/g,""));if(b)try{return eval("("+a+")")}catch(c){}throw Error("Invalid JSON string: "+a);}function i(a){var b=[];j(new k,a,b);return b.join("")}function k(){}
+function j(a,b,c){switch(typeof b){case "string":l(a,b,c);break;case "number":c.push(isFinite(b)&&!isNaN(b)?b:"null");break;case "boolean":c.push(b);break;case "undefined":c.push("null");break;case "object":if(b==null){c.push("null");break}if(g(b)=="array"){var f=b.length;c.push("[");for(var d="",e=0;e<f;e++){c.push(d);j(a,b[e],c);d=","}c.push("]");break}c.push("{");f="";for(d in b)if(b.hasOwnProperty(d)){e=b[d];if(typeof e!="function"){c.push(f);l(a,d,c);c.push(":");j(a,e,c);f=","}}c.push("}");break;
+case "function":break;default:throw Error("Unknown type: "+typeof b);}}var m={'"':'\\"',"\\":"\\\\","/":"\\/","\u0008":"\\b","\u000c":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\u000b"},n=/\uffff/.test("\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g;function l(a,b,c){c.push('"',b.replace(n,function(f){if(f in m)return m[f];var d=f.charCodeAt(0),e="\\u";if(d<16)e+="000";else if(d<256)e+="00";else if(d<4096)e+="0";return m[f]=e+d.toString(16)}),'"')};window.JSON||(window.JSON={});if(typeof window.JSON.serialize!=="function")window.JSON.serialize=i;if(typeof window.JSON.parse!=="function")window.JSON.parse=h;
+
+
+
+</script>
+  </head>
+  <body style="background: #515151; margin: 0pt; " onload="onPageLoad();" onunload="onPageUnload();">
+    <div style="text-align: center; ">
+      <div style="margin-bottom: 10px; margin-left: auto; margin-right: auto; margin-top: 10px; overflow: hidden; position: relative; word-wrap: break-word;  background: #ffffff; text-align: left; width: 1000px; " id="body_content">
+        <div style="margin-left: 0px; position: relative; width: 700px; z-index: 0; " id="nav_layer">
+          <div style="height: 0px; line-height: 0px; " class="bumper"> </div>
+          <div class="com-apple-iweb-widget-navbar flowDefining" id="widget0" style="margin-left: 20px; margin-top: 0px; position: relative; width: 660px; z-index: 1; ">
+          </div>
+          <div style="clear: both; height: 0px; line-height: 0px; " class="spacer"> </div>
+        </div>
+        <div style="height: 599px; margin-left: 0px; position: relative; width: 700px; z-index: 10; " id="header_layer">
+          <div style="height: 0px; line-height: 0px; " class="bumper"> </div>
+          
+          <div id="id3" style="height: 79px; left: 300px; position: absolute; top: 300px; width: 400px; z-index: 1; " class="style_SkipStroke_1">
+            <div class="text-content graphic_textbox_layout_style_default_External_307_79" style="padding: 0px; ">
+              <div class="graphic_textbox_layout_style_default">
+                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style"><span style="line-height: 18px; " class="style_1">
+				    First, let's do some brainstorming!  Please name some dishes that you can possibly bring (and check the one that you are most
+					likely to bring):</span></p>
+              </div>
+            </div>
+			<p>
+            <button onClick="createChoiceField('choices')">add item</button>
+            <p>
+            <div id="choices"></div></p>
+			<div align="right"><br><input type="submit" value="-->"/></div>
+          </div>
+		  
+        </div>
+        <div style="margin-left: 0px; position: relative; width: 700px; z-index: 5; " id="body_layer">
+          <div style="height: 0px; line-height: 0px; " class="bumper"> </div>
+          <div style="height: 480px; line-height: 480px; " class="spacer"> </div>
+        </div>
+        <div style="height: 75px; margin-left: 0px; position: relative; width: 700px; z-index: 15; " id="footer_layer">
+          <div style="height: 0px; line-height: 0px; " class="bumper"> </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+

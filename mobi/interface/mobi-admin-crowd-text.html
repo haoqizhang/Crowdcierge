@@ -1,0 +1,789 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
+<head>
+  <title>Mobi: admin page of our people planning for you</title>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css"/>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="humane.js"></script>
+  <script type="text/javascript" src="mobi-admin-crowd-text.js"></script>  
+  <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>
+  <style media="screen" type="text/css">
+
+      
+#tabcontainer ul {
+list-style: none;
+padding: 0;
+margin: 0;
+    }
+    
+#tabcontainer li {
+float: left;
+border: 1px solid #bbb;
+border-bottom-width: 0;
+margin: 0;
+    }
+    
+#tabcontainer a {
+text-decoration: none;
+display: block;
+background: white;
+padding: 0.24em 1em;
+color: #7F7F7F;
+width: 8em;
+text-align: center;
+    }
+
+.tabactbut { 
+background: #ffab07;
+ border: 1px outset #ffab07;
+color: white;
+    font-size: 90%;
+margin-top: 5px;
+margin-bottom:5px;
+}
+
+#tabcontainer a:hover {
+background: white;
+}
+
+#tabcontainer .selected {
+
+border-color: #7F7F7F
+}
+
+#tabcontainer .selected a {
+position: relative;
+top: 1px;
+background: white;
+color: black;
+}
+
+#content {
+border: 1px solid #7F7F7F;
+clear: both;
+padding: 10px;
+}
+
+
+
+    html {
+	height:100%; 
+	max-height:100%; 
+	padding:0; 
+	margin:0;
+	border:0; 
+	background:#fff; 
+	font-size:76%; 
+	font-family:georgia, palatino linotype, times new roman, serif;
+	/* hide overflow:hidden from IE5/Mac */ 
+	/* \*/ 
+	overflow: hidden;
+    /* */ 
+    }
+
+    body {height:100%; max-height:100%; overflow:hidden; padding:0; margin:0px; border:0;font: 14px Lucida Grande, Arial, sans-serif;background-color:white;}
+/* background-color:#fbf7d4;}*/
+    #header {position:absolute; margin:0; top:0; left:0; display:block; width:100%; overflow:auto;height:52px; background-color:#ffab07; font-size:4em; z-index:5; color:#fff;}
+
+
+    #footer {position:absolute; margin:0; bottom:0; left:0; display:block; width:100%; height:30px; background:#d3f1f2; font-size:0.8em; z-index:3; text-align:right; color:rgb(157,78,84);}
+    #left1 {position:absolute; left:0; top:52px; bottom:30px; width:30%; font-size:1em; z-index:4; overflow:hidden;}
+    #left2 {position:absolute; left:0; top:52px; bottom:30px; width:20%; font-size:1em; z-index:4; overflow:hidden;}
+    #left3 {position:absolute; left:0; top:52px; bottom:30px; width:50%; font-size:1em; z-index:4; overflow:hidden;}
+    * html #left1 {height:100%; top:0; bottom:0; }/*border-top:100px solid #fff; border-bottom:0px solid #fff;}*/
+    * html #left2, * html #left3 {height:100%; top:0; bottom:0;} /* border-top:100px solid #fff; border-bottom:30px solid #fff;}*/
+
+#left1 {left:0; background:#d3f1f2;}
+#left2 {left:30%; background:#ffffff;}
+#left3 {left:50%; background:#ffffff;}
+.inner {display:block; padding:0 10px 10px 10px;}
+
+.bold {font-size:1.5em; font-weight:bold;}
+
+.headname {
+    vertical-align:baseline;
+    font-size:260%;
+text-transform: lowercase; 
+    font-family: Arial, times, Times New Roman, times-roman, georgia, serif;
+/*    font-size: 40px;  */
+    line-height: 40px; 
+    letter-spacing: -1px;
+    color: white;
+    font-weight: 100;
+}
+
+a:link {color: #0000CE; text-decoration: underline; }
+a:active {color: #0000CE; text-decoration: uonderline; }
+a:visited {color: #0000CE; text-decoration: underline; }
+a:hover {color: #0000CE; text-decoration: underline; }
+
+a.tagrowitem {
+  margin-right:10px;
+  color: #0000CE;
+  text-decoration: none;
+float:left;
+}
+
+a.tagstreamitem {
+  margin-right:10px;
+   color: #0000CE; 
+  text-decoration: none;
+float:left;
+}
+
+a.tagstreamitem:hover {text-decoration: underline;}
+a.tagrowitem:hover {text-decoration: underline;}
+
+.ui-icon  {
+list-style: none outside none;
+margin: 0px;
+width: 10px;
+
+}
+
+
+.missionbuttons {
+    vertical-align:baseline;
+    font-size:90%;
+    border:1px outset black;
+    padding:3px;
+    background-color:#0000CE;
+    color:white;
+} 
+
+#addbutton{
+ border: 1px outset black;
+    background:#ffab07;
+color: white;
+    font-size: 75%;
+}     
+#snapshotbutton{
+ border: 1px outset black;
+    background:#ffab07;
+color: white;
+    font-size: 70%;
+}     
+
+#streamsearch {
+    padding-top:10px;
+    margin-top:10px;
+    padding-bottom:2px;
+  }
+
+
+.innerstream {
+    position:relative;
+    width:96%;
+    margin-left:2%;
+    margin-right:2%;
+    display:block;
+}
+
+.inneritinerary {
+    position:relative;
+    width:96%;
+    margin-left:2%;
+    margin-right:2%;
+    display:block;
+}
+
+
+#brainstream {
+    border-collapse: collapse;
+    position:relative;
+    width:96%;
+    overflow: auto; 
+    margin-left:2%;
+    margin-right:2%;
+    display:block; 
+    height:80%;
+}      
+
+#itinerary tr {
+ background: white;
+}
+
+
+#sortable {
+    padding: 0;
+    border-collapse: collapse;
+    position:relative;
+    width: 96%;
+    overflow:auto;
+    margin-left:2%; 
+    margin-right:2%;
+    display:block;
+    height:87%;
+    list-style-type: none; 
+    margin-bottom: 0; 
+    padding: 0; 
+}      
+
+
+#sortable td {
+vertical-align: top;
+    padding-bottom:3px;
+    padding-top:3px;
+/* border-spacing: 5px; */
+}
+
+#sortable td.endpos {
+    padding-right:12px;
+}
+
+#sortable td.itpos {
+    padding-right:12px;
+    text-align:center;
+}
+
+
+#sortable td.ittime, .endtime {
+}
+
+.pinpos {
+   background: url('wp.gif');
+    background-position:top center;
+    background-repeat:no-repeat;
+    vertical-align: top;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    width:25px;
+    height:26px;
+    font-size: 82%;
+}
+
+.badge_todo {
+   background: url('exclamation-icon.png');
+    background-position:top center;
+    background-repeat:no-repeat;
+    vertical-align: top;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    width:25px;
+    height:26px;
+    font-size: 85%;
+}
+
+.sspinpos {
+   background: url('wp.gif');
+    background-position:top center;
+    background-repeat:no-repeat;
+    vertical-align: top;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    width:25px;
+    height:26px;
+    font-size: 85%;
+}
+
+#sortable .itposinner {
+//    background: url('wp.gif');
+    background-position:top center;
+    background-repeat:no-repeat;
+    vertical-align: top;
+    text-align: center;
+ //   font-weight: bold;
+//    color: #fff;
+    width:25px;
+    height:26px;
+
+}  
+
+#sortable .startposinner {
+    background: url('pin-start-it.png');
+    background-position:top center;
+    background-repeat:no-repeat;
+    vertical-align: top;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    width:25px;
+    height:26px;
+   
+}  
+
+#sortable .endposinner {
+    background: url('pin-end-it.png');
+    background-position:top center;
+    background-repeat:no-repeat;
+    vertical-align: top;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    width:25px;
+    height:26px;
+}  
+
+#sortable td.itremove {
+    padding-left:5px;
+}
+
+#itinerary td.itremove:hover {
+    background: white;
+}
+
+#brainstream td{
+    padding-left:6px;
+    padding-right:6px; 
+}
+
+#brainstream tr {
+    border-bottom: 1px solid gray;
+    vertical-align: top;
+    background: #ffffff;
+    }
+
+#brainstream tr.todo {
+ background: #fbf7d4; 
+}
+
+#brainstream .sidesc {
+    padding-left:12px;
+}
+
+#viewNoteTable td {
+    vertical-align: baseline;
+}
+
+#viewActivityTable td {
+    vertical-align: baseline;
+}
+
+#viewActivityTable td.vlabel {
+    width:120px;
+}
+
+#braintitle {
+    color: #0000CE;
+   padding-bottom:0px;
+}
+.sectiontitle {
+    font-size:135%;
+    color: #ffab07;
+    font-weight:bold;
+    padding-top: 10px;
+    padding-bottom:16px;
+}
+
+.sectioninstruction {
+    color:#ffab07;
+   font-size:76%;
+display:none;
+}
+
+#showall {
+ /*   text-align:right; */
+}
+#brainstream tr.todo:hover {background-color: #eae6c3;}
+#brainstream tr:hover {background-color: #e9e9e9; }
+
+
+
+#searchBox.ui-autocomplete-input{z-index: 20;}
+
+.ui-autocomplete {
+max-height: 100px;
+overflow-y: auto;
+/* prevent horizontal scrollbar */
+overflow-x: hidden;
+/* add padding to account for vertical scrollbar */
+padding-right: 20px;
+}
+
+        /* Style for overlay and box */
+        .overlay{
+            background:transparent url(images/overlay.png) repeat top left;
+            position:fixed;
+            top:0px;
+            bottom:0px;
+            left:0px;
+            right:0px;
+            z-index:100;
+        }
+        .box{
+            position:fixed;
+            padding:20px;
+            top:-700px;
+            left:30%;
+            right:30%;
+            background-color:#fff;
+            color:#7F7F7F;
+            border:2px solid #ccc;
+            -moz-border-radius: 20px;
+            -webkit-border-radius:20px;
+            -khtml-border-radius:20px;
+            -moz-box-shadow: 0 1px 5px #333;
+            -webkit-box-shadow: 0 1px 5px #333;
+            z-index:101;
+        }
+
+
+        .box h1{
+            border-bottom: 1px dashed #7F7F7F;
+            margin:-20px -20px 0px -20px;
+            padding: 15px 10px 10px 10px;
+            background-color:#FFEFEF;
+            color:#EF7777;
+            -moz-border-radius:20px 20px 0px 0px;
+            -webkit-border-top-left-radius: 20px;
+            -webkit-border-top-right-radius: 20px;
+            -khtml-border-top-left-radius: 20px;
+            -khtml-border-top-right-radius: 20px;
+        }
+        a.boxclose{
+            float:right;
+            width:26px;
+            height:26px;
+            background:transparent url(images/cancel.png) repeat top left;
+            margin-top:-30px;
+            margin-right:-30px;
+            cursor:pointer;
+        }
+	
+.addactheader{
+    white-space:no-wrap;
+}
+.addbig {
+   border: 1px outset black;
+    background:#ffab07;
+    color: white;
+    font-size: 100%;
+    text-align:center;
+}
+
+
+.signupit {
+          border: 1px outset black;
+    background:#ffab07;
+    color: white;
+    font-size: 100%;
+    text-align:center;
+
+}
+	.addit {
+          border: 1px outset black;
+    background:#ffab07;
+    color: white;
+    font-size: 50%;
+    text-align:center;
+    }
+
+
+	.addwide {
+          border: 1px outset black;
+    background:#ffab07;
+    color: white;
+    font-size: 50%;
+    text-align:center;
+    padding:4px;
+    }
+
+div.row {
+  clear: both;
+  padding-top: 5px;
+}
+
+div.row span.label {
+  float: left;
+  width: 20%;
+  text-align: right;
+
+}
+
+div.spacer {
+  clear: both;
+  }
+
+div.row span.formw {
+  width: 70%;
+  text-align: left;
+  float: right;
+  } 
+
+/* --> */
+
+    </style>
+</head>
+
+<body>
+  <div class="header" style='white-space:nowrap;vertical-align:baseline;padding-top:10px;padding-left:10px;background:#FFAB07;color:white;'><div>
+    <span class='headname' id='eventName'></span>
+    <span style='margin-left:10px'>
+      <button class='missionbuttons'  onclick="viewMission()">reveal mission details</button>
+    </span>
+    <span style='margin-left:10px'>
+<!--      <button class='missionbuttons'  onclick="viewHelp()">what you can do to help</button>-->
+<button class='missionbuttons'  onclick="viewHelp()">What you can do</button>
+    </span>
+    <span style='margin-left:10px'>
+      <a target='_blank' href="http://people.csail.mit.edu/hqz/mobi/Prefrosh/Mobi_Tutorial.html">confused? check out the tutorial</a>
+    </span>
+
+    </div>
+  </div>
+<!--<div class="header" style='padding-left:12px;padding-bottom:12px;background:#fbf7d4' id='tagrow'></div>-->
+
+
+
+<!-- The overlay and the box -->
+<div class="overlay" id="overlay" style="display:none;"></div>
+<div class="box" id="box">
+  <a class="boxclose" id="boxclose"></a>
+  
+  <div id='signup' style='display:none'>
+    <h1 id='signupheader'>Welcome to Mobi!<span style='float:right;'></span></h1>
+    <div><br/>
+      Thanks for coming to help me plan a day of my trip<span id="thanksloc"></span>! Let me know who you are so I can thank you later (and see which suggestions are from you):<br/><br/>
+      <div class="row"><span class="label">Your name:</span><span class="formw"><input id='signupName' type='text' size='40'/></span></div>
+      <div class="row"><span class="label">Your email:</span><span class="formw"><input id='signupEmail' type='text' size='40'/></span></div><br/><br/>
+      <div class="spacer"></div>
+      Note: I am participating in a Harvard University research study so the data you enter here may be seen by researchers. Just thought you should know that.
+      <br/><br/>
+      <div class="row"><span class="label"></span><span class="formw">
+	  <button class='signupit' onClick='signmeup()'>Let me help!</button>
+      </span></div>
+    </div>
+  </div>
+  
+  <div id='viewMission' style='display:none'>
+    <h1 id='missionheader'>Mission<span style='float:right;'><button onclick="editMission()" id='editmissionbutton' class='addit'>edit mission</button></span></h1>
+    <div>
+      <br/>
+      <div id='description'></div><br/>
+      <div>In planning the event, please pay attention to the wishes below:<br/>
+	<span id='missionwishes'></span>
+      </div>
+    </div>
+  </div>
+  
+  <div id='viewHelp' style='display:none'>
+    <h1 id='helpheader'>What you can do</h1>
+    <div id='helpinstructions'>
+      Others are helping to plan this trip for you.  In the meanwhile, you can:
+      <ul>
+	<li><b>Recruit your friends</b><br/>The more friends you recruit, and the more of them that know about the city you are visiting, the better! You can recruit your friends via email, on Facebook, etc. You should have the link to send them in your email!</li>
+	<li><b>Edit mission details</b><br/>As people give you suggestions and start to put together the itinerary, it may so happen that you want to make a change to the details you'd filled in at sign up. You can make changes by clicking the 'reveal mission details' button at the top  and then edit the mission from there. For start and end locations and times, just click on them in the itinerary to bring up the edit screen.<br/></li>
+<!--	<li><b>Locking down activities</b><br/>See something in the itinerary that you absolutely want to keep there? Click the lock button next to the itinerary item to lock it down! If you change your mind, just unlock it and that will allow the folks planning for you to remove it from the itinerary if they wished to do so.</li>-->
+	<li><b>Participate yourself!</b><br/>If you so wish, you can add ideas to the brainstream and/or itinerary yourself! It's your itinerary... make whatever edits you wish.<br/>
+	</li> 
+      </ul>
+    </div>
+  </div>
+
+  <div id='viewSelect' style='display:none'>
+    <h1 id='selectheader'>Is your idea...</h1>
+    <div style='font-size:120%;padding-top:12px;'>
+      <button class='addbig' onclick="$('#viewSelect').hide();addActivity();">something to do or see</button> or 
+      <button class='addbig' onclick="$('#viewSelect').hide(); addNote();">a thought about the plan</button>&nbsp;?
+    </div>
+  </div>
+  
+  <div id='viewNote' style='display:none'>
+    <h1 id='viewheader'>Note<span style='float:right;'><button id='editnotebutton' class='addit'>edit note</button></span></h1>
+    <div>
+      <table id='viewNoteTable'>
+	<tr><td>Title:</td><td id='viewtitle'></td></tr>
+	<tr><td>Message:</td><td id='viewdesc'></td></tr>
+	<tr><td>Tags:</td><td id='viewtags'></td></tr>
+      </table>
+    </div>
+  </div>
+  
+  <div id='viewActivity' style='display:none'>
+    <h1 id='viewactheader'>Activity<span style='float:right;'><button id='editacttoitbutton' class='addit'>edit activity</button>&nbsp;<button id='addacttoitbutton' class='addit'>add it to the itinerary</button></span></h1>
+    <div>
+      <table id='viewActivityTable'>
+	<tr><td class='vlabel'>Activity:</td><td id='viewacttitle'></td></tr>
+	<tr><td class='vlabel'>Location name:</td><td id='viewactloc'></td></tr>
+	<tr><td class='vlabel'>What to do/see:</td><td id='viewactdesc'></td></tr>
+	<tr><td class='vlabel'>Takes about:</td><td id='viewactduration'></td></tr>
+	<tr><td class='vlabel'>Categories:</td><td id='viewacttags'></td></tr>
+      </table>
+    </div>
+  </div>
+  
+  
+  <div id='addNote' style='display:none'>
+    <h1 id='addheader'>Add a note<span style='float:right;'><button class='addit' onClick='saveAddNote()'>add note to the stream</button></span></h1>
+    <div>
+      <div class="row"><span class="label">Title:</span><span class="formw"><input id='addtitle' type='text' maxlength='60' size='30'/></span></div>
+      <div class="row"><span class="label">Message:</span><span class="formw"><textarea  id='adddesc' type='text' cols='30', rows='6'></textarea></span></div>
+      <div class="row"><span class="label">Tags:</span><span id='addtags' class="formw">
+      </span></div>
+      <div class="spacer"></div>
+    </div>
+  </div>
+  
+  <div id='editNote' style='display:none'>
+    <h1 id='editheader'>Edit note<span style='float:right;'><button id='saveeditnotebutton' class='addit'>save changes</button></span></h1>
+    <div>
+      <div class="row"><span class="label">Title:</span><span class="formw"><input id='edittitle' type='text' maxlength='60' size='30'/></span></div>
+      <div class="row"><span class="label">Message:</span><span class="formw"><textarea  id='editdesc' type='text' cols='30', rows='6'></textarea></span></div>
+      <div class="row"><span class="label">Tags:</span><span id='edittags' class="formw">
+      </span></div>
+      <div class="spacer"></div>
+    </div>
+  </div>
+  
+  <div id='editMission' style='display:none'>
+    <h1 id='editmissionheader'>Edit mission
+      <span style='float:right;'>
+	<button id='saveeditmissionbutton' class='addit'>save changes </button>
+    </span></h1>
+    <div>
+      <div class="row"><span class="label">What you are looking for:</span>
+	<span class="formw"><textarea id='editmissiondescription' type='text' style='width:100%' rows='8'></textarea></span><br/>
+      </div>
+      <div class="row" id='tabcontainer'>
+	<ul>
+	  <li class="selected" id="tagtab"><a onclick="showTags()" href="#">Tags</a></li>
+	  <li id="reqtab"><a href="#" onclick="showRequirements()">Requirements</a></li>
+	</ul>
+      </div>
+      <div id="content">
+	<div id="tagcontent">
+	  Existing tags: <span id="editmissionexistingtags"></span><br/>
+	  <button class="tabactbut" onClick="createField('tour_categories', 'categorySet', '', 30)">add a tag</button><br/>
+	  <div id="tour_categories"></div>
+	</div>
+	<div id="requirementcontent">
+	  <button class="tabactbut" onClick="createConstraintField('tour_verbal', 'preferenceSet', '', 100, null)">add a requirement</button><br/>
+	  <div class="row" id="tour_verbal"></div><br/>
+	</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+  </div>
+    
+
+  
+  <div id='editStart' style='display:none'>
+    <h1 id='editstartheader'>Edit starting time and location<span style='float:right;'><button id='saveeditstartbutton' class='addit'>save changes</button></span></h1>
+    <div>
+      <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='editEndsNearby()' id='editstartloc' type='text' maxlength='60' size='30'/></span></div>
+      <div class="row"><span class="label">Start time:</span><span class="formw"><select id='editstarttime'></select></span></div>
+    </div>
+    
+    <div class="spacer"></div>
+    <div style='color:black'>Drag the location pin <img style='vertical-align:text-bottom' src='pin-end.png'/> to its correct location. Suggestions (when available) are shown as <img style='vertical-align:text-bottom' src='pin2.gif'/>.</div>
+    <div style='height:10px'>&nbsp;</div>  
+  </div>
+  
+  
+  <div id='editEnd' style='display:none'>
+    <h1 id='editendheader'>Edit ending time and location<span style='float:right;'><button id='saveeditendbutton' class='addit'>save changes</button></span></h1>
+    <div>
+      <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='editEndsNearby()' id='editendloc' type='text' maxlength='60' size='30'/></span></div>
+      <div class="row"><span class="label">End time:</span><span class="formw"><select id='editendtime'></select></span></div>
+    </div>
+    
+    <div class="spacer"></div>
+    <div style='color:black'>Drag the location pin <img style='vertical-align:text-bottom' src='pin-end.png'/> to its correct location. Suggestions (when available) are shown as <img style='vertical-align:text-bottom' src='pin2.gif'/>.</div>
+    <div style='height:10px'>&nbsp;</div>  
+  </div>
+  
+  
+  <div id='editActivity' style='display:none'>
+    <h1 id='editactheader'>Edit activity<span style='float:right;'><button id='saveeditbutton' class='addit'>save changes</button></span></h1>
+    <div>
+      <div class="row"><span class="label">Activity: </span><span class="formw"><input id='editacttitle' type='text' maxlength='60' size='30'/></span></div>
+      <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='editAutoNearby()' id='editactloc' type='text' maxlength='60' size='30'/></span></div>
+      <div class="row"><span class="label">What to do/see:</span><span class="formw"><textarea id='editactdesc' type='text' style='width:100%' rows='4'></textarea></span></div>
+      <div class="row"><span class="label">Takes about:</span><span class="formw"><select id='editactduration'></select></span></div>
+      <div class="row"><span class="label">Category:</span><span id='editacttags' class="formw">
+      </span></div>
+      
+      <div class="spacer"></div>
+      <div style='color:black'>Drag the location pin <img style='vertical-align:text-bottom' src='pin-end.png'/> to its correct location. Suggestions (when available) are shown as <img style='vertical-align:text-bottom' src='pin2.gif'/>.</div>
+      <div style='height:10px'>&nbsp;</div>  
+    </div>
+  </div>
+  
+  <div id='addActivity'>
+    <h1 id='addactheader'>Add an activity
+      <span id='addcontrols' style='float:right;'><button class='addit' onClick='saveAddActivity(true)'>add it to stream only</button>&nbsp;<button class='addit' onClick='saveAddActivity(false)'>add it to itinerary & stream</button></span></h1>
+    <!-- <h1 id='addactheader'>Add an activity<span style='float:right;'><button class='addit' onClick='saveAddActivity(true)'>add it to stream only</button>&nbsp;<button class='addit' onClick='saveAddActivity(false)'>add it to itinerary & stream</button></span></h1> -->
+    <div>
+      <div class="row"><span class="label">Activity: </span><span class="formw"><input id='addacttitle' type='text' maxlength='60' size='30'/></span></div>
+      <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='autoNearby()' id='addactloc' type='text' maxlength='60' size='30'/></span></div>
+      <div class="row"><span class="label">What to do/see:</span><span class="formw"><textarea id='addactdesc' type='text' style='width:100%' rows='4'></textarea></span></div>
+      <div class="row"><span class="label">Takes about:</span><span class="formw"><select id='addactduration'></select></span></div>
+      <div class="row"><span class="label">Category:</span><span id='addacttags' class="formw">
+      </span></div>
+      <div class="spacer"></div>
+      <div style='color:black'>Drag the location pin <img style='vertical-align:text-bottom' src='pin-end.png'/> to its correct location. Suggestions (when available) are shown as <img style='vertical-align:text-bottom' src='pin2.gif'/>.</div>
+      <div style='height:10px'>&nbsp;</div>  
+      <div id='addmapDiv' style="position:relative;width:100%;height:200px;"></div>             
+    </div>
+    
+
+<!--        <div style='text-align:center'><button onclick='saveAddActivity(false)'>add activity to itinerary and stream</button><button onclick='saveAddActivity(true)'>add activity to stream only</button><button onclick='closeAdd()'>cancel</button></div>-->
+  </div>
+  
+</div>
+
+<div id="left1">
+  <div class='innerstream'>
+    <!-- <table id='braintitletable'> -->
+    <!--   <tr> -->
+    <!-- 	<td id='braintitle'>Our collective brainstorm</td> -->
+    <!-- 	<td id='showall'><a href='#' onclick='unfilterOnTag()'>view all</a></td> -->
+    <!--   </tr> -->
+    <!-- </table> -->
+
+
+    <div id='braintitle' class='sectiontitle'><span style='color:#0000CE'>Our brainstream</span><span class='sectioninstruction'>&nbsp;&nbsp;(click for details)</span></div>
+    <div id='showall' style='padding-bottom:10px;display:none'><a style='color:#0000CE' href='#' onclick='unfilterOnTag()'>view entire stream</a></div>
+    <div  id='tagrow' style='padding-left:10px;padding-bottom:10px;'></div>
+    <div style='display:inline;clear:both;padding:10px;'></div>
+    <div id='streamsearch'><input type="text" id='searchBox' style="color:gray;width:80%" maxlength='60' value='search or add an idea, or click on one below'/>&nbsp;<button style='width:16%;' id='addbutton' onclick='addSelect()'>Add</button></div>
+    
+    
+  </div>
+  
+  <table class='streamclass' id="brainstream"><tbody id='sysStreamBody'></tbody><tbody id='userStreamBody'></tbody></table>
+</div>
+
+<div id="left2">
+  <div class="inner">
+    <!-- Column two start -->
+    <div class='sectiontitle'><span>Map</span><span class='sectioninstruction'>&nbsp;&nbsp;(see the current itinerary)</span></div>
+    <div style='padding-bottom:4px'>Trip time: <span id='totaltriptime'></span></div>
+   <div id='mapDiv' style="z-index:0;position:absolute;width:96%;height:85%"></div>    
+<!--    <div id='mapDiv' style="z-index:0;position:relative;width:98%;"></div>       -->
+    <div id='stateDisplay'>
+      <!-- Column two end -->
+    </div>
+  </div>
+</div>
+
+<div id="left3">
+  <div class='inneritinerary'>
+<!--  <div class="inner"> -->
+     <div class='sectiontitle'><span>Itinerary</span>&nbsp;&nbsp;&nbsp;<span style='text-align:left'><button onclick='saveSnapshot()' id='snapshotbutton'>take a snapshot of the itinerary</button>
+</span>     </div>
+<button class='addwide' id='saveitbutton' style='font-size:90%'>save itinerary changes!</button>
+  
+ 
+
+  </div>
+  <table id="sortable">
+    <tbody id='itineraryStart'></tbody>
+    <tbody id='itinerary'></tbody>
+    <tbody id='itineraryEnd'></tbody>
+  </table>
+</div>
+
+<div id="footer">
+    <p style='text-align:center'>If you are experiencing problems, please <a href="mailto:hq@eecs.harvard.edu">contact us</a>.
+</p>
+</div>
+
+
+</body>
+</html>

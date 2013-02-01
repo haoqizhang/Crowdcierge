@@ -1,0 +1,129 @@
+
+<html>
+<head>
+    <title>Mobi Turk Tour</title>
+    <style type="text/css">
+
+ *{margin:0;padding:0;margin-top:0;margin-bottom:0}
+</style>
+</head>
+<body>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+
+<script>
+    
+var tid = null;
+var workerId = null;
+var assignmentId = null;
+var baselink = null;
+var mobilink = "interface/mobi-turktour.html";
+var submitlink = null;
+
+function unescapeURL(s) {
+    return decodeURIComponent(s.replace(/\+/g, "%20"))
+}
+function loadUserInfo() {
+var status =false;
+
+    jQuery.ajax({
+	    type: "GET",
+		url: "http://people.csail.mit.edu/hqz/mobi/loadTurkTourUserInfo.php",
+               async : false,
+		data: ({
+			userId : uid,
+		       taskId: tid, 
+		       type: "turktour"}),
+		success: function(obj){
+		 if(obj == ""){
+status = false;
+		 }else{
+               status = true;
+		 }      
+	    }
+	 });
+return status;
+}
+
+function getURLParams() {
+    var params = {}
+    var m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g)
+    if (m) {
+        for (var i = 0; i < m.length; i++) {
+            var a = m[i].match(/.([^=]+)=(.*)/)
+            params[unescapeURL(a[1])] = unescapeURL(a[2])
+        }
+    }
+    return params
+}
+
+function readUrlParameters(){
+  var params = getURLParams();		       
+
+  if(params.tid){
+      tid = params.tid;
+  }
+  
+  if(params.workerId){
+      workerId = params.workerId;
+  }
+  if(params.assignmentId){
+      assignmentId = params.assignmentId;
+  }
+ if(params.turkSubmitTo){
+	submitlink = params.turkSubmitTo;		    
+ }
+}
+
+
+function DetermineBaselink(){
+    baselink = mobilink;
+    return;
+}
+
+
+function Navigate(){
+    var newurl = baselink;
+	newurl += "?";
+			    newurl += "tid=";
+			    newurl += tid;
+			    newurl += "&workerId=";
+	newurl += workerId;
+	newurl += "&assignmentId=";
+	newurl += assignmentId;
+       newurl += "&turkSubmitTo=";
+         newurl += submitlink;
+   
+    goTo(newurl);
+}
+
+function moveOn(){
+    baselink = mobilink;
+    Navigate();			    
+}
+
+function goTo(url){
+   $('#mobi-frame').attr('src', url);
+}
+
+jQuery(function(){
+	readUrlParameters();
+//	if(!tid || !workerId || !assignmentId){
+           goTo("http://people.csail.mit.edu/hqz/mobi/Mobi/error.html");
+ //      } //else if(!loadUserInfo()){
+	 //  goTo("http://people.csail.mit.edu/hqz/mobi/Mobi/");
+     // }
+//	else{// ready to navigate
+	    DetermineBaselink();
+	    
+	    Navigate();
+//	}
+    });
+</script>
+    <iframe id="mobi-frame" src="" width="100%" height="100%" frameborder="0" hspace="0" vspace="0" marginheight="0" marginwidth="0" style="border-width:0;border-style:hidden;">
+      <p>Your browser does not support iframes.</p>
+    </iframe>
+
+</body>
+</html>
+

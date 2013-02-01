@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
+<head>
+  <title>Mobi Tour</title>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css"/>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="mobi-tour.js"></script>  
+  <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>
+  <style media="screen" type="text/css">
+/* <!-- */
+
+
+body {
+font: 14px Lucida Grande, Arial, sans-serif;
+margin:0;
+padding:0;
+}
+
+#header {
+  width: 96%;
+}
+
+#header h1,
+#header h2,
+#header p {
+margin-left:2%;
+padding-right:2%;
+}
+
+
+
+#active2 #tab2,
+#active3 #tab3,
+#active4 #tab4,
+#active5 #tab5 {
+font-weight:bold;
+text-decoration:none;
+color:#000;
+}
+#footer {
+clear:both;
+float:left;
+width:100%;
+}
+#footer p {
+background: #0E8D94;
+}
+
+/* Start of Column CSS */
+#container3 {
+    float:left;
+    width:100%;
+    background:white;
+    overflow:hidden;
+    position:relative;
+}
+#container2 {
+    float:left;
+    width:100%;
+    background:white;
+    position:relative;
+    right:25%;   
+}
+#container1 {
+    float:left;
+    width:100%;
+    background:#FFAB07;
+    position:relative;
+    right:50%;
+}
+
+#col1 {
+    float:left;
+    width:21%;
+    position:relative;
+    left:77%;
+    overflow:hidden;
+}
+
+
+#col2 {
+    float:left;
+    width:46%;
+    position:relative;
+    left:81%;
+    overflow:hidden;
+}
+
+#col3 {
+    float:left;
+    width:21%;
+    position:relative;
+    left:85%;
+    overflow:hidden;
+}
+
+
+a.tagrowitem {
+  margin-right:10px;
+  color: #ffffff;
+}
+
+a.tagstreamitem {
+  margin-right:10px;
+  color: #0000CE;
+  text-decoration: none;
+}
+
+a.tagstreamitem:hover {text-decoration: underline;}
+
+
+.ui-icon  {
+list-style: none outside none;
+margin: 0px;
+width: 10px;
+
+}
+      
+#sortable { list-style-type: none; margin-bottom: 0; padding: 0; width: 90%;}
+
+#sortable td {
+vertical-align: top;
+border-spacing: 5px;
+}
+
+#brainstream {
+  border-collapse: collapse;
+}      
+
+#itinerary tr {
+ background: #CC3333;
+}
+
+#sortable {
+  border-collapse: collapse;
+}      
+
+#brainstream tr {
+  vertical-align: top;
+}
+
+#brainstream tr.todo {
+ background: #FBFE3E;
+}
+
+#brainstream tr {
+ background: #ffffff;
+}
+
+#brainstream tr {
+   border-bottom: 2px solid gray;
+}
+
+#brainstream tr.todo:hover {background-color: green; }
+#brainstream tr:hover {background-color: gray; }
+
+
+.ui-autocomplete {
+max-height: 100px;
+overflow-y: auto;
+/* prevent horizontal scrollbar */
+overflow-x: hidden;
+/* add padding to account for vertical scrollbar */
+padding-right: 20px;
+}
+
+
+
+        /* Style for overlay and box */
+        .overlay{
+            background:transparent url(images/overlay.png) repeat top left;
+            position:fixed;
+            top:0px;
+            bottom:0px;
+            left:0px;
+            right:0px;
+            z-index:100;
+        }
+        .box{
+            position:absolute;
+            top:-500px;
+            left:30%;
+            right:30%;
+            background-color:#fff;
+            color:#7F7F7F;
+            padding:20px;
+            border:2px solid #ccc;
+            -moz-border-radius: 20px;
+            -webkit-border-radius:20px;
+            -khtml-border-radius:20px;
+            -moz-box-shadow: 0 1px 5px #333;
+            -webkit-box-shadow: 0 1px 5px #333;
+            z-index:101;
+        }
+        .box h1{
+            border-bottom: 1px dashed #7F7F7F;
+            margin:-20px -20px 0px -20px;
+            padding:10px;
+            background-color:#FFEFEF;
+            color:#EF7777;
+            -moz-border-radius:20px 20px 0px 0px;
+            -webkit-border-top-left-radius: 20px;
+            -webkit-border-top-right-radius: 20px;
+            -khtml-border-top-left-radius: 20px;
+            -khtml-border-top-right-radius: 20px;
+        }
+        a.boxclose{
+            float:right;
+            width:26px;
+            height:26px;
+            background:transparent url(images/cancel.png) repeat top left;
+            margin-top:-30px;
+            margin-right:-30px;
+            cursor:pointer;
+        }
+	
+	
+
+div.row {
+  clear: both;
+  padding-top: 5px;
+}
+
+div.row span.label {
+  float: left;
+  width: 20%;
+  text-align: right;
+
+}
+
+div.spacer {
+  clear: both;
+  }
+
+div.row span.formw {
+  width: 70%;
+  text-align: left;
+  float: right;
+  } 
+
+/* --> */
+
+    </style>
+</head>
+
+<body id="active3">
+
+
+
+<div class="header" style='font-size:20px;color:#ffffff;background-color:#0E8D94'><font size=6><span id='eventName'></span></font>
+<span style='margin-left:10px;font-size:14px'><a style='color:#FFAB07' href='#' onclick="$(this).css('display', 'none');$('#description').css('display','inline')">click here to reveal mission details</a></span><br/>
+<div style='margin-left:10px;font-size:14px' id='description'></div>
+</div>
+<div class="header" style='text-align:center;background-color:#FFAB07'><input type="text" id='searchBox' style="color:gray" size='40' value='search or add an activity or note'/>&nbsp;<a href='#' onclick='addActivity()'>Add activity</a> / <a href='#' onclick='addNote()'>Add note</a></div>
+<div class="header" style='background-color:#434D53' id='tagrow'></div>
+<!-- The overlay and the box -->
+<div class="overlay" id="overlay" style="display:none;"></div>
+<div class="box" id="box">
+  <a class="boxclose" id="boxclose"></a>
+  
+  <div id='addNote' style='display:none'>
+    <h1 id='addheader'>Add a note</h1>
+    <div>
+      <div class="row"><span class="label">Subject:</span><span class="formw"><input id='addtitle' type='text' maxlength='40' size='30'/></span></div>
+      <div class="row"><span class="label">Message:</span><span class="formw"><textarea  id='adddesc' type='text' cols='30', rows='3'></textarea></span></div>
+      <div class="row"><span class="label">Tags:</span><span id='addtags' class="formw">
+      </span></div>
+      <div class="spacer"></div><br/>
+      <div style='text-align:center'><button onclick='saveAddNote()'>add note to the stream</button><button onclick='closeAdd()'>cancel</button></div>
+    </div>
+  </div>
+
+
+<div id='addActivity' style=''>
+    <h1 id='addheader'>Add an activity</h1>
+    <div>
+      <div class="row"><span class="label">Activity: </span><span class="formw"><input id='addacttitle' type='text' maxlength='40' size='30'/></span></div>
+      <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='autoNearby()' id='addactloc' type='text' maxlength='40' size='30'/></span></div>
+      <div class="row"><span class="label">What to do/see:</span><span class="formw"><textarea id='addactdesc' type='text' cols='30', rows='3'></textarea></span></div>
+      <div class="row"><span class="label">Takes about:</span><span class="formw"><select id='addactduration'></select></span></div>
+      <div class="row"><span class="label">Categories:</span><span id='addacttags' class="formw">
+      </span></div>
+      <div class="spacer"></div><br/>
+
+      <div id='addmapDiv' style="position:relative;width:100%;height:200px;"></div>         
+    </div>
+
+
+      <div style='text-align:center'><button onclick='saveAddActivity(false)'>add activity to itinerary and stream</button><button onclick='saveAddActivity(true)'>add activity to stream only</button><button onclick='closeAdd()'>cancel</button></div>
+    </div>
+  </div>
+
+
+
+</div>
+	
+
+
+<div id="container3">
+  <div id="container2">
+    <div id="container1">
+      <div id="col1">
+	<br/>
+	<span style='text-align:left'><b>Our collective brainstorm</b></span><span style='float:right;text-align:right'><a href='#' onclick='unfilterOnTag()'>show all</a></span><br/><br/>
+	<div id='currentStreamView' style='text-align:left'></div>
+	<table id="brainstream" style='position:relative;width:98%;'><tbody id='sysStreamBody'></tbody><tbody id='userStreamBody'></tbody></table>
+      </div>
+      <div id="col2">
+	<!-- Column two start -->
+	<div style='text-align:left'><b>Map</b></div><br/>
+	
+	<div id='mapDiv' style="z-index:0;position:relative;width:98%;"></div>       
+	<div id='stateDisplay'>
+	</div>
+	<!-- Column two end -->
+      </div>
+      <div id="col3">
+	<div style='text-align:left'><b>Itinerary</b></div><br/>
+	<table id="sortable">
+	  <tbody id='itineraryStart'></tbody>
+	  <tbody id='itinerary'></tbody>
+	  <tbody id='itineraryEnd'></tbody>
+	</table>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="footer">
+  <p style='text-align:center'>If you are experience problems, please <a href="mailto:hq@eecs.harvard.edu">contact us</a></p>
+</div>
+
+
+</body>
+</html>
