@@ -2301,7 +2301,7 @@ function submitEntry(si){
 	    type: "turktour"}),
 	success: function(msg){
 	    ret = msg;
-	    
+	    ret = ret.replace(/(\r\n|\n|\r)/gm,"");
 	    
 	     }
 	 });
