@@ -3302,8 +3302,6 @@ var fixHelper = function (e, ui) {
     return ui;
 };
 
-
-// Helpers, of some sort
 function updateItineraryDisplay() {
     // update the system generated displays in stream
     updateSysStream();
@@ -3338,6 +3336,8 @@ function updateItineraryDisplay() {
 
 }
 
+
+// Helpers, of some sort
 function getURLParams() {
     var params = {}
     var m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g)
