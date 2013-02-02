@@ -412,7 +412,6 @@ function GenerateCB(z, type) {
 
         if (gotAllPieces()) {
             composeRoute();
-
         }
     };
 
@@ -520,36 +519,6 @@ function composeRoute() {
     restWalk = null;
 }
 
-function GetRouteOld(locations) {
-    var options = new VERouteOptions;
-
-    // Get WALKING directions
-    options.RouteMode = VERouteMode.Walking;
-
-    // We will draw route ourselves
-    options.DrawRoute = false;
-
-    // So the map doesn't change:
-    options.SetBestMapView = false;
-
-    // Call this function when map route is determined:
-    options.RouteCallback = ProcessRoute;
-
-    // Show as miles
-    options.DistanceUnit = VERouteDistanceUnit.Mile;
-
-    // Show the disambiguation dialog
-    options.ShowDisambiguation = false;
-
-    slRoute.DeleteAllShapes();
-
-    if (locations.length <= 25) {
-        map.GetDirections(locations, options);
-    } else {
-        GetLongRoute(locations);
-    }
-}
-
 function GetLongRoute(locations) {
     var options = new VERouteOptions;
 
@@ -632,51 +601,6 @@ function ProcessPartialRoute(route) {
     }
 }
 
-function ProcessRoute(route) {
-    var shape = new VEShape(VEShapeType.Polyline, route.ShapePoints);
-    //    shape.SetLineColor(new VEColor(160, 165, 245, 1));
-    //    shape.SetLineColor(new VEColor(0, 0, 0, 1));
-    shape.SetLineColor(new VEColor(3, 209, 92, 1));
-    shape.SetLineWidth(2);
-    shape.HideIcon();
-    shape.SetTitle("MyRoute");
-    shape.SetZIndex(1000, 2000);
-    slRoute.AddShape(shape);
-
-    var legTimes = [];
-    for (var i = 0; i < route.RouteLegs.length; i++) {
-        legTimes.push(route.RouteLegs[i].Time);
-    }
-
-    var time = beginTime;
-    var i = 0;
-
-    $('.ittime').each(function () {
-        time += Math.round(legTimes[i] / 60);
-        var next = time + wayhash[itinerary[i]].duration;
-
-        $(this).html('(' + minToTime(time) + '-' + minToTime(next) + ')');
-        time = next;
-        i++;
-    });
-
-    // set end time
-    var actualend = time + Math.round(legTimes[i] / 60);
-    calculatedEnd = actualend;
-    updateScheduleConstraints(actualend);
-
-
-    if (actualend > endTime) {
-        $('.endtime').last().html("<font color='red'>(" + minToTime(actualend) + ')</font>');
-        //	$('#totaltriptime').html("<font color='red'>" + readMinutes(actualend - beginTime) + '</font>');
-    } else {
-        $('.endtime').last().html('(' + minToTime(actualend) + ')');
-
-    }
-    $('#totaltriptime').html(readMinutes(actualend - beginTime));
-
-}
-
 function GetMap() {
     mapCenter = new VELatLong(start.lat, start.long);
     map = new VEMap('mapDiv');
@@ -718,21 +642,6 @@ function AddPushpin(m, ll, title, desc, canDrag, custom) {
     m.AddShape(shape);
     shape.Draggable = canDrag;
     return shape;
-}
-
-function FindNearby() {
-    // TODO: can choose a whereo
-
-    var txt = $('#txtWhat').val();
-    findLayer.DeleteAllShapes();
-
-
-    try {
-        map.Find(txt, null, null, findLayer, 0, 10, true, true, true, true, processFind);
-    } catch (e) {
-        alert(e.message);
-    }
-
 }
 
 function autoNearby() {
@@ -2457,7 +2366,7 @@ function openItem(item) {
 
 }
 
-// getter for locating an item..
+// getter for locating an item
 function getItem(id) {
     var stream;
     if (id.substring(0, 4) == 'user') {
@@ -3381,25 +3290,9 @@ function displayNeedLink() {
     jQuery("#needLink").css('display', 'block');
 }
 
-function unescapeURL(s) {
-    return decodeURIComponent(s.replace(/\+/g, "%20"))
-}
-
 function campuslocation(vlabel, data) {
     this.label = vlabel;
     this.data = data;
-}
-
-function getURLParams() {
-    var params = {}
-    var m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g)
-    if (m) {
-        for (var i = 0; i < m.length; i++) {
-            var a = m[i].match(/.([^=]+)=(.*)/)
-            params[unescapeURL(a[1])] = unescapeURL(a[2])
-        }
-    }
-    return params
 }
 
 var fixHelper = function (e, ui) {
@@ -3409,6 +3302,8 @@ var fixHelper = function (e, ui) {
     return ui;
 };
 
+
+// Helpers, of some sort
 function updateItineraryDisplay() {
     // update the system generated displays in stream
     updateSysStream();
@@ -3443,6 +3338,22 @@ function updateItineraryDisplay() {
 
 }
 
+function getURLParams() {
+    var params = {}
+    var m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g)
+    if (m) {
+        for (var i = 0; i < m.length; i++) {
+            var a = m[i].match(/.([^=]+)=(.*)/)
+            params[unescapeURL(a[1])] = unescapeURL(a[2])
+        }
+    }
+    return params
+}
+
+function unescapeURL(s) {
+    return decodeURIComponent(s.replace(/\+/g, "%20"))
+}
+
 var delay = (function () {
     var timer = 0;
     return function (callback, ms) {
@@ -3453,7 +3364,6 @@ var delay = (function () {
 
 
 // Things I don't understand
-
 function g(a){var b=typeof a;if(b=="object")if(a){if(a instanceof Array||!(a instanceof Object)&&Object.prototype.toString.call(a)=="[object Array]"||typeof a.length=="number"&&typeof a.splice!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("splice"))return"array";if(!(a instanceof Object)&&(Object.prototype.toString.call(a)=="[object Function]"||typeof a.call!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("call")))return"function"}else return"null";
 else if(b=="function"&&typeof a.call=="undefined")return"object";return b};function h(a){a=String(a);var b;b=/^\s*$/.test(a)?false:/^[\],:{}\s\u2028\u2029]*$/.test(a.replace(/\\["\\\/bfnrtu]/g,"@").replace(/"[^"\\\n\r\u2028\u2029\x00-\x08\x10-\x1f\x80-\x9f]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:[\s\u2028\u2029]*\[)+/g,""));if(b)try{return eval("("+a+")")}catch(c){}throw Error("Invalid JSON string: "+a);}function i(a){var b=[];j(new k,a,b);return b.join("")}function k(){}
 function j(a,b,c){switch(typeof b){case "string":l(a,b,c);break;case "number":c.push(isFinite(b)&&!isNaN(b)?b:"null");break;case "boolean":c.push(b);break;case "undefined":c.push("null");break;case "object":if(b==null){c.push("null");break}if(g(b)=="array"){var f=b.length;c.push("[");for(var d="",e=0;e<f;e++){c.push(d);j(a,b[e],c);d=","}c.push("]");break}c.push("{");f="";for(d in b)if(b.hasOwnProperty(d)){e=b[d];if(typeof e!="function"){c.push(f);l(a,d,c);c.push(":");j(a,e,c);f=","}}c.push("}");break;
