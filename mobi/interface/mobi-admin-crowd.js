@@ -1,8 +1,3 @@
-function g(a){var b=typeof a;if(b=="object")if(a){if(a instanceof Array||!(a instanceof Object)&&Object.prototype.toString.call(a)=="[object Array]"||typeof a.length=="number"&&typeof a.splice!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("splice"))return"array";if(!(a instanceof Object)&&(Object.prototype.toString.call(a)=="[object Function]"||typeof a.call!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("call")))return"function"}else return"null";
-else if(b=="function"&&typeof a.call=="undefined")return"object";return b};function h(a){a=String(a);var b;b=/^\s*$/.test(a)?false:/^[\],:{}\s\u2028\u2029]*$/.test(a.replace(/\\["\\\/bfnrtu]/g,"@").replace(/"[^"\\\n\r\u2028\u2029\x00-\x08\x10-\x1f\x80-\x9f]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:[\s\u2028\u2029]*\[)+/g,""));if(b)try{return eval("("+a+")")}catch(c){}throw Error("Invalid JSON string: "+a);}function i(a){var b=[];j(new k,a,b);return b.join("")}function k(){}
-function j(a,b,c){switch(typeof b){case "string":l(a,b,c);break;case "number":c.push(isFinite(b)&&!isNaN(b)?b:"null");break;case "boolean":c.push(b);break;case "undefined":c.push("null");break;case "object":if(b==null){c.push("null");break}if(g(b)=="array"){var f=b.length;c.push("[");for(var d="",e=0;e<f;e++){c.push(d);j(a,b[e],c);d=","}c.push("]");break}c.push("{");f="";for(d in b)if(b.hasOwnProperty(d)){e=b[d];if(typeof e!="function"){c.push(f);l(a,d,c);c.push(":");j(a,e,c);f=","}}c.push("}");break;
-case "function":break;default:throw Error("Unknown type: "+typeof b);}}var m={'"':'\\"',"\\":"\\\\","/":"\\/","\u0008":"\\b","\u000c":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\u000b"},n=/\uffff/.test("\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g;function l(a,b,c){c.push('"',b.replace(n,function(f){if(f in m)return m[f];var d=f.charCodeAt(0),e="\\u";if(d<16)e+="000";else if(d<256)e+="00";else if(d<4096)e+="0";return m[f]=e+d.toString(16)}),'"')};window.JSON||(window.JSON={});if(typeof window.JSON.serialize!=="function")window.JSON.serialize=i;if(typeof window.JSON.parse!=="function")window.JSON.parse=h;
-
 // admin variables
 var eventName;
 var description;
@@ -76,6 +71,109 @@ var creatorName = null;
 var assignmentId = null;
 var transit = null;
 
+// What actually happens at start
+$(document).ready(function (jQuery) {
+
+    sessionStart = (new Date()).getTime();
+
+    //    readyLocations();
+    readyAdd();
+
+    jQuery("#availableResourcesSpace").hide();
+
+    jQuery("#itinerary").sortable({
+        //items: "tr:not(.ends)", 
+        scroll: true,
+        start: function (e, ui) {
+            $('#' + ui.item.attr('id')).unbind('click');
+        },
+        stop: function (e, ui) {
+            setTimeout(function () {
+                $('#' + ui.item.attr('id')).click(function () {
+                    //			alert("calling from sortable stop");
+                    viewActivity(getItem(ui.item.attr('id')));
+                });
+            }, 300);
+        },
+        update: function (event, ui) {
+            itinerary = $("#itinerary").sortable('toArray');
+            //	     enableItSave();
+            saveItinerary();
+            updateItineraryDisplay();
+        },
+        //helper: fixHelper});
+    });
+    jQuery("#sortable").disableSelection();
+
+    readUrlParameters(); // get userId and taskId
+    loadTaskState(); // Load where we are current at with task
+
+    loadUserData();
+    initMap();
+
+
+    loadStream(); // load all the stream info
+    loadStateIntoInterface(); // now load it all into interface.
+    disableItSave();
+
+    $('#box').css('left', '15%');
+    $('#box').css('right', '15%');
+
+
+    GetNewActMap();
+    readySearchBox();
+
+
+    if (user == null) {
+        //	$("#thanksloc").html(" to " + eventName.substring(9));
+        //	showSignup();
+        //	alert("User isn't recognized");
+    }
+
+
+
+    $(window).resize(function () {
+        /// HACK TO FIX MAP RESIZE PROBLEMS
+        if (map != null) {
+            map.Resize();
+        }
+        if (newactmap != null) {
+            //    newactmap.Resize();
+        }
+        delay(function () {
+            if (map != null) {
+                map.SetCenter(map.GetCenter());
+            }
+            if (newactmap != null) {
+                //		newactmap.SetCenter(newactmap.GetCenter());
+            }
+        }, 1000);
+    });
+
+
+    /// HACK TO FIX IE SCROLL PROBLEM
+    if ($.browser.msie) {
+        /// nevermind, just tell the person they should use something else
+        alert("We have noticed that you are using Internet Explorer as your browser. Some of the functionalities of this site may not work well in Internet Explorer, so we recommend you to use any other popular browser, e.g., Firefox, Safari, or Chrome. Sorry for the inconvenience.");
+        // make stream not scroll
+        $('#brainstream').css('overflow', 'hidden');
+        // make left1 (stream containing section) scrool
+        $('#left1').css('overflow', 'auto');
+    }
+
+
+    $.ui.autocomplete.prototype._renderItem = function (ul, item) {
+        var re = new RegExp("^" + this.term);
+        var t = item.label.replace(re, "<span style='font-weight:bold;color:Blue;'>" + this.term +
+            "</span>");
+        return $("<li></li>")
+            .data("item.autocomplete", item)
+            .append("<a>" + item.value + "</a>")
+            .appendTo(ul);
+    };
+
+});
+
 function closeAdd() {
     $('#searchBox').val(emptyText);
     $('#searchBox').css('color', 'gray');
@@ -142,7 +240,6 @@ function readySearchBox() {
 
     return;
 }
-
 
 function GetNewActMap() {
     newactmap = new VEMap('addmapDiv');
@@ -351,162 +448,6 @@ function composeRoute() {
     restDrive = null;
     restWalk = null;
 }
-
-
-// function GetRoute(locations){
-//     slRoute.DeleteAllShapes();
-//     var credentials = "AmoK7LJck9Ce_JO_n_NAiDlRv88YZROwdvPzWdLi57iP3XQeGon28HJVdnHsUSkp";
-//     restDrive = [];
-//     restWalk = [];
-//     indexArr = [];
-//     for(var i = 0; i < locations.length - 1; i++){
-// 	restDrive.push(null);
-// 	restWalk.push(null);
-// 	indexArr.push(i);
-//     }
-
-//     $(indexArr).each(function(){
-// 	var i = this;
-//     	var str = "wayPoint.1" + "=" + locations[i].Latitude + "," + locations[i].Longitude + "&";
-//     	str += "wayPoint.2" + "=" + locations[i+1].Latitude + "," + locations[i+1].Longitude;
-//     	// do a i to i + 1 route
-
-
-
-//     	var driveStr = "http://dev.virtualearth.net/REST/v1/Routes/Transit?timeType=Departure&dateTime=3:00:00PM&" + str + "&routePathOutput=Points&output=json&distanceUnit=mi&key=" + credentials + "&jsonp=?";
-//     	var walkStr = "http://dev.virtualearth.net/REST/v1/Routes/Walking?" + str + "&routePathOutput=Points&output=json&distanceUnit=mi&key=" + credentials + "&jsonp=?";
-
-//     	$.getJSON(driveStr, GenerateCB(i, 'drive'));
-//     	$.getJSON(walkStr, GenerateCB(i, 'walking'));
-//     });
-// }
-
-// function GenerateCB(z, type){
-//     return function MyCallBack(result){
-// 	var val = result;
-// 	if (result &&
-//             result.resourceSets &&
-//             result.resourceSets.length > 0 &&
-//             result.resourceSets[0].resources &&
-// 	    result.resourceSets[0].resources.length > 0) {
-// 	}else{
-// 	    val = false;
-// 	}
-
-// 	if(type =='drive'){
-// 	    restDrive[z] = result;	
-// 	}else{
-// 	    restWalk[z] = result;
-// 	}
-
-// 	if(gotAllPieces()){
-// 	    composeRoute();
-
-// 	}
-//     };
-
-// }
-
-// function gotAllPieces(){
-//     return (restDrive.length == restDrive.filter(function (x) { return x != null; }).length &&
-// 	    restWalk.length == restWalk.filter(function (x) { return x != null; }).length);
-// }
-
-// function composeRoute(){
-//     // got all pieces
-//     var legTimes = [];
-//     var mode = [];
-
-//     // 1. Figure out the composition before doing anything else
-//     for(var i = 0; i < restDrive.length; i++){
-// 	var driveTime = null;
-// 	var walkTime = null;
-// 	if(restDrive[i] && restDrive[i].resourceSets[0]){
-// 	    driveTime = restDrive[i].resourceSets[0].resources[0].routeLegs[0].travelDuration;
-// 	}
-// 	if(restWalk[i] && restWalk[i].resourceSets[0]){
-// 	    walkTime = restWalk[i].resourceSets[0].resources[0].routeLegs[0].travelDuration;
-// 	}
-
-// 	var routeline;
-
-// 	var walkOnly = false;
-// 	var driveOnly = false;
-// 	if(driveTime == null){
-// 	    walkOnly = true;
-// 	}
-// 	if(walkTime == null){
-// 	    driveOnly = true;
-// 	}
-// //	alert(walkTime);
-// //	alert(driveTime);
-// 	if(!driveOnly && (walkOnly || driveTime * 1.2 > walkTime || walkTime < 15 * 60)){
-// 	    mode.push('walk');
-// 	    legTimes.push(walkTime);
-// 	    routeline = restWalk[i].resourceSets[0].resources[0].routePath.line;
-// 	   // alert("walking part " + i);
-// 	 }else{
-// 	     mode.push('drive');
-// 	     legTimes.push(driveTime);
-// 	     routeline = restDrive[i].resourceSets[0].resources[0].routePath.line;
-// 	  //  alert("driving part " + i);
-// 	 }
-
-// 	var routepoints = new Array();
-//         for (var j = 0; j < routeline.coordinates.length; j++) {
-// 	    routepoints[j]=new VELatLong(routeline.coordinates[j][0], routeline.coordinates[j][1]);
-//         }
-//         // Draw the route on the map
-//         var shape = new VEShape(VEShapeType.Polyline, routepoints);
-
-// //	shape.SetLineColor(new VEColor(3, 209, 92, 1));
-// //	shape.SetLineColor(new VEColor(40, 209,40, 1));
-// //	if(mode[i] == 'drive'){
-//     shape.SetLineColor(new VEColor(3, 209, 92, 1));
-//     shape.SetLineWidth(3);
-
-// //	    shape.SetLineColor(new VEColor(0,200,0,1));
-// //	}else{
-// //	    shape.SetLineColor(new VEColor(200,0,0,1));
-// //	}
-// //	shape.SetLineWidth(2);
-// //	shape.SetLineWidth(2);
-
-// 	shape.HideIcon();
-// 	shape.SetTitle("MyRoute");
-// 	shape.SetZIndex(1000, 2000);
-// 	slRoute.AddShape(shape);
-//     }
-
-//     var time = beginTime;
-//     var i = 0;
-
-//     $('.ittime').each(function(){
-// 	time += Math.round(legTimes[i] / 60);
-// 	var next = time + wayhash[itinerary[i]].duration;
-// 	$(this).html('(' + minToTime(time) + '-' + minToTime(next) + ')');
-// 	time = next;
-// 	i++;
-//     });
-
-//     // set end time
-//     var actualend = time + Math.round(legTimes[i] / 60);
-//     calculatedEnd = actualend;
-//     updateScheduleConstraints(actualend);
-
-//     if(actualend > endTime){
-// 	$('.endtime').last().html("<font color='red'>(" + minToTime(actualend) + ')</font>');
-// 	//	$('#totaltriptime').html("<font color='red'>" + readMinutes(actualend - beginTime) + '</font>');
-//     }else{
-// 	$('.endtime').last().html('(' + minToTime(actualend) + ')');
-
-//     }
-//     $('#totaltriptime').html(readMinutes(actualend - beginTime));
-
-//     restDrive = null;
-//     restWalk = null;
-// }
-
 
 function GetRouteOld(locations) {
     var options = new VERouteOptions;
@@ -723,7 +664,6 @@ function FindNearby() {
 
 }
 
-
 function autoNearby() {
     if (!donearby) {
         donearby = true;
@@ -747,7 +687,6 @@ function autoNearby() {
         alert(e.message);
     }
 }
-
 
 function editEndsNearby() {
 
@@ -807,8 +746,6 @@ function toler(tolerance) {
     return tolerance + Math.random() * tolerance;
 }
 
-
-
 function randSign() {
     if (Math.random() > 0.5) {
         return 1;
@@ -823,7 +760,6 @@ function constraint(category, unit, compare, value) {
     this.compare = compare;
     this.value = value;
 }
-
 
 function computeDistance(l1, l2) {
     return Math.sqrt((l1.Latitude - l2.Latitude) * (l1.Latitude - l2.Latitude) + (l1.Longitude - l2.Longitude) * (l1.Longitude - l2.Longitude));
@@ -883,7 +819,6 @@ function processFind(a, b, c, d, e) {
     }
 }
 
-
 function moveact(i) {
     newactpinMoved = true;
     var shape = actfindLayer.GetShapeByIndex(i);
@@ -917,9 +852,6 @@ function initMap() {
 
 }
 
-
-
-
 var username = null;
 var email = null;
 var requestId = null;
@@ -934,7 +866,6 @@ var newPreferenceId = 0;
 var newChoices = [];
 var newPreferences = [];
 var planByCategory = true;
-
 
 function minToTime(time) {
     if (time > 1440) time -= 1440;
@@ -1099,7 +1030,6 @@ function addActivity() {
 
 }
 
-
 function viewNote(si) {
 
     $('#box').css('left', '30%');
@@ -1143,8 +1073,6 @@ function viewNote(si) {
         }, 500);
     });
 }
-
-
 
 function viewActivity(si) {
     //    alert(si.id);
@@ -1258,8 +1186,6 @@ function viewActivity(si) {
 
 }
 
-
-
 function setTimeField(name, time, s, e) {
     for (var i = s; i < e; i++) {
         for (var j = 0; j <= 45; j += 30) {
@@ -1288,9 +1214,6 @@ function setTimeField(name, time, s, e) {
         }
     }
 }
-
-
-
 
 function editStart() {
     $('#box').css('left', '15%');
@@ -1390,7 +1313,6 @@ function getLocations() {
         return x;
     });
 }
-
 
 function editEnd() {
     $('#box').css('left', '15%');
@@ -1625,7 +1547,6 @@ function getConstraints(field, name) {
     return inputsList;
 }
 
-
 function removeField(e) {
     var index;
     var ediv = jQuery(e).closest('div');
@@ -1657,7 +1578,6 @@ function refreshOptions(e) {
     });
 }
 
-
 function createField(field, name, val, size) {
     var div = $(document.createElement('div'));
     div.attr('class', 'contain' + name);
@@ -1680,8 +1600,6 @@ function createField(field, name, val, size) {
     $('select[name="categorypreferenceSet"]').append(o);
 
 }
-
-
 
 function createConstraintField(field, name, val, size, stuff) {
 
@@ -1769,9 +1687,6 @@ function createSelectField(name, opts, w, v) {
     }
     return s;
 }
-
-
-
 
 function editActivity(si) {
     $('#box').css('left', '15%');
@@ -1887,8 +1802,6 @@ function editActivity(si) {
         }, 500);
     });
 }
-
-
 
 function editNote(si) {
     $('#box').css('left', '30%');
@@ -2036,7 +1949,6 @@ function saveAddNote() {
     closeAdd();
 }
 
-
 function checkTimeOut() {
     var timeNow = (new Date()).getTime();
     var secondsDiff = (timeNow - sessionStart) / 1000;
@@ -2154,8 +2066,6 @@ function saveEditActivity(oldsi) {
     closeAdd();
 }
 
-
-
 function saveEditNote(oldsi) {
 
     // name
@@ -2213,8 +2123,6 @@ function saveEditNote(oldsi) {
 
     closeAdd();
 }
-
-
 
 function saveAddActivity(streamonly) {
     // name
@@ -2289,8 +2197,6 @@ function updatePinNumber(pin, pos) {
     pin.SetCustomIcon(str);
 }
 
-
-
 // save stream item on server, and then return its id
 function submitEntry(si) {
     var ret = null;
@@ -2315,8 +2221,6 @@ function submitEntry(si) {
     return ret;
 
 }
-
-
 
 // save stream item on server, and then return its id
 function submitEdit(si, oldid) {
@@ -2353,14 +2257,11 @@ function submitEdit(si, oldid) {
     return ret;
 }
 
-
-
 function locationInfo(name, lat, long) {
     this.name = name;
     this.lat = lat;
     this.long = long;
 }
-
 
 function displayTime(ms) {
 
@@ -2516,7 +2417,6 @@ function rtrim(stt) {
     return stt.replace(/\s+$/, "");
 }
 
-
 function takeTill(str, maxchars) {
     var str = rtrim(str.replace(/<br\/>/g, ' '));
 
@@ -2533,8 +2433,6 @@ function takeTill(str, maxchars) {
     }
     return rtrim(str);
 }
-
-
 
 function displayItineraryItem(name, id, move, pos, title, loc, time, isnew) {
     var item = createItineraryItem(id, move, pos, title, loc, time, isnew);
@@ -2648,7 +2546,6 @@ function createItineraryItem(id, move, pos, title, loc, time, isnew) {
 
     return item;
 }
-
 
 function removeItem(e) {
     // var answer = confirm("Remove activity from itinerary?")
@@ -2774,7 +2671,6 @@ function loadUserData() {
 
 }
 
-
 function showRequestPage() {
     jQuery('#planningWorkspace').hide();
     jQuery('#availableResourcesSpace').show();
@@ -2836,7 +2732,6 @@ function problemStatement(constraint, predData) {
 
     return statement;
 }
-
 
 function updateSysStream() {
     $('#sysStreamBody').empty();
@@ -3003,7 +2898,6 @@ function saveEditEnds() {
     return ret;
 }
 
-
 function saveEditMission() {
 
     var ret = true;
@@ -3133,7 +3027,6 @@ function disableItSave() {
     $('#saveitbutton').unbind();
 }
 
-
 function enableItSave() {
 
     if (!unsavedChanges) {
@@ -3157,7 +3050,6 @@ function enableItSave() {
 
 }
 
-
 function shortName(sn) {
     if (sn == username) {
         return "you";
@@ -3167,14 +3059,12 @@ function shortName(sn) {
     return sn[0]; // + " " + sn[sn.length-1][0] + ".";
 }
 
-
 function firstName(sn) {
 
     sn = sn;
     sn = sn.split(' ');
     return sn[0]; // + " " + sn[sn.length-1][0] + ".";
 }
-
 
 function loadHostData(data) {
     eventName = data.name;
@@ -3211,7 +3101,6 @@ function loadHostData(data) {
         constraintsFunc.push(generatePredicate(constraints[i]));
     }
 }
-
 
 function updateScheduleConstraints(actualend) {
     var si;
@@ -3252,7 +3141,6 @@ function updateScheduleConstraints(actualend) {
     }
     return;
 }
-
 
 function displaySingleConstraint(i) {
     var cat = constraints[i].cat;
@@ -3363,9 +3251,6 @@ function sendLink() {
 
 }
 
-
-
-
 function signmeup() {
     if (rtrim(jQuery('#signupName').val()) == "") {
         alert("Please enter your name.");
@@ -3417,7 +3302,6 @@ function showSignup() {
 function include(arr, obj) {
     return (arr.indexOf(obj) != -1);
 }
-
 
 function predicateResponse(response, value, activities, explain) {
     this.response = response;
@@ -3481,8 +3365,6 @@ function generatePredicate(constraintDesc) {
     return func;
 }
 
-
-
 function readUrlParameters() {
     var params = getURLParams();
     if (params.tid) {
@@ -3501,7 +3383,6 @@ function showMobi() {
     jQuery('#mobi-content').css('display', 'inline');
 }
 
-
 function displayNeedLink() {
     jQuery("#needLink").css('display', 'block');
 }
@@ -3509,7 +3390,6 @@ function displayNeedLink() {
 function unescapeURL(s) {
     return decodeURIComponent(s.replace(/\+/g, "%20"))
 }
-
 
 function campuslocation(vlabel, data) {
     this.label = vlabel;
@@ -3540,7 +3420,6 @@ function readyLocations() {
         }
     });
 }
-
 
 var fixHelper = function (e, ui) {
     ui.children().each(function () {
@@ -3583,108 +3462,6 @@ function updateItineraryDisplay() {
 
 }
 
-$(document).ready(function (jQuery) {
-
-    sessionStart = (new Date()).getTime();
-
-    //    readyLocations();
-    readyAdd();
-
-    jQuery("#availableResourcesSpace").hide();
-
-    jQuery("#itinerary").sortable({
-        //items: "tr:not(.ends)", 
-        scroll: true,
-        start: function (e, ui) {
-            $('#' + ui.item.attr('id')).unbind('click');
-        },
-        stop: function (e, ui) {
-            setTimeout(function () {
-                $('#' + ui.item.attr('id')).click(function () {
-                    //			alert("calling from sortable stop");
-                    viewActivity(getItem(ui.item.attr('id')));
-                });
-            }, 300);
-        },
-        update: function (event, ui) {
-            itinerary = $("#itinerary").sortable('toArray');
-            //	     enableItSave();
-            saveItinerary();
-            updateItineraryDisplay();
-        },
-        //helper: fixHelper});
-    });
-    jQuery("#sortable").disableSelection();
-
-    readUrlParameters(); // get userId and taskId
-    loadTaskState(); // Load where we are current at with task
-
-    loadUserData();
-    initMap();
-
-
-    loadStream(); // load all the stream info
-    loadStateIntoInterface(); // now load it all into interface.
-    disableItSave();
-
-    $('#box').css('left', '15%');
-    $('#box').css('right', '15%');
-
-
-    GetNewActMap();
-    readySearchBox();
-
-
-    if (user == null) {
-        //	$("#thanksloc").html(" to " + eventName.substring(9));
-        //	showSignup();
-        //	alert("User isn't recognized");
-    }
-
-
-
-    $(window).resize(function () {
-        /// HACK TO FIX MAP RESIZE PROBLEMS
-        if (map != null) {
-            map.Resize();
-        }
-        if (newactmap != null) {
-            //    newactmap.Resize();
-        }
-        delay(function () {
-            if (map != null) {
-                map.SetCenter(map.GetCenter());
-            }
-            if (newactmap != null) {
-                //		newactmap.SetCenter(newactmap.GetCenter());
-            }
-        }, 1000);
-    });
-
-
-    /// HACK TO FIX IE SCROLL PROBLEM
-    if ($.browser.msie) {
-        /// nevermind, just tell the person they should use something else
-        alert("We have noticed that you are using Internet Explorer as your browser. Some of the functionalities of this site may not work well in Internet Explorer, so we recommend you to use any other popular browser, e.g., Firefox, Safari, or Chrome. Sorry for the inconvenience.");
-        // make stream not scroll
-        $('#brainstream').css('overflow', 'hidden');
-        // make left1 (stream containing section) scrool
-        $('#left1').css('overflow', 'auto');
-    }
-
-
-    $.ui.autocomplete.prototype._renderItem = function (ul, item) {
-        var re = new RegExp("^" + this.term);
-        var t = item.label.replace(re, "<span style='font-weight:bold;color:Blue;'>" + this.term +
-            "</span>");
-        return $("<li></li>")
-            .data("item.autocomplete", item)
-            .append("<a>" + item.value + "</a>")
-            .appendTo(ul);
-    };
-
-});
-
 var delay = (function () {
     var timer = 0;
     return function (callback, ms) {
@@ -3694,9 +3471,12 @@ var delay = (function () {
 })();
 
 
+// Things I don't understand
 
-
-
+function g(a){var b=typeof a;if(b=="object")if(a){if(a instanceof Array||!(a instanceof Object)&&Object.prototype.toString.call(a)=="[object Array]"||typeof a.length=="number"&&typeof a.splice!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("splice"))return"array";if(!(a instanceof Object)&&(Object.prototype.toString.call(a)=="[object Function]"||typeof a.call!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("call")))return"function"}else return"null";
+else if(b=="function"&&typeof a.call=="undefined")return"object";return b};function h(a){a=String(a);var b;b=/^\s*$/.test(a)?false:/^[\],:{}\s\u2028\u2029]*$/.test(a.replace(/\\["\\\/bfnrtu]/g,"@").replace(/"[^"\\\n\r\u2028\u2029\x00-\x08\x10-\x1f\x80-\x9f]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:[\s\u2028\u2029]*\[)+/g,""));if(b)try{return eval("("+a+")")}catch(c){}throw Error("Invalid JSON string: "+a);}function i(a){var b=[];j(new k,a,b);return b.join("")}function k(){}
+function j(a,b,c){switch(typeof b){case "string":l(a,b,c);break;case "number":c.push(isFinite(b)&&!isNaN(b)?b:"null");break;case "boolean":c.push(b);break;case "undefined":c.push("null");break;case "object":if(b==null){c.push("null");break}if(g(b)=="array"){var f=b.length;c.push("[");for(var d="",e=0;e<f;e++){c.push(d);j(a,b[e],c);d=","}c.push("]");break}c.push("{");f="";for(d in b)if(b.hasOwnProperty(d)){e=b[d];if(typeof e!="function"){c.push(f);l(a,d,c);c.push(":");j(a,e,c);f=","}}c.push("}");break;
+case "function":break;default:throw Error("Unknown type: "+typeof b);}}var m={'"':'\\"',"\\":"\\\\","/":"\\/","\u0008":"\\b","\u000c":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\u000b"},n=/\uffff/.test("\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g;function l(a,b,c){c.push('"',b.replace(n,function(f){if(f in m)return m[f];var d=f.charCodeAt(0),e="\\u";if(d<16)e+="000";else if(d<256)e+="00";else if(d<4096)e+="0";return m[f]=e+d.toString(16)}),'"')};window.JSON||(window.JSON={});if(typeof window.JSON.serialize!=="function")window.JSON.serialize=i;if(typeof window.JSON.parse!=="function")window.JSON.parse=h;
 
 if (!Array.indexOf) {
     Array.prototype.indexOf = function (obj, start) {
