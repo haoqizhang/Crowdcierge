@@ -76,7 +76,6 @@ $(document).ready(function (jQuery) {
 
     sessionStart = (new Date()).getTime();
 
-    //    readyLocations();
     readyAdd();
 
     jQuery("#availableResourcesSpace").hide();
@@ -174,6 +173,14 @@ $(document).ready(function (jQuery) {
 
 });
 
+// Called first in document ready to hide popup box
+function readyAdd() {
+    $('#boxclose').click(function () {
+        closeAdd();
+    });
+}
+
+// Hides popup box and everything inside
 function closeAdd() {
     $('#searchBox').val(emptyText);
     $('#searchBox').css('color', 'gray');
@@ -194,20 +201,84 @@ function closeAdd() {
     $('#editNote').hide();
     $('#editEnd').hide();
     $('#editStart').hide();
-
 }
 
-function readyAdd() {
-    $('#boxclose').click(function () {
-        closeAdd();
-        //	$('#box').css('top', '-700px');
-        //	$('#overlay').css('display', 'none');
-        // $('#box').animate({'top':'-500px'},500,function(){
-        //     $('#overlay').fadeOut('fast');
-        // });
+// Called second in document ready to get user id and task id
+// Shows Mobi interface
+function readUrlParameters() {
+    var params = getURLParams();
+    if (params.tid) {
+        tid = params.tid;
+    }
+
+    if (params.uid) {
+        uid = params.uid;
+    }
+
+    jQuery('#mobi-content').css('display', 'inline');
+    return;
+}
+
+// Async ajax call. Loads the task state into the code based on task id
+// Loads requester data as well
+function loadTaskState() {
+    jQuery.ajax({
+        type: "GET",
+        // dataType: "json", 
+        url: "http://people.csail.mit.edu/hqz/mobi/loadTurkTourTaskState.php",
+        data: ({
+            type: "turktour",
+            id: tid
+        }),
+        async: false,
+        success: function (obj) {
+            if (obj == "") {} else {
+                state = eval('(' + obj + ')');
+                stateId = state.stateId;
+                state = eval('(' + state.state + ')');
+
+                loadHostData(state.admin); // requester's stuff
+            }
+        }
     });
+    return;
+}
+
+// Load user data. Writes in mission title, description, etc.
+// Loads constraints
+function loadHostData(data) {
+    eventName = data.name;
+    description = data.description;
+    categories = data.categories;
+    constraints = data.constraints;
+    start = data.start;
+    end = data.end;
+    beginTime = data.beginTime;
+    endTime = data.endTime;
+    var creator = data.creator;
+    creatorName = data.creator;
 
 
+
+    //    if(data.transit == 1){
+    // can use transit
+    transit = true;
+    //  }
+    $("#eventName").html(data.name.replace(/\n/g, "<br/>"));
+    $("#description").html(data.description.replace(/\n+$/, '').replace(/\n/g, "<br/>"));
+    $('#missiontitle').html($('#eventName').text());
+    $('#missiondesc').html($('#description').text());
+    displayConstraints();
+
+    if (creator == "itonly") {
+        $('#addcontrols').html("<button class='addit' onClick='saveAddActivity(false)'>add it to stream & itinerary</button>");
+    }
+
+    // process constraints
+    constraintsFunc = [];
+    for (var i = 0; i < constraints.length; i++) {
+        constraintsFunc.push(generatePredicate(constraints[i]));
+    }
 }
 
 function readySearchBox() {
@@ -2605,29 +2676,6 @@ function loadStream() {
     return;
 }
 
-function loadTaskState() {
-    jQuery.ajax({
-        type: "GET",
-        // dataType: "json", 
-        url: "http://people.csail.mit.edu/hqz/mobi/loadTurkTourTaskState.php",
-        data: ({
-            type: "turktour",
-            id: tid
-        }),
-        async: false,
-        success: function (obj) {
-            if (obj == "") {} else {
-                state = eval('(' + obj + ')');
-                stateId = state.stateId;
-                state = eval('(' + state.state + ')');
-
-                loadHostData(state.admin); // requester's stuff
-            }
-        }
-    });
-    return;
-}
-
 function locateCategoryIndex(c) {
     for (var i = 0; i < categories.length; i++) {
         if (categories[i] == c) return i;
@@ -3066,42 +3114,6 @@ function firstName(sn) {
     return sn[0]; // + " " + sn[sn.length-1][0] + ".";
 }
 
-function loadHostData(data) {
-    eventName = data.name;
-    description = data.description;
-    categories = data.categories;
-    constraints = data.constraints;
-    start = data.start;
-    end = data.end;
-    beginTime = data.beginTime;
-    endTime = data.endTime;
-    var creator = data.creator;
-    creatorName = data.creator;
-
-
-
-    //    if(data.transit == 1){
-    // can use transit
-    transit = true;
-    //  }
-    $("#eventName").html(data.name.replace(/\n/g, "<br/>"));
-    $("#description").html(data.description.replace(/\n+$/, '').replace(/\n/g, "<br/>"));
-    $('#missiontitle').html($('#eventName').text());
-    $('#missiondesc').html($('#description').text());
-    displayConstraints();
-
-    if (creator == "itonly") {
-        //	alert("here");
-        $('#addcontrols').html("<button class='addit' onClick='saveAddActivity(false)'>add it to stream & itinerary</button>");
-    }
-
-    // process constraints
-    constraintsFunc = [];
-    for (var i = 0; i < constraints.length; i++) {
-        constraintsFunc.push(generatePredicate(constraints[i]));
-    }
-}
-
 function updateScheduleConstraints(actualend) {
     var si;
     var freetime = endTime - actualend;
@@ -3365,24 +3377,6 @@ function generatePredicate(constraintDesc) {
     return func;
 }
 
-function readUrlParameters() {
-    var params = getURLParams();
-    if (params.tid) {
-        tid = params.tid;
-    }
-
-    if (params.uid) {
-        uid = params.uid;
-    }
-
-    showMobi();
-    return;
-}
-
-function showMobi() {
-    jQuery('#mobi-content').css('display', 'inline');
-}
-
 function displayNeedLink() {
     jQuery("#needLink").css('display', 'block');
 }
@@ -3406,19 +3400,6 @@ function getURLParams() {
         }
     }
     return params
-}
-
-function readyLocations() {
-    // get Harvard locations..
-    $.ajax({
-        url: "http://maps.cs50.net/api/1.2/buildings?output=jsonp",
-        dataType: "jsonp",
-        success: function (data) {
-            for (var i = 0; i < data.length; i++) {
-                campuslocations.push(new campuslocation(data[i].name, data[i]));
-            }
-        }
-    });
 }
 
 var fixHelper = function (e, ui) {
