@@ -1,5 +1,6 @@
 <table border="2">
 <?php
+   header('Access-Control-Allow-Origin: *');
 include "settings.php";
 
 

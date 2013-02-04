@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
     $path = get_include_path() . PATH_SEPARATOR . '/usr/share/php';
     set_include_path($path);
 //include('/usr/share/php/Mail.php');
