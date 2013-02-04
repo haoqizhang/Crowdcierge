@@ -1,6 +1,6 @@
 <table border="2">
 <?php
-
+   header('Access-Control-Allow-Origin: *');
 include "settings.php";
 
 mysql_connect(MOBI_MYSQL_SERVER, MOBI_MYSQL_USERNAME, MOBI_MYSQL_PASSWORD);

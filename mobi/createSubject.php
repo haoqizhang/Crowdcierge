@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 include "settings.php";
 
 include('Mail.php');
