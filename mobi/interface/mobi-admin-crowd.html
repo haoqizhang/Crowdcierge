@@ -29,22 +29,8 @@
             // Time blocking to register overlap
             var timeBlocks = [];
             
-            // Dummy data
-            var eventSource = [
-                        {
-                            title: 'Meeting',
-                            start: new Date(y, m, d, 10, 30),
-                            end: new Date(y, m, d, 11, 30),
-                            editable: true,
-                            allDay: false
-                        },
-                        {
-                            title: 'Lunch',
-                            start: new Date(y, m, d, 12, 0),
-                            end: new Date(y, m, d, 14, 0),
-                            allDay: false
-                        },
-                    ];
+            // Event data
+            var eventSource = [];
             
             // Initialize the calendar
             function initCalendar(timeShift, start, end) {
@@ -52,8 +38,9 @@
                 shift = timeShift;
                 var cal = $("#calendar");
                 cal.fullCalendar({
-                    aspectRatio: 0.60,
+                    aspectRatio: 1.00,
                     editable: true,
+                    allDayDefault:false,
                     events: [],
                     minTime: start,
                     maxTime: end,
@@ -103,9 +90,28 @@
                 cal.mousemove(function() {
                     shiftEventTimes();
                 });
+                
+                buildEventsFromItineraryArray(start);
             };
             
+            // Temp function.  Should store event source array later
+            function buildEventsFromItineraryArray(start) {
+                for (var i = 0; i < itinerary.length; i++) {
+                    var event = {};
+                    var item = getItem(itinerary[i]);
+                    event.title = item.data.name;
+					event.start = new Date(y, m, d, start, 0);
+                    
+                    var hours = Math.floor(item.data.duration/60);
+                    event.end = new Date(y, m, d, start + hours, item.data.duration % 60)
+                    eventSource.push(event);
+                }
+                
+                $("#calendar").fullCalendar('refetchEvents');
+            }
+            
             // Update the event source with the events in the calendar
+            // Called on all drags and moves. Should also be called on adds.
             function syncEvents() {
                 eventSource = $("#calendar").fullCalendar( 'clientEvents' );
                 
@@ -118,6 +124,12 @@
                     timeBlocks.push(block);
                 }
                 
+                // Check for overlap
+                detectOverlap();
+            }
+            
+            // Check if there is any overlap in our current event set
+            function detectOverlap() {
                 //$("#events").empty().html("No events are overlapping.");
                 for (var j in timeBlocks) {
                     var check = timeBlocks[j];
