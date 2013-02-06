@@ -7,11 +7,161 @@
         content="application/xhtml+xml; charset=utf-8" />
         <link rel="stylesheet" type="text/css" media="all" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css"
         />
+        <link rel='stylesheet' type='text/css' href='fullcalendar/fullcalendar.css' />
+        <link rel='stylesheet' type='text/css' href='fullcalendar/fullcalendar.print.css' media='print' />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
         <script type="text/javascript" src="humane.js"></script>
         <script type="text/javascript" src="mobi-admin-crowd.js"></script>
-        <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>
+        <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>      
+        <script type='text/javascript' src='fullcalendar/fullcalendar.min.js'></script>
+        <script type="text/javascript">
+        
+            // Set time shift
+            var shift;
+            
+            // Get today's date
+            var date = new Date();
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+            
+            // Time blocking to register overlap
+            var timeBlocks = [];
+            
+            // Dummy data
+            var eventSource = [
+                        {
+                            title: 'Meeting',
+                            start: new Date(y, m, d, 10, 30),
+                            end: new Date(y, m, d, 11, 30),
+                            editable: true,
+                            allDay: false
+                        },
+                        {
+                            title: 'Lunch',
+                            start: new Date(y, m, d, 12, 0),
+                            end: new Date(y, m, d, 14, 0),
+                            allDay: false
+                        },
+                    ];
+            
+            // Initialize the calendar
+            function initCalendar(timeShift, start, end) {
+                // Make calendar with specified options
+                shift = timeShift;
+                var cal = $("#calendar");
+                cal.fullCalendar({
+                    aspectRatio: 0.60,
+                    editable: true,
+                    events: [],
+                    minTime: start,
+                    maxTime: end,
+                    allDaySlot: false,
+                    slotMinutes: 30,
+                    eventDrop: syncEvents,
+                    eventResize: syncEvents
+                });
+                
+                cal.fullCalendar( 'addEventSource', eventSource);
+                
+                // Set to day view and remove header
+                cal.fullCalendar( 'changeView', 'agendaDay');
+                $(".fc-header").hide();
+                
+                // Shift table times
+                for (var s = 0; s < 40; s+=2) {
+                    var oldTimes = $(".fc-slot" + s).html();
+                    var newTimes = oldTimes;
+                    if (newTimes) {
+                        for (var i = 1; i < 13; i++) {
+                            var up = i+shift;
+                            up = up%12;
+                            if  (i > up && i != 12) {
+                                if (up == 0) {
+                                    up = 12;
+                                }
+                                newTimes = newTimes.replace(">" + i + "pm", ">" + up + "AM");
+                                newTimes = newTimes.replace(">" + i + "am", ">" + up + "PM");
+                            } else {
+                                if (up == 0) {
+                                    up = 12;
+                                }
+                                newTimes = newTimes.replace(">" + i + "pm", ">" + up + "PM");
+                                newTimes = newTimes.replace(">" + i + "am", ">" + up + "AM");
+                            }
+                        }        
+                        newTimes = newTimes.replace("AM", "am");
+                        newTimes = newTimes.replace("PM", "pm");                      
+                        $(".fc-slot" + s).html(newTimes);
+                    }
+                }
+                
+                // Fix event times
+                shiftEventTimes();
+                
+                cal.mousemove(function() {
+                    shiftEventTimes();
+                });
+            };
+            
+            // Update the event source with the events in the calendar
+            function syncEvents() {
+                eventSource = $("#calendar").fullCalendar( 'clientEvents' );
+                
+                timeBlocks = [];
+                for (var i = 0; i < eventSource.length; i++) {
+                    var event = eventSource[i]
+                    var block = {};
+                    block.start = event.start.getHours() + event.start.getMinutes()/60;
+                    block.end = event.end.getHours() + event.end.getMinutes()/60;
+                    timeBlocks.push(block);
+                }
+                
+                //$("#events").empty().html("No events are overlapping.");
+                for (var j in timeBlocks) {
+                    var check = timeBlocks[j];
+                    for (var k in timeBlocks) {
+                        var other = timeBlocks[k];
+                        if ((check.start < other.end && check.start > other.start) || (check.end > other.start && check.end < other.end)) {
+                            //$("#events").empty().html("Events are overlapping!");
+                        }
+                    }
+                }
+            }
+            
+            // Shifts event times by specified value
+            function shiftEventTimes() {
+                var times = $(".fc-event-time");
+                for (var t = 0; t < times.size(); t++) {
+                    var oldTimes = $(times[t]).parent().html();
+                    var newTimes = oldTimes;
+                    if (newTimes) {
+                        for (var i = 1; i < 13; i++) {
+                            var up = i+shift;
+                            if (up > 12) {
+                                up = up - 12;
+                            }
+                            newTimes = newTimes.replace(">" + i + ":", "> " + up + ":");
+                            newTimes = newTimes.replace(">" + i + ":", "> " + up + ":");
+                            newTimes = newTimes.replace("- " + i + ":", " -  " + up + ":");
+                            newTimes = newTimes.replace("- " + i + ":", " -  " + up + ":");
+                            
+                        }               
+                        $(times[t]).parent().html(newTimes);
+                    }
+                }
+            }
+        
+        </script>
+        
+        <style media="screen" type="text/css">
+            #calendar {
+                width: 300px;
+                margin: 0 auto;
+            }
+        </style>
+        
         <style media="screen" type="text/css">
             #tabcontainer ul {
                 list-style: none;
@@ -876,13 +1026,14 @@
             </div>
         </div>
         <div id="left3">
+            <div id="calendar"></div>
             <div class='inneritinerary'>
                 <!-- <div class="inner"> -->
                 <div class='sectiontitle'><span>Itinerary</span>&nbsp;&nbsp;&nbsp;
-<span style='text-align:left'>
-<!--<button onclick='saveSnapshot()' id='snapshotbutton'>take a snapshot of the itinerary</button>-->
-<button class='addwide' id='saveitbutton' style='font-size:70%'>save itinerary changes!</button>
-</span> 
+                    <span style='text-align:left'>
+                    <!--<button onclick='saveSnapshot()' id='snapshotbutton'>take a snapshot of the itinerary</button>-->
+                    <button class='addwide' id='saveitbutton' style='font-size:70%'>save itinerary changes!</button>
+                    </span> 
                 </div>
             </div>
             <table id="sortable">
@@ -895,6 +1046,7 @@
             <p style='text-align:center'>If you are experiencing problems, please
                 <a href="mailto:hq@eecs.harvard.edu">contact us</a>.</p>
         </div>
+        
     </body>
 
 </html>

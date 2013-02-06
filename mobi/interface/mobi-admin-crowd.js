@@ -170,8 +170,27 @@ $(document).ready(function (jQuery) {
             .append("<a>" + item.value + "</a>")
             .appendTo(ul);
     };
-
+    
+    initializeCalendar();
 });
+
+// Initialize the itinerary calendar
+function initializeCalendar() {
+    // Calculate time shifting
+    var shift; 
+    if (endTime > 1440) {
+        shift = (endTime-1440)/60;
+    } else {
+        shift = 0;
+    }
+    
+    // Find start and end times pre-shift
+    var calStartTime = beginTime/60 - shift;
+    var calEndTime = endTime/60 - shift;
+    
+    // Initialize calendar with correct times
+    initCalendar(shift, calStartTime, calEndTime);
+}
 
 // Called first in document ready to hide popup box
 function readyAdd() {
