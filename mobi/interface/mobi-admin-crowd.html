@@ -91,19 +91,20 @@
                     shiftEventTimes();
                 });
                 
-                buildEventsFromItineraryArray(start);
+                buildEventsFromItineraryArray();
             };
             
             // Temp function.  Should store event source array later
-            function buildEventsFromItineraryArray(start) {
+            function buildEventsFromItineraryArray() {
                 for (var i = 0; i < itinerary.length; i++) {
                     var event = {};
                     var item = getItem(itinerary[i]);
                     event.title = item.data.name;
-					event.start = new Date(y, m, d, start, 0);
-                    
+					event.start = new Date(y, m, d, beginTime/60 - shift, 0);
+
                     var hours = Math.floor(item.data.duration/60);
-                    event.end = new Date(y, m, d, start + hours, item.data.duration % 60)
+                    event.end = new Date(y, m, d, beginTime/60 - shift + hours, item.data.duration % 60);
+                    event.itId = itinerary[i];
                     eventSource.push(event);
                 }
                 
@@ -114,7 +115,10 @@
             // Called on all drags and moves. Should also be called on adds.
             function syncEvents() {
                 eventSource = $("#calendar").fullCalendar( 'clientEvents' );
-                
+                eventSource.sort(function(a,b) {
+                    return (a.start.getHours() + a.start.getMinutes()/60) - (b.start.getHours() + b.start.getMinutes()/60);
+                });
+        
                 timeBlocks = [];
                 for (var i = 0; i < eventSource.length; i++) {
                     var event = eventSource[i]
