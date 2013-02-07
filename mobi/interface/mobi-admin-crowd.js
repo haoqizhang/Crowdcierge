@@ -1991,6 +1991,7 @@ function saveEditActivity(oldsi) {
     var n = new activity(nname, ndesc, null, nloc, null, ndur, ncat);
 
     var si = new streamitem('activity', n, null);
+    si.data.start = oldsi.data.start;
 
     if (oldsi.edited == undefined) {
         si.edited = [uid];

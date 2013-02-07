@@ -184,13 +184,15 @@
                 eventSource.sort(function(a,b) {
                     return (a.start.getHours() + a.start.getMinutes()/60) - (b.start.getHours() + b.start.getMinutes()/60);
                 });
-                
-                //saveEditActivity(si);
 
                 // Check for overlap
                 updateSysStream();
                 detectOverlap();
                 updateScheduleConstraints(totalDuration * 60 + beginTime + shift*60);
+                
+                var si = getItem(event.itId);
+                si.data.duration = parseInt(si.data.duration) + minuteDelta + "";
+                saveItemEdit(si);
             }
             
             // Check if there is any overlap in our current event set
