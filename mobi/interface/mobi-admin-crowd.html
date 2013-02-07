@@ -108,17 +108,7 @@
                     eventSource.push(event);
                 }
                 
-                $("#calendar").fullCalendar('refetchEvents');
-            }
-            
-            // Update the event source with the events in the calendar
-            // Called on all drags and moves. Should also be called on adds.
-            function syncEvents() {
-                eventSource = $("#calendar").fullCalendar( 'clientEvents' );
-                eventSource.sort(function(a,b) {
-                    return (a.start.getHours() + a.start.getMinutes()/60) - (b.start.getHours() + b.start.getMinutes()/60);
-                });
-        
+                // Load timeblocks for overlap check
                 timeBlocks = [];
                 for (var i = 0; i < eventSource.length; i++) {
                     var event = eventSource[i]
@@ -128,21 +118,79 @@
                     timeBlocks.push(block);
                 }
                 
+                $("#calendar").fullCalendar('refetchEvents');
+                detectOverlap();
+            }
+            
+            // Update the event source with the events in the calendar
+            // Called on all drags and moves. Should also be called on adds or removes.
+            function syncEvents() {
+                // Sort event source list based on client events
+                eventSource = $("#calendar").fullCalendar( 'clientEvents' );
+                eventSource.sort(function(a,b) {
+                    return (a.start.getHours() + a.start.getMinutes()/60) - (b.start.getHours() + b.start.getMinutes()/60);
+                });
+                
+                // Reload timeblocks for overlap check
+                timeBlocks = [];
+                var totalDuration = 0;
+                for (var i = 0; i < eventSource.length; i++) {
+                    var event = eventSource[i]
+                    var block = {};
+                    block.start = event.start.getHours() + event.start.getMinutes()/60;
+                    block.end = event.end.getHours() + event.end.getMinutes()/60;
+                    totalDuration += block.end - block.start;
+                    timeBlocks.push(block);
+                }
+                
+                // Update itinerary order and save route if necessary
+                var newItinerary = [];
+                for (var i = 0; i < eventSource.length; i++) {
+                    newItinerary.push(eventSource[i].itId);
+                }
+                var reload = false;
+                if (newItinerary.length == itinerary.length) {
+                    for (var i = 0; i < itinerary.length; i++) {
+                        if (newItinerary[i] != itinerary[i]) {
+                            reload = true;
+                            break;
+                        }
+                    }
+                }
+                if (reload) {
+                    itinerary = newItinerary;
+                    saveItinerary();
+                    updateItineraryDisplay();
+                } else {               
+                    updateSysStream();
+                    updateScheduleConstraints(totalDuration * 60 + beginTime + shift*60);
+                }
+                
                 // Check for overlap
                 detectOverlap();
             }
             
             // Check if there is any overlap in our current event set
             function detectOverlap() {
-                //$("#events").empty().html("No events are overlapping.");
+                var problem = "Two of the items in the itinerary are overlapping.  Move them around so no events cover each other.";
+                var n = new note("Itinerary items are overlapping",
+                problem, ['todo', 'time']);
+                si = new streamitem('todo', n, null);
+                si.id = 'sys_overlap_items';
+                
+                var add = false;
                 for (var j in timeBlocks) {
                     var check = timeBlocks[j];
                     for (var k in timeBlocks) {
                         var other = timeBlocks[k];
                         if ((check.start < other.end && check.start > other.start) || (check.end > other.start && check.end < other.end)) {
-                            //$("#events").empty().html("Events are overlapping!");
+                            add = true;
                         }
                     }
+                }
+                
+                if (add) {
+                    displayStreamItem("#sysStreamBody", si);
                 }
             }
             
@@ -1042,7 +1090,6 @@
             </div>
         </div>
         <div id="left3">
-            <div id="calendar"></div>
             <div class='inneritinerary'>
                 <!-- <div class="inner"> -->
                 <div class='sectiontitle'><span>Itinerary</span>&nbsp;&nbsp;&nbsp;
@@ -1052,6 +1099,7 @@
                     </span> 
                 </div>
             </div>
+            <div id="calendar"></div>
             <table id="sortable">
                 <tbody id='itineraryStart'></tbody>
                 <tbody id='itinerary'></tbody>
