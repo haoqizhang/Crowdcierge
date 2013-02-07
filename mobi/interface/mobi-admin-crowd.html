@@ -19,6 +19,7 @@
         
             // Set time shift
             var shift;
+            var totalDuration;
             
             // Get today's date
             var date = new Date();
@@ -46,8 +47,8 @@
                     maxTime: end,
                     allDaySlot: false,
                     slotMinutes: 30,
-                    eventDrop: syncEvents,
-                    eventResize: syncEvents,
+                    eventDrop: syncEventDrop,
+                    eventResize: syncEventDrag,
                     eventClick: function(calEvent, jsEvent, view) {
                         viewActivity(getItem(calEvent.itId));
                     }
@@ -87,8 +88,6 @@
                     }
                 }
                 
-                // Fix event times
-                shiftEventTimes();
                 // Make event times fix all the time!
                 cal.mousemove(function() {
                     shiftEventTimes();
@@ -96,56 +95,51 @@
                 
                 // Add items from the itinerary array
                 fetchEvents();
+                
+                // Fix event times
+                shiftEventTimes();
             };
             
-            // Temp function.  Should store event source array later
+            // Load events on start
             function fetchEvents() {
                 for (var i = 0; i < itinerary.length; i++) {
-                    var event = {};
-                    var item = getItem(itinerary[i]);
-                    event.title = item.data.name;
-					event.start = new Date(y, m, d, beginTime/60 - shift, 0);
-
-                    var hours = Math.floor(item.data.duration/60);
-                    event.end = new Date(y, m, d, beginTime/60 - shift + hours, item.data.duration % 60);
-                    event.itId = itinerary[i];
-                    eventSource.push(event);
+                    addNewItemFromId(itinerary[i]);
                 }
                 
-                // Load timeblocks for overlap check
-                timeBlocks = [];
-                for (var i = 0; i < eventSource.length; i++) {
-                    var event = eventSource[i]
-                    var block = {};
-                    block.start = event.start.getHours() + event.start.getMinutes()/60;
-                    block.end = event.end.getHours() + event.end.getMinutes()/60;
-                    timeBlocks.push(block);
-                }
-                
-                $("#calendar").fullCalendar('refetchEvents');
+                // Check for overlap
                 detectOverlap();
             }
             
-            // Update the event source with the events in the calendar
-            // Called on all drags and moves. Should also be called on adds or removes.
-            function syncEvents() {
+            // Adds a new item to the calendar based on itinerary id
+            function addNewItemFromId(itineraryId) {
+                var event = {};
+                var item = getItem(itineraryId);
+
+                event.title = item.data.name;
+                if (!item.data.start) {
+                    event.start = new Date(y, m, d, beginTime/60 - shift, 0);
+                    item.data.start = event.start.getHours()*60 + event.start.getMinutes() + shift*60;
+                    saveItemEdit(item);
+                } else {
+                    event.start = new Date(y, m, d, Math.floor(item.data.start/60) - shift, item.data.start%60);;
+                }
+                
+                var endTime = item.data.start + parseInt(item.data.duration);
+                var hours = Math.floor(endTime/60);
+                event.end = new Date(y, m, d, hours - shift, endTime % 60);
+                event.itId = itineraryId;
+                eventSource.push(event);
+                $("#calendar").fullCalendar('refetchEvents');
+            }
+            
+            // Update the event source with the events in the calendar and updates route order
+            // Called on event drops
+            function syncEventDrop(event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view) {
                 // Sort event source list based on client events
                 eventSource = $("#calendar").fullCalendar( 'clientEvents' );
                 eventSource.sort(function(a,b) {
                     return (a.start.getHours() + a.start.getMinutes()/60) - (b.start.getHours() + b.start.getMinutes()/60);
                 });
-                
-                // Reload timeblocks for overlap check
-                timeBlocks = [];
-                var totalDuration = 0;
-                for (var i = 0; i < eventSource.length; i++) {
-                    var event = eventSource[i]
-                    var block = {};
-                    block.start = event.start.getHours() + event.start.getMinutes()/60;
-                    block.end = event.end.getHours() + event.end.getMinutes()/60;
-                    totalDuration += block.end - block.start;
-                    timeBlocks.push(block);
-                }
                 
                 // Update itinerary order and save route if necessary
                 var newItinerary = [];
@@ -165,17 +159,54 @@
                     itinerary = newItinerary;
                     saveItinerary();
                     updateItineraryDisplay();
-                } else {               
+                    detectOverlap();
+                } else {
+                    // Check for overlap
                     updateSysStream();
+                    detectOverlap();
                     updateScheduleConstraints(totalDuration * 60 + beginTime + shift*60);
                 }
                 
+                var si = getItem(event.itId);
+                var newStart = si.data.start + minuteDelta;
+                if (newStart < beginTime) {
+                    revertFunc();
+                    return;
+                }
+                si.data.start = newStart;
+                saveItemEdit(si);
+            }
+            
+            // Update activity durations
+            // Called on even drag
+            function syncEventDrag(event, dayDelta, minuteDelta, revertFunc) {
+                eventSource = $("#calendar").fullCalendar( 'clientEvents' );
+                eventSource.sort(function(a,b) {
+                    return (a.start.getHours() + a.start.getMinutes()/60) - (b.start.getHours() + b.start.getMinutes()/60);
+                });
+                
+                //saveEditActivity(si);
+
                 // Check for overlap
+                updateSysStream();
                 detectOverlap();
+                updateScheduleConstraints(totalDuration * 60 + beginTime + shift*60);
             }
             
             // Check if there is any overlap in our current event set
             function detectOverlap() {
+                // Reload timeblocks for overlap check
+                timeBlocks = [];
+                totalDuration = 0;
+                for (var i = 0; i < eventSource.length; i++) {
+                    var event = eventSource[i]
+                    var block = {};
+                    block.start = event.start.getHours() + event.start.getMinutes()/60;
+                    block.end = event.end.getHours() + event.end.getMinutes()/60;
+                    totalDuration += block.end - block.start;
+                    timeBlocks.push(block);
+                }
+            
                 var problem = "Two of the items in the itinerary are overlapping.  Move them around so no events cover each other.";
                 var n = new note("Itinerary items are overlapping",
                 problem, ['todo', 'time']);
@@ -220,7 +251,31 @@
                     }
                 }
             }
-        
+     
+            function saveItemEdit(oldsi) {
+                var oldid = oldsi.id;
+                var n = new activity(oldsi.data.name, oldsi.data.description, null, oldsi.data.location, null, oldsi.data.duration, oldsi.data.categories);
+
+                var si = new streamitem('activity', n, null);
+                si.data.start = oldsi.data.start;
+
+                if (oldsi.edited == undefined) {
+                    si.edited = [uid];
+                } else {
+                    si.edited = oldsi.edited;
+                    si.edited.push(uid);
+                }
+
+                // submit it
+                var id = submitEdit(si, oldid);
+                if (id != null) {
+                    si.id = 'user_' + id;
+                } else {
+                    return;
+                }
+            }
+
+     
         </script>
         
         <style media="screen" type="text/css">
