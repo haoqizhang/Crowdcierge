@@ -47,7 +47,10 @@
                     allDaySlot: false,
                     slotMinutes: 30,
                     eventDrop: syncEvents,
-                    eventResize: syncEvents
+                    eventResize: syncEvents,
+                    eventClick: function(calEvent, jsEvent, view) {
+                        viewActivity(getItem(calEvent.itId));
+                    }
                 });
                 
                 cal.fullCalendar( 'addEventSource', eventSource);
@@ -86,16 +89,17 @@
                 
                 // Fix event times
                 shiftEventTimes();
-                
+                // Make event times fix all the time!
                 cal.mousemove(function() {
                     shiftEventTimes();
                 });
                 
-                buildEventsFromItineraryArray();
+                // Add items from the itinerary array
+                fetchEvents();
             };
             
             // Temp function.  Should store event source array later
-            function buildEventsFromItineraryArray() {
+            function fetchEvents() {
                 for (var i = 0; i < itinerary.length; i++) {
                     var event = {};
                     var item = getItem(itinerary[i]);
