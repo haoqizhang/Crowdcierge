@@ -62,8 +62,8 @@ var lastSearch = null;
 var lasteditSearch = null;
 
 // task variables
-var tid = null;
-var uid = null; // TODO: get user id from parameters
+var tid = "72f2a275c14c3af09e6c2f2b73f03241";
+var uid = "57187fd22e931d8b2145d920967e559d"; // TODO: get user id from parameters
 var calculatedEnd = null;
 var user = null;
 var numusers = null;
@@ -104,7 +104,7 @@ $(document).ready(function (jQuery) {
     });
     jQuery("#sortable").disableSelection();
 
-    readUrlParameters(); // get userId and taskId
+    //readUrlParameters(); // get userId and taskId
     loadTaskState(); // Load where we are current at with task
 
     loadUserData();
@@ -173,24 +173,6 @@ $(document).ready(function (jQuery) {
     
     initializeCalendar();
 });
-
-// Initialize the itinerary calendar
-function initializeCalendar() {
-    // Calculate time shifting
-    var shift; 
-    if (endTime > 1440) {
-        shift = (endTime-1440)/60;
-    } else {
-        shift = 0;
-    }
-    
-    // Find start and end times pre-shift
-    var calStartTime = beginTime/60 - shift;
-    var calEndTime = endTime/60 - shift;
-    
-    // Initialize calendar with correct times
-    initCalendar(shift, calStartTime, calEndTime);
-}
 
 // Called first in document ready to hide popup box
 function readyAdd() {
@@ -1129,6 +1111,8 @@ function viewActivity(si) {
             waylayer.DeleteShape(wayhash[si.id].pin);
             // remove it from waypoint hash
             delete(wayhash[si.id]);
+            
+            removeItemFromId(si.id); // for calendar
 
             // get rid of the itinerary badge
             $('#ss_' + si.id).remove();
@@ -2163,6 +2147,7 @@ function saveAddActivity(streamonly) {
     var id = submitEntry(si);
     //    alert(id);
     si.id = 'user_' + id;
+    si.data.start = beginTime; // for calendar
 
     // add it to local stream
     userStream.unshift(si);
@@ -2172,12 +2157,10 @@ function saveAddActivity(streamonly) {
     var item = createStreamItem(si);
     $('#userStreamBody').prepend(item);
 
-
-    //// 
-
     closeAdd();
 
     if (!streamonly) {
+        addNewItemFromId(si.id); // for calendar
         // also add to itinerary
         addActivityToItinerary(si);
     }

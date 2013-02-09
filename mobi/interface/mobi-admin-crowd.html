@@ -33,6 +33,24 @@
             // Event data
             var eventSource = [];
             
+            // Called from document ready to initialize the calendar
+            function initializeCalendar() {
+                // Calculate time shifting
+                var shift; 
+                if (endTime > 1440) {
+                    shift = (endTime-1440)/60;
+                } else {
+                    shift = 0;
+                }
+                
+                // Find start and end times pre-shift
+                var start = beginTime/60 - shift;
+                var end = endTime/60 - shift;
+                
+                // Initialize calendar with correct times
+                initCalendar(shift, start, end);
+            }
+            
             // Initialize the calendar
             function initCalendar(timeShift, start, end) {
                 // Make calendar with specified options
@@ -98,7 +116,7 @@
                 
                 // Fix event times
                 shiftEventTimes();
-            };
+            }
             
             // Load events on start
             function fetchEvents() {
@@ -129,6 +147,15 @@
                 event.end = new Date(y, m, d, hours - shift, endTime % 60);
                 event.itId = itineraryId;
                 eventSource.push(event);
+                $("#calendar").fullCalendar('refetchEvents');
+            }
+            
+            function removeItemFromId(itineraryId) {
+                for (var i = 0; i < eventSource.length; i++) {
+                    if (eventSource[i].itId == itineraryId) {
+                        eventSource.splice(i, 1);
+                    }
+                }
                 $("#calendar").fullCalendar('refetchEvents');
             }
             
