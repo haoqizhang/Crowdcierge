@@ -1835,6 +1835,7 @@ function addActivityToItinerary(si) {
     itinerary.unshift(si.id);
     // update sortable
     displayItineraryItem('#itinerary', si.id, true, 1, si.data.name, si.data.location.name, '' + si.data.duration + ' min + travel', true);
+    addNewItemFromId(si.id); // for calendar
 
     // update stream to say it's in itinerary
 

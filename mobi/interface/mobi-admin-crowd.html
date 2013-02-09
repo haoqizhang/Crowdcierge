@@ -148,6 +148,7 @@
                 event.itId = itineraryId;
                 eventSource.push(event);
                 $("#calendar").fullCalendar('refetchEvents');
+                shiftEventTimes();
             }
             
             function removeItemFromId(itineraryId) {
@@ -202,6 +203,7 @@
                 }
                 si.data.start = newStart;
                 saveItemEdit(si);
+                shiftEventTimes();
             }
             
             // Update activity durations
@@ -220,6 +222,7 @@
                 var si = getItem(event.itId);
                 si.data.duration = parseInt(si.data.duration) + minuteDelta + "";
                 saveItemEdit(si);
+                shiftEventTimes();
             }
             
             // Check if there is any overlap in our current event set
@@ -309,7 +312,7 @@
         
         <style media="screen" type="text/css">
             #calendar {
-                width: 300px;
+                width: 400px;
                 margin: 0 auto;
             }
         </style>
@@ -1188,7 +1191,7 @@
                 </div>
             </div>
             <div id="calendar"></div>
-            <table id="sortable">
+            <table id="sortable" style="display:none">
                 <tbody id='itineraryStart'></tbody>
                 <tbody id='itinerary'></tbody>
                 <tbody id='itineraryEnd'></tbody>
