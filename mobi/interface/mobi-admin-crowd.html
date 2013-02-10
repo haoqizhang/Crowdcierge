@@ -57,7 +57,7 @@
                 shift = timeShift;
                 var cal = $("#calendar");
                 cal.fullCalendar({
-                    aspectRatio: 1.00,
+                    aspectRatio: 0.01,
                     editable: true,
                     allDayDefault:false,
                     events: [],
@@ -1192,7 +1192,9 @@
                     </span> 
                 </div>
             </div>
-            <div id="calendar"></div>
+            <div style="overflow:auto; height:87%">
+                <div id="calendar"></div>
+            </div>
             <table id="sortable" style="display:none">
                 <tbody id='itineraryStart'></tbody>
                 <tbody id='itinerary'></tbody>

@@ -2161,7 +2161,6 @@ function saveAddActivity(streamonly) {
     closeAdd();
 
     if (!streamonly) {
-        addNewItemFromId(si.id); // for calendar
         // also add to itinerary
         addActivityToItinerary(si);
     }
