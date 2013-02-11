@@ -749,7 +749,6 @@ function computeDistance(l1, l2) {
 
 function AddWaypointPin(si) {
 
-
     var ll = new VELatLong(si.data.location.lat, si.data.location.long);
 
     // check no pin already at same location
@@ -889,6 +888,7 @@ function streamitem(type, data, time) {
     }
     this.value = data.name;
     this.label = [data.name, data.description, data.categories.join(' ')].join(' ');
+    this.data.start = beginTime; // for calendar
 }
 
 function readMinutes(time) {
@@ -1710,6 +1710,7 @@ function editActivity(si) {
     $('#editactloc').val(si.data.location.name);
 
     // options
+    $('#editactduration').empty();
     for (var i = 0; i < activityDurations.length; i++) {
         var o = $(document.createElement('option'));
         o.attr('value', activityDurations[i]);
@@ -1976,7 +1977,7 @@ function saveEditActivity(oldsi) {
     var n = new activity(nname, ndesc, null, nloc, null, ndur, ncat);
 
     var si = new streamitem('activity', n, null);
-    si.data.start = oldsi.data.start;
+    si.data.start = oldsi.data.start; // for calendar
 
     if (oldsi.edited == undefined) {
         si.edited = [uid];
@@ -2047,8 +2048,10 @@ function saveEditActivity(oldsi) {
         $(item).insertAfter('#' + oldsi.id);
         $('#' + oldsi.id).remove();
         updateItineraryDisplay();
+    
+        updateEditCalendar(oldid, si.id); // for calendar
     }
-
+    
     closeAdd();
 }
 
@@ -2234,6 +2237,7 @@ function submitEdit(si, oldid) {
                 // ret = msg;
             } else {
                 ret = rtrim(msg);
+                ret = ret.replace(/(\r\n|\n|\r)/gm,"");
             }
         }
     });
@@ -2736,9 +2740,11 @@ function loadStateIntoInterface() {
 
     // set up itinerary
     itinerary = state.itinerary;
+    //itinerary = ["user_241", "user_240"];
     // 
     var itineraryItems = [];
     for (var i = 0; i < itinerary.length; i++) {
+        itinerary[i] = itinerary[i].replace(/(\r\n|\n|\r)/gm,"");
         var si = getItem(itinerary[i]);
         itineraryItems.push(si);
     }

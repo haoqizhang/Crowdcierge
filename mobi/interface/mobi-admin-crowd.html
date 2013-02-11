@@ -34,6 +34,7 @@
             var eventSource = [];
             
             // Called from document ready to initialize the calendar
+            // TODO get the actual date of the trip here
             function initializeCalendar() {
                 // Calculate time shifting
                 var shift; 
@@ -151,6 +152,7 @@
                 shiftEventTimes();
             }
             
+            // Removes an item from the calendar based on itinerary id
             function removeItemFromId(itineraryId) {
                 for (var i = 0; i < eventSource.length; i++) {
                     if (eventSource[i].itId == itineraryId) {
@@ -158,6 +160,12 @@
                     }
                 }
                 $("#calendar").fullCalendar('refetchEvents');
+            }
+            
+            // Update the calendar based on an edit made in a dialog
+            function updateEditCalendar(oldId, newId) {
+                removeItemFromId(oldId);
+                addNewItemFromId(newId);
             }
             
             // Update the event source with the events in the calendar and updates route order
@@ -195,6 +203,7 @@
                     updateScheduleConstraints(totalDuration * 60 + beginTime + shift*60);
                 }
                 
+                // Prevent dragging past start time
                 var si = getItem(event.itId);
                 var newStart = si.data.start + minuteDelta;
                 if (newStart < beginTime) {
@@ -284,6 +293,8 @@
                 }
             }
      
+            // Save dragged and drop edit
+            // TODO fix intermittency
             function saveItemEdit(oldsi) {
                 var oldid = oldsi.id;
                 var n = new activity(oldsi.data.name, oldsi.data.description, null, oldsi.data.location, null, oldsi.data.duration, oldsi.data.categories);
