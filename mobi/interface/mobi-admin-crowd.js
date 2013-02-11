@@ -2740,7 +2740,7 @@ function loadStateIntoInterface() {
 
     // set up itinerary
     itinerary = state.itinerary;
-    //itinerary = ["user_241", "user_240"];
+    //itinerary = [];
     // 
     var itineraryItems = [];
     for (var i = 0; i < itinerary.length; i++) {

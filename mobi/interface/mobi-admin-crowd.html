@@ -19,6 +19,8 @@
         
             // Set time shift
             var shift;
+            
+            // Maintain total duration for scheduling checks
             var totalDuration;
             
             // Get today's date
@@ -27,10 +29,7 @@
             var m = date.getMonth();
             var y = date.getFullYear();
             
-            // Time blocking to register overlap
-            var timeBlocks = [];
-            
-            // Event data
+            // Event data. Do NOT change reference
             var eventSource = [];
             
             // Called from document ready to initialize the calendar
@@ -73,6 +72,7 @@
                     }
                 });
                 
+                // Add event source
                 cal.fullCalendar( 'addEventSource', eventSource);
                 
                 // Set to day view and remove header
@@ -171,8 +171,20 @@
             // Update the event source with the events in the calendar and updates route order
             // Called on event drops
             function syncEventDrop(event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view) {
+                // Prevent dragging past start time
+                var si = getItem(event.itId);
+                var newStart = si.data.start + minuteDelta;
+                if (newStart < beginTime) {
+                    revertFunc();
+                    return;
+                }
+            
                 // Sort event source list based on client events
-                eventSource = $("#calendar").fullCalendar( 'clientEvents' );
+                eventSource.length = 0;
+                var newEvents = $("#calendar").fullCalendar( 'clientEvents' );
+                for (var i  = 0; i < newEvents.length; i++) {
+                    eventSource.push(newEvents[i]);
+                }
                 eventSource.sort(function(a,b) {
                     return (a.start.getHours() + a.start.getMinutes()/60) - (b.start.getHours() + b.start.getMinutes()/60);
                 });
@@ -182,62 +194,41 @@
                 for (var i = 0; i < eventSource.length; i++) {
                     newItinerary.push(eventSource[i].itId);
                 }
-                var reload = false;
-                if (newItinerary.length == itinerary.length) {
-                    for (var i = 0; i < itinerary.length; i++) {
-                        if (newItinerary[i] != itinerary[i]) {
-                            reload = true;
-                            break;
-                        }
-                    }
-                }
-                if (reload) {
-                    itinerary = newItinerary;
-                    saveItinerary();
-                    updateItineraryDisplay();
-                    detectOverlap();
-                } else {
-                    // Check for overlap
-                    updateSysStream();
-                    detectOverlap();
-                    updateScheduleConstraints(totalDuration * 60 + beginTime + shift*60);
-                }
+
+                // Save new itinerary order
+                itinerary = newItinerary;
+                saveItinerary();
                 
-                // Prevent dragging past start time
-                var si = getItem(event.itId);
-                var newStart = si.data.start + minuteDelta;
-                if (newStart < beginTime) {
-                    revertFunc();
-                    return;
-                }
+                // Save start of activity
                 si.data.start = newStart;
                 saveItemEdit(si);
+                detectOverlap();
                 shiftEventTimes();
             }
             
             // Update activity durations
             // Called on even drag
             function syncEventDrag(event, dayDelta, minuteDelta, revertFunc) {
-                eventSource = $("#calendar").fullCalendar( 'clientEvents' );
+                eventSource.length = 0;
+                var newEvents = $("#calendar").fullCalendar( 'clientEvents' );
+                for (var i  = 0; i < newEvents.length; i++) {
+                    eventSource.push(newEvents[i]);
+                }
                 eventSource.sort(function(a,b) {
                     return (a.start.getHours() + a.start.getMinutes()/60) - (b.start.getHours() + b.start.getMinutes()/60);
                 });
-
-                // Check for overlap
-                updateSysStream();
-                detectOverlap();
-                updateScheduleConstraints(totalDuration * 60 + beginTime + shift*60);
                 
                 var si = getItem(event.itId);
                 si.data.duration = parseInt(si.data.duration) + minuteDelta + "";
                 saveItemEdit(si);
+                detectOverlap();
                 shiftEventTimes();
             }
             
             // Check if there is any overlap in our current event set
             function detectOverlap() {
                 // Reload timeblocks for overlap check
-                timeBlocks = [];
+                var timeBlocks = [];
                 totalDuration = 0;
                 for (var i = 0; i < eventSource.length; i++) {
                     var event = eventSource[i]
@@ -294,9 +285,9 @@
             }
      
             // Save dragged and drop edit
-            // TODO fix intermittency
             function saveItemEdit(oldsi) {
                 var oldid = oldsi.id;
+                newactpinMoved = false;
                 var n = new activity(oldsi.data.name, oldsi.data.description, null, oldsi.data.location, null, oldsi.data.duration, oldsi.data.categories);
 
                 var si = new streamitem('activity', n, null);
@@ -316,6 +307,63 @@
                 } else {
                     return;
                 }
+                
+                // add it to local stream
+                userStream.unshift(si);
+                searchAutocomplete.autocomplete("option", "source", userStream);
+                newStream.unshift(si);
+
+                // 3. what about itinerary?
+                // 3a... in itinerary list, get rid of old and insert new
+                var initinerary = false;
+                var pos = 1;
+                for (var i = 0; i < itinerary.length; i++) {
+                    if (itinerary[i] == oldid) {
+                        pos = i + 1;
+                        itinerary.splice(i, 1, si.id);
+                        initinerary = true;
+                        break;
+                    }
+                }
+
+                var item = createStreamItem(si);
+                $('#userStreamBody').prepend(item);
+
+                // remove the old one
+                // 1. remove from stream
+                $('#stream_' + oldid).remove();
+                // 2. remove from userStream
+
+                for (var i = 0; i < userStream.length; i++) {
+                    if (userStream[i].id == oldsi.id) {
+                        userStream.splice(i, 1);
+                        break;
+                    }
+                }
+
+                if (initinerary) {
+                    // HQ: NOTE: WE DO NOT SAVE THE ITINERARY. We just update things so that 
+                    // if the person were to save then it would save correctly. Instead of saving the 
+                    // itinerary, we update the change onto the latest state in the system in SubmitEdit
+
+                    // save the itinerary before moving on.
+                    //saveItinerary();
+
+                    // 3b... in wayhash, get rid of old and insert new;
+                    waylayer.DeleteShape(wayhash[oldid].pin);
+                    delete wayhash[oldid];
+                    AddWaypointPin(si);
+
+
+                    // 3c... in itinerary display, get rid of old and insert new
+
+                    var item = createItineraryItem(si.id, true, pos, si.data.name, si.data.location.name, '' + si.data.duration + ' min + travel', true);
+                    $(item).insertAfter('#' + oldsi.id);
+                    $('#' + oldsi.id).remove();
+                    updateItineraryDisplay();
+                
+                    updateEditCalendar(oldid, si.id); // for calendar
+                }
             }
 
      
@@ -323,7 +371,7 @@
         
         <style media="screen" type="text/css">
             #calendar {
-                width: 96%;
+                min-width:300px;
                 margin-left:2%;
                 margin-right:2%;
                 margin-top:3%;
