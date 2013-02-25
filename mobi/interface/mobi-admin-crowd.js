@@ -64,10 +64,10 @@ var lasteditSearch = null;
 // task variables
 
 // Test task variables.
-//var tid = "72f2a275c14c3af09e6c2f2b73f03241";
-//var uid = "57187fd22e931d8b2145d920967e559d";
-var tid = null;
-var uid = null; // TODO: get user id from parameters
+var tid = "72f2a275c14c3af09e6c2f2b73f03241";
+var uid = "57187fd22e931d8b2145d920967e559d";
+//var tid = null;
+//var uid = null; // TODO: get user id from parameters
 var calculatedEnd = null;
 var user = null;
 var numusers = null;
@@ -110,7 +110,7 @@ $(document).ready(function (jQuery) {
 
     //readUrlParameters(); // get userId and taskId
     loadTaskState(); // Load where we are current at with task
-
+    
     loadUserData();
     initMap();
 
@@ -178,7 +178,7 @@ $(document).ready(function (jQuery) {
     initializeCalendar();
 });
 
-// Called first in document ready to hide popup box
+// Called first in document ready to set up popup box
 function readyAdd() {
     $('#boxclose').click(function () {
         closeAdd();
@@ -206,6 +206,7 @@ function closeAdd() {
     $('#editNote').hide();
     $('#editEnd').hide();
     $('#editStart').hide();
+    $("#viewCheck").hide();
 }
 
 // Called second in document ready to get user id and task id
@@ -946,6 +947,7 @@ function addActivity() {
     $('#addNote').css('display', 'none');
     $('#viewNote').css('display', 'none');
     $('#viewActivity').css('display', 'none');
+    $('#viewCheck').hide();
 
 
     var txt = $('#searchBox').val();
@@ -1025,7 +1027,7 @@ function viewNote(si) {
     $('#addNote').hide();
     $('#viewNote').show();
     $('#viewActivity').hide();
-
+    $('#viewCheck').hide();
 
     $('#viewtitle').html(si.data.name);
     $('#viewdesc').html(si.data.description);
@@ -1069,6 +1071,7 @@ function viewActivity(si) {
     $('#addNote').css('display', 'none');
     $('#viewNote').css('display', 'none');
     $('#viewActivity').css('display', 'block');
+    $('#viewCheck').hide();
 
     actfindLayer.DeleteAllShapes();
     $('#addActivity').show();
@@ -1684,6 +1687,7 @@ function editActivity(si) {
     $('#addNote').hide();
     $('#viewNote').hide();
     $('#viewActivity').hide();
+    $('#viewCheck').hide();
 
     $('#editActivity').show();
 
@@ -1800,6 +1804,7 @@ function editNote(si) {
     $('#addNote').hide();
     $('#viewNote').hide();
     $('#viewActivity').hide();
+    $('#viewCheck').hide();
 
     $('#editNote').show();
 
