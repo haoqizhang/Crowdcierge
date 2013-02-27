@@ -1180,9 +1180,11 @@ function viewActivity(si) {
     });
 
     if (include(finishedAct, si.id)) {
+        $('#viewActivityMessage').show();
         $('#addacttoitbutton').hide();
         $('#editacttoitbutton').hide();
     } else {
+        $('#viewActivityMessage').hide();
         $('#addacttoitbutton').show();
         $('#editacttoitbutton').show();
     }

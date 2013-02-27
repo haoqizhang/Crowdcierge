@@ -17,6 +17,10 @@
         <script type='text/javascript' src='fullcalendar/fullcalendar.min.js'></script>
         <script type="text/javascript">
         
+            ///////////////////////////////////////////
+            // CALENDAR CODE
+            ///////////////////////////////////////////
+        
             // Set time shift
             var shift;
             
@@ -32,6 +36,9 @@
             
             // Event data. Do NOT change reference
             var eventSource = [];
+                
+            // Local check item list
+            var checkItems;
             
             // Called from document ready to initialize the calendar
             // TODO get the actual date of the trip here
@@ -378,9 +385,6 @@
             ///////////////////////////////////////////
             // CHECK ITEM CODE
             ///////////////////////////////////////////
-                        
-            // Local check item list
-            var checkItems;
             
             // Creates a sample check item (for testing)
             function createSampleCheckItem() {
@@ -504,8 +508,13 @@
                 return ret;
             }
             
-            // Reload data from server
+            ///////////////////////////////////////////
+            // AUTOMATIC POLLING CODE
             // FIXME: doesn't work when someone changes something in the itinerary (including self)
+            // TODO: poll periodically
+            ///////////////////////////////////////////
+            
+            // Reload data from server
             function reloadData() {
                 eventSource.length = 0;
                 loadTaskState(); // Load where we are current at with task
@@ -517,7 +526,7 @@
             }
             
             ///////////////////////////////////////////
-            // LOAD INTERMEDIATE STATE
+            // LOAD INTERMEDIATE STATE CODE
             // TODO: Hook to backend
             ///////////////////////////////////////////
             
@@ -1252,7 +1261,7 @@
             </div>
             <div id='viewActivity' style='display:none'>
                  <h1 id='viewactheader'>Activity<span style='float:right;'><button id='editacttoitbutton' class='addit'>edit activity</button>&nbsp;<button id='addacttoitbutton' class='addit'>add it to the itinerary</button></span></h1>
-                <div id="viewActivityMessage" style="margin-left:auto; margin-right:auto; font-size:2em; text-align:center">
+                <div id="viewActivityMessage" style="display:none; margin-left:auto; margin-right:auto; font-size:2em; text-align:center">
                     The traveler has already done this activity today.
                 </div>
                 <div>
