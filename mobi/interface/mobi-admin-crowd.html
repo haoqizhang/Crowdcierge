@@ -28,11 +28,10 @@
             var d = date.getDate();
             var m = date.getMonth();
             var y = date.getFullYear();
+            var calBegin;
             
             // Event data. Do NOT change reference
             var eventSource = [];
-            
-            var checkItems;
             
             // Called from document ready to initialize the calendar
             // TODO get the actual date of the trip here
@@ -46,12 +45,14 @@
                 }
                 
                 // Find start and end times pre-shift
-                var start = beginTime/60 - shift;
+                var start = calBegin/60 - shift;
                 var end = endTime/60 - shift;
                 
                 // Initialize calendar with correct times
                 initCalendar(shift, start, end);
                 
+                // Add check items stored in state
+                // TODO: move to proper place in code
                 checkItems = state.checkItems;
                 for (var key in checkItems) {
                     createCheckItem("#checkStreamBody", checkItems[key]);
@@ -182,7 +183,7 @@
                 // Prevent dragging past start time
                 var si = getItem(event.itId);
                 var newStart = si.data.start + minuteDelta;
-                if (newStart < beginTime) {
+                if (newStart < calBegin) {
                     revertFunc();
                     return;
                 }
@@ -373,7 +374,14 @@
                     updateEditCalendar(oldid, si.id); // for calendar
                 }
             }
-
+          
+            ///////////////////////////////////////////
+            // CHECK ITEM CODE
+            ///////////////////////////////////////////
+                        
+            // Local check item list
+            var checkItems;
+            
             // Creates a sample check item (for testing)
             function createSampleCheckItem() {
                 var problem = "This is a sample check item that must be resolved manually.";
@@ -506,6 +514,42 @@
                 initMap();
                 loadStateIntoInterface();
                 fetchEvents();
+            }
+            
+            ///////////////////////////////////////////
+            // LOAD INTERMEDIATE STATE
+            // TODO: Hook to backend
+            ///////////////////////////////////////////
+            
+            // Boolean to determine if the trip is in progress, either determined by time or set in DB
+            var inProgress = false;
+            
+            var interTime;
+            var interLat;
+            var interLog;
+            var finishedAct;
+            var fixRequest;
+            var keepAct;
+            var currentPin;
+            
+            // Load intermediate state
+            function loadIntermediateState() {
+                // Temp test inter
+                inter = {time:900, lat:36.114708, long:-115.148717, finishedActivities:["user_450"], keepActivities:[]};
+            
+                interTime = inter.time;  // Time of request
+                interLat = inter.lat;   // Latitude location
+                interLong = inter.long; // Longitude location
+                finishedAct = inter.finishedActivities;    // Acitvities already finished (array of id's like itinerary)
+                fixRequest = inter.request;    // What the request is, containing extra info if needed
+                keepAct = inter.keepActivities;    // What activities need to remain on the itinerary (optional)
+                
+                // Set calendar start to the intermediate time
+                calBegin = interTime;
+                
+                // Place user pin at current location
+                var locLL = new VELatLong(interLat, interLong);
+                currentPin = AddPushpin(map, locLL, 'Current Location', "Traveler's Location", false, "pin-start.png");
             }
             
         </script>
@@ -1207,7 +1251,9 @@
             </div>
             <div id='viewActivity' style='display:none'>
                  <h1 id='viewactheader'>Activity<span style='float:right;'><button id='editacttoitbutton' class='addit'>edit activity</button>&nbsp;<button id='addacttoitbutton' class='addit'>add it to the itinerary</button></span></h1>
-
+                <div id="viewActivityMessage" style="margin-left:auto; margin-right:auto; font-size:2em; text-align:center">
+                    The traveler has already done this activity today.
+                </div>
                 <div>
                     <table id='viewActivityTable'>
                         <tr>

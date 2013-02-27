@@ -175,6 +175,8 @@ $(document).ready(function (jQuery) {
             .appendTo(ul);
     };
     
+    calBegin = beginTime;
+    loadIntermediateState();
     initializeCalendar();
 });
 
@@ -1175,6 +1177,14 @@ function viewActivity(si) {
         }, 500);
     });
 
+    if (include(finishedAct, si.id)) {
+        $('#addacttoitbutton').hide();
+        $('#editacttoitbutton').hide();
+    } else {
+        $('#addacttoitbutton').show();
+        $('#editacttoitbutton').show();
+    }
+    
 }
 
 function setTimeField(name, time, s, e) {
