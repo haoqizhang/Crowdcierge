@@ -32,6 +32,8 @@
             // Event data. Do NOT change reference
             var eventSource = [];
             
+            var checkItems;
+            
             // Called from document ready to initialize the calendar
             // TODO get the actual date of the trip here
             function initializeCalendar() {
@@ -49,6 +51,11 @@
                 
                 // Initialize calendar with correct times
                 initCalendar(shift, start, end);
+                
+                checkItems = state.checkItems;
+                for (var key in checkItems) {
+                    createCheckItem("#checkStreamBody", checkItems[key]);
+                }
             }
             
             // Initialize the calendar
@@ -370,12 +377,12 @@
             // Creates a sample check item (for testing)
             function createSampleCheckItem() {
                 var problem = "This is a sample check item that must be resolved manually.";
-                var n = new note("Sample Check Item",
+                var n = new note("Sample Check Item " + (new Date()).getTime(),
                 problem, ['check', 'sample']);
                 si = new streamitem('check', n, null);
-                si.id = 'sys_sample_check';
+                si.id = 'sys_sample_check' + (new Date()).getTime();
                 
-                createCheckItem("#sysStreamBody", si);
+                createCheckItem("#checkStreamBody", si);
             }
             
             // Creates a check item from a stream item object
@@ -416,11 +423,8 @@
                 $(item).attr('id', 'stream_' + si.id);
                 $(id).prepend(item);
                 
-                // TODO: Actually hook to backend
-                $("#resolvebutton").click(function (){
-                    $("#stream_" + si.id).remove();
-                    closeAdd();
-                });
+                checkItems[si.id] = si;
+                saveCheckItems();
             }
             
             // View a checked item in the overlay box
@@ -451,6 +455,57 @@
                         'top': '20px'
                     }, 500);
                 });
+                
+                $("#resolvebutton").click(function (){
+                    $("#stream_" + si.id).remove();
+                    delete checkItems[si.id];
+                    saveCheckItems();
+                    closeAdd();
+                });
+            }
+            
+            // Save current check item state
+            function saveCheckItems() {
+                state.checkItems = checkItems;
+
+                var ret = true;
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/submitTurkTourItinerary.php",
+                    async: false,
+                    data: ({
+                        userId: uid,
+                        answer: JSON.stringify(state),
+                        taskId: tid,
+                        startState: stateId,
+                        assignmentId: assignmentId,
+                        type: "turktour"
+                    }),
+                    success: function (msg) {
+                        if (msg == "") {
+                            // cannot save it
+                            alert("It appears that someone else has recently made a change that conflicts with the changes you are trying to save. Please refresh the page before continuing. We apologize for the inconvenience");
+                            ret = false;
+                            return;
+                        } else {
+                            disableItSave();
+                        }
+                    }
+                });
+                return ret;
+            }
+            
+            // Reload data from server
+            // FIXME: doesn't work when someone changes something in the itinerary (including self)
+            function reloadData() {
+                eventSource.length = 0;
+                loadTaskState(); // Load where we are current at with task
+                $("#userStreamBody").empty();
+                loadUserData();
+                initMap();
+                loadStateIntoInterface();
+                fetchEvents();
             }
             
         </script>
@@ -1352,6 +1407,7 @@
                 </div>
             </div>
             <table class='streamclass' id="brainstream">
+                <tbody id='checkStreamBody'></tbody>
                 <tbody id='sysStreamBody'></tbody>
                 <tbody id='userStreamBody'></tbody>
             </table>
