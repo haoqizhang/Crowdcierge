@@ -176,7 +176,9 @@ $(document).ready(function (jQuery) {
     };
     
     calBegin = beginTime;
-    loadIntermediateState();
+    if (inProgress) {
+        loadIntermediateState();
+    }
     initializeCalendar();
 });
 
