@@ -149,6 +149,7 @@
                 var event = {};
                 var item = getItem(itineraryId);
 
+                // Get event start and end times
                 event.title = item.data.name;
                 if (!item.data.start) {
                     event.start = new Date(y, m, d, beginTime/60 - shift, 0);
@@ -157,10 +158,21 @@
                 } else {
                     event.start = new Date(y, m, d, Math.floor(item.data.start/60) - shift, item.data.start%60);;
                 }
-                
                 var endTime = item.data.start + parseInt(item.data.duration);
                 var hours = Math.floor(endTime/60);
                 event.end = new Date(y, m, d, hours - shift, endTime % 60);
+                
+                // Change color of traveler decided to keep this activity
+                if (include(keepAct, itineraryId)) {
+                    event.backgroundColor="grey";
+                }
+                
+                // Change color if traveler finished this activity
+                if (include(finishedAct, itineraryId)) {
+                    event.backgroundColor="green";
+                }
+                
+                // Push event out and do usual calendar cleanup
                 event.itId = itineraryId;
                 eventSource.push(event);
                 $("#calendar").fullCalendar('refetchEvents');
@@ -190,7 +202,7 @@
                 // Prevent dragging past start time
                 var si = getItem(event.itId);
                 var newStart = si.data.start + minuteDelta;
-                if (newStart < calBegin) {
+                if (newStart < calBegin || include(keepAct, event.itId) || include(finishedAct, event.itId)) {
                     revertFunc();
                     return;
                 }
@@ -225,6 +237,11 @@
             // Update activity durations
             // Called on even drag
             function syncEventDrag(event, dayDelta, minuteDelta, revertFunc) {
+                if (include(keepAct, event.itId) || include(finishedAct, event.itId)) {
+                    revertFunc();
+                    return;
+                }
+            
                 eventSource.length = 0;
                 var newEvents = $("#calendar").fullCalendar( 'clientEvents' );
                 for (var i  = 0; i < newEvents.length; i++) {
@@ -273,6 +290,7 @@
                 }
                 
                 if (add && $("#stream_sys_overlap_items").length == 0) {
+                    sysStream.push(si);
                     displayStreamItem("#sysStreamBody", si);
                 }
             }
@@ -533,6 +551,9 @@
             // Boolean to determine if the trip is in progress, either determined by time or set in DB
             var inProgress = true;
             
+            // Boolean to determine if we should set the calendar start or make finished activities a diff color
+            var setStart = false;
+            
             // Local storage of intermediate state data
             var interTime;
             var interLat;
@@ -542,11 +563,11 @@
             var keepAct;
             var currentPin;
             
+            // Temp test inter state
+            inter = {time:900, lat:36.114708, long:-115.148717, finishedActivities:["user_450"], keepActivities:["user_460"]};
+            
             // Load intermediate state
             function loadIntermediateState() {
-                // Temp test inter
-                inter = {time:900, lat:36.114708, long:-115.148717, finishedActivities:["user_450"], keepActivities:[]};
-            
                 interTime = inter.time;  // Time of request
                 interLat = inter.lat;   // Latitude location
                 interLong = inter.long; // Longitude location
@@ -555,11 +576,13 @@
                 keepAct = inter.keepActivities;    // What activities need to remain on the itinerary (optional)
                 
                 // Set calendar start to the intermediate time
-                calBegin = interTime;
+                if (setStart) {
+                    calBegin = interTime;
+                }
                 
                 // Place user pin at current location
                 var locLL = new VELatLong(interLat, interLong);
-                currentPin = AddPushpin(map, locLL, 'Current Location', "Traveler's Location", false, "pin-start.png");
+                currentPin = AddPushpin(map, locLL, "Traveler's Location", "Where the traveler is right now", false, "pin-start.png");
             }
             
         </script>
@@ -1119,7 +1142,7 @@
     </head>
     
     <body>
-        <div class="header" style='white-space:nowrap;vertical-align:baseline;padding-top:10px;padding-left:10px;background:#FFAB07;color:white;'>
+        <div class="header" style ='white-space:nowrap;vertical-align:baseline;padding-top:10px;padding-left:10px;background:#FFAB07;color:white;'>
             <div> <span class='headname' id='eventName'></span>
                 <span style='margin-left:10px'>
                   <button class='missionbuttons'  onclick="viewMission()">reveal mission details</button>
@@ -1492,6 +1515,9 @@
                     </span> 
                 </div>
             </div>
+            <table id="finishedTable" style="display:none">
+                <tbody id='finishedItinerary'></tbody>
+            </table>
             <div style="overflow:auto; height:87%">
                 <div id="calendar"></div>
             </div>

@@ -1178,17 +1178,24 @@ function viewActivity(si) {
             'top': '20px'
         }, 500);
     });
-
+    
+    $('#viewActivityMessage').hide();
+    $('#addacttoitbutton').show();
+    $('#editacttoitbutton').show();
+    
     if (include(finishedAct, si.id)) {
         $('#viewActivityMessage').show();
+        $('#viewActivityMessage').text('The traveler has already done this activity today.');
         $('#addacttoitbutton').hide();
         $('#editacttoitbutton').hide();
-    } else {
-        $('#viewActivityMessage').hide();
-        $('#addacttoitbutton').show();
-        $('#editacttoitbutton').show();
     }
     
+    if (include(keepAct, si.id)) {
+        $('#viewActivityMessage').show();
+        $('#viewActivityMessage').text("The traveler likes this activity and doesn't want it to change.");
+        $('#addacttoitbutton').hide();
+        $('#editacttoitbutton').hide();
+    }
 }
 
 function setTimeField(name, time, s, e) {
