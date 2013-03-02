@@ -32,13 +32,15 @@
             var d = date.getDate();
             var m = date.getMonth();
             var y = date.getFullYear();
+            
+            // Time used for drop checks. Should be begin time unless mid-trip
             var calBegin;
             
             // Event data. Do NOT change reference
             var eventSource = [];
                 
             // Local check item list
-            var checkItems;
+            var checkItems = {};
             
             // Called from document ready to initialize the calendar
             // TODO get the actual date of the trip here
@@ -52,7 +54,7 @@
                 }
                 
                 // Find start and end times pre-shift
-                var start = calBegin/60 - shift;
+                var start = beginTime/60 - shift;
                 var end = endTime/60 - shift;
                 
                 // Initialize calendar with correct times
@@ -132,6 +134,22 @@
                 
                 // Fix event times
                 shiftEventTimes();
+                
+                if (inProgress) {
+                    setCalendarInProgress();
+                }
+            }
+            
+            // Modify calendar to show trip progress
+            function setCalendarInProgress() {
+                var slotNum = (interTime - beginTime - 30)/30;
+                for (var i = 0; i < slotNum; i++) {
+                    $(".fc-slot"+i+" .fc-widget-content").css("background-color", "#BBBBBB");
+                }
+                
+                $(".fc-slot"+slotNum+" .fc-widget-content").css("background-color", "orange");
+                $(".fc-slot"+slotNum+" .fc-widget-content").css("text-align", "center");
+                $(".fc-slot"+slotNum+" .fc-widget-content").text("Current Time");
             }
             
             // Load events on start
@@ -165,11 +183,6 @@
                 // Change color of traveler decided to keep this activity
                 if (include(keepAct, itineraryId)) {
                     event.backgroundColor="grey";
-                }
-                
-                // Change color if traveler finished this activity
-                if (include(finishedAct, itineraryId)) {
-                    event.backgroundColor="green";
                 }
                 
                 // Push event out and do usual calendar cleanup
@@ -525,24 +538,7 @@
                 });
                 return ret;
             }
-            
-            ///////////////////////////////////////////
-            // AUTOMATIC POLLING CODE
-            // FIXME: doesn't work when someone changes something in the itinerary (including self)
-            // TODO: poll periodically
-            ///////////////////////////////////////////
-            
-            // Reload data from server
-            function reloadData() {
-                eventSource.length = 0;
-                loadTaskState(); // Load where we are current at with task
-                $("#userStreamBody").empty();
-                loadUserData();
-                initMap();
-                loadStateIntoInterface();
-                fetchEvents();
-            }
-            
+                        
             ///////////////////////////////////////////
             // LOAD INTERMEDIATE STATE CODE
             // TODO: Hook to backend
@@ -575,14 +571,12 @@
                 fixRequest = inter.request;    // What the request is, containing extra info if needed
                 keepAct = inter.keepActivities;    // What activities need to remain on the itinerary (optional)
                 
-                // Set calendar start to the intermediate time
-                if (setStart) {
-                    calBegin = interTime;
-                }
+                // Set calendar check time to intermediate time
+                calBegin = interTime;
                 
                 // Place user pin at current location
                 var locLL = new VELatLong(interLat, interLong);
-                currentPin = AddPushpin(map, locLL, "Traveler's Location", "Where the traveler is right now", false, "pin-start.png");
+                currentPin = AddPushpin(map, locLL, "Traveler's Location", "Where the traveler is right now", false, "pin-user.png");
             }
             
         </script>
