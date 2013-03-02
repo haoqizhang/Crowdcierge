@@ -61,8 +61,11 @@
                 initCalendar(shift, start, end);
                 
                 // Add check items stored in state
-                // TODO: move to proper place in code
                 checkItems = state.checkItems;
+                if (checkItems.length == 0) {
+                    checkItems = {};
+                }
+
                 for (var key in checkItems) {
                     createCheckItem("#checkStreamBody", checkItems[key]);
                 }
@@ -181,7 +184,7 @@
                 event.end = new Date(y, m, d, hours - shift, endTime % 60);
                 
                 // Change color of traveler decided to keep this activity
-                if (include(keepAct, itineraryId)) {
+                if (keepAct && include(keepAct, itineraryId)) {
                     event.backgroundColor="grey";
                 }
                 
@@ -215,7 +218,7 @@
                 // Prevent dragging past start time
                 var si = getItem(event.itId);
                 var newStart = si.data.start + minuteDelta;
-                if (newStart < calBegin || include(keepAct, event.itId) || include(finishedAct, event.itId)) {
+                if (keepAct && finishedAct && (newStart < calBegin || include(keepAct, event.itId) || include(finishedAct, event.itId))) {
                     revertFunc();
                     return;
                 }
@@ -560,10 +563,15 @@
             var currentPin;
             
             // Temp test inter state
-            inter = {time:900, lat:36.114708, long:-115.148717, finishedActivities:["user_450"], keepActivities:["user_460"]};
+            var interTest = false;
+            var inter = {time:900, lat:36.114708, long:-115.148717, finishedActivities:["user_450"], keepActivities:["user_460"]};
             
             // Load intermediate state
             function loadIntermediateState() {
+                if (!interTest) {
+                    inter = state.inter;
+                }
+                
                 interTime = inter.time;  // Time of request
                 interLat = inter.lat;   // Latitude location
                 interLong = inter.long; // Longitude location
@@ -577,6 +585,37 @@
                 // Place user pin at current location
                 var locLL = new VELatLong(interLat, interLong);
                 currentPin = AddPushpin(map, locLL, "Traveler's Location", "Where the traveler is right now", false, "pin-user.png");
+            }
+            
+            function saveResolution() {
+                state.inProgress = false;
+                
+                var ret = true;
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/submitTurkTourItinerary.php",
+                    async: false,
+                    data: ({
+                        userId: uid,
+                        answer: JSON.stringify(state),
+                        taskId: tid,
+                        startState: stateId,
+                        assignmentId: assignmentId,
+                        type: "turktour"
+                    }),
+                    success: function (msg) {
+                        if (msg == "") {
+                            // cannot save it
+                            alert("It appears that someone else has recently made a change that conflicts with the changes you are trying to save. Please refresh the page before continuing. We apologize for the inconvenience");
+                            ret = false;
+                            return;
+                        } else {
+                            disableItSave();
+                        }
+                    }
+                });
+                return ret;
             }
             
         </script>

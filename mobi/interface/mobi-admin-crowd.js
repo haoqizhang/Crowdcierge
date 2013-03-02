@@ -77,7 +77,6 @@ var transit = null;
 
 // What actually happens at start
 $(document).ready(function (jQuery) {
-
     sessionStart = (new Date()).getTime();
 
     readyAdd();
@@ -114,7 +113,6 @@ $(document).ready(function (jQuery) {
     loadUserData();
     initMap();
 
-
     loadStream(); // load all the stream info
     loadStateIntoInterface(); // now load it all into interface.
     disableItSave();
@@ -122,18 +120,14 @@ $(document).ready(function (jQuery) {
     $('#box').css('left', '15%');
     $('#box').css('right', '15%');
 
-
     GetNewActMap();
     readySearchBox();
-
 
     if (user == null) {
         //	$("#thanksloc").html(" to " + eventName.substring(9));
         //	showSignup();
         //	alert("User isn't recognized");
     }
-
-
 
     $(window).resize(function () {
         /// HACK TO FIX MAP RESIZE PROBLEMS
@@ -153,7 +147,6 @@ $(document).ready(function (jQuery) {
         }, 1000);
     });
 
-
     /// HACK TO FIX IE SCROLL PROBLEM
     if ($.browser.msie) {
         /// nevermind, just tell the person they should use something else
@@ -163,7 +156,6 @@ $(document).ready(function (jQuery) {
         // make left1 (stream containing section) scrool
         $('#left1').css('overflow', 'auto');
     }
-
 
     $.ui.autocomplete.prototype._renderItem = function (ul, item) {
         var re = new RegExp("^" + this.term);
@@ -176,6 +168,7 @@ $(document).ready(function (jQuery) {
     };
     
     calBegin = beginTime;
+    inProgress = state.inProgress;
     if (inProgress) {
         loadIntermediateState();
     }

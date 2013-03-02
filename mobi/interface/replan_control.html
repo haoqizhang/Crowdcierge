@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+</head>
+<body style="font-family: helvetica, arial, sans-serif;">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript">
+    
+        // Stuff needed to post
+        var state;
+        var tid = "72f2a275c14c3af09e6c2f2b73f03241"; // Test task id
+        var uid = "57187fd22e931d8b2145d920967e559d"; // Test user id
+        var stateId;
+        var assignmentId = null;
+        
+        // Test intermediate state
+        var testInter = {time:900, lat:36.114708, long:-115.148717, finishedActivities:["user_450"], keepActivities:["user_460"]};
+        
+        // State variables
+        var inter = testInter;
+        var inProgress = true;
+        
+        // Ready form with test data and load state
+        $(document).ready(function (jQuery) {
+            loadTaskState();  
+            
+            $("#time").val(testInter.time);
+            $("#lat").val(testInter.lat);
+            $("#long").val(testInter.long);
+        });
+        
+        function loadTaskState() {
+            jQuery.ajax({
+                type: "GET",
+                url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/loadTurkTourTaskState.php",
+                data: ({
+                    type: "turktour",
+                    id: tid
+                }),
+                async: false,
+                success: function (obj) {
+                    if (obj == "") {} else {
+                        state = eval('(' + obj + ')');
+                        stateId = state.stateId;
+                        state = eval('(' + state.state + ')');
+                    }
+                }
+            });
+            return;
+        }
+        
+        function setCustomInter() {
+            inProgress = true;
+            inter = testInter;
+            inter.time = parseInt($("#time").val());
+            inter.lat = parseFloat($("#lat").val());
+            inter.long = parseFloat($("#long").val());
+            
+            saveState();
+        }
+        
+        function saveState() {
+            state.inProgress = inProgress;
+            state.inter = inter;
+                
+            var ret = true;
+
+            jQuery.ajax({
+                type: "POST",
+                url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/submitTurkTourItinerary.php",
+                async: false,
+                data: ({
+                    userId: uid,
+                    answer: JSON.stringify(state),
+                    taskId: tid,
+                    startState: stateId,
+                    assignmentId: assignmentId,
+                    type: "turktour"
+                }),
+                success: function (msg) {
+                    if (msg == "") {
+                        // cannot save it
+                        alert("It appears that someone else has recently made a change that conflicts with the changes you are trying to save. Please refresh the page before continuing. We apologize for the inconvenience");
+                        ret = false;
+                        return;
+                    }
+                }
+            });
+            return ret;
+        }
+    
+	</script>
+	<div style="margin-left:auto; margin-right:auto; float:left; width:200px"> 
+        Click the button below to set the task to a custom intermediate state: <br/>
+        <button onclick="setCustomInter()"> Custom State </button> <br/><br/><br/>
+    
+        Click the button below to set the task to a test intermediate state: <br/>
+        <button onclick="inProgress = true; inter = testInter; saveState()"> Test State </button> <br/><br/><br/>
+        
+        Click the button below to mark the state as no longer in progress: <br/>
+        <button onclick="inProgress = false; saveState()"> Clear Progress </button> <br/><br/><br/>
+	</div>
+
+    <div style="float:left; margin-left:50px">
+        TID: <input type="text" id="tid"></input> <br/>
+        Time: <input type="text" id="time"></input> <br/>
+        Lat: <input type="text" id="lat"></input> <br/>
+        Long: <input type="text" id="long"></input> <br/>
+    </div>
+    
+</body>
+</html>
