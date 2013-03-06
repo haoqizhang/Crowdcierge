@@ -64,7 +64,7 @@ var lasteditSearch = null;
 // task variables
 
 // Test task variables.
-var tid = "72f2a275c14c3af09e6c2f2b73f03241";
+var tid = null; //"72f2a275c14c3af09e6c2f2b73f03241";
 var uid = "57187fd22e931d8b2145d920967e559d";
 //var tid = null;
 //var uid = null; // TODO: get user id from parameters
@@ -173,6 +173,8 @@ $(document).ready(function (jQuery) {
         loadIntermediateState();
     }
     initializeCalendar();
+    
+    showExplanationBox();
 });
 
 // Called first in document ready to set up popup box
