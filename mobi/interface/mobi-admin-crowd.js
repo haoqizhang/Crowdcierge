@@ -107,7 +107,7 @@ $(document).ready(function (jQuery) {
     });
     jQuery("#sortable").disableSelection();
 
-    //readUrlParameters(); // get userId and taskId
+    readUrlParameters(); // get userId and taskId
     loadTaskState(); // Load where we are current at with task
     
     loadUserData();
@@ -206,6 +206,7 @@ function closeAdd() {
     $('#editEnd').hide();
     $('#editStart').hide();
     $("#viewCheck").hide();
+    $("#explanationBox").hide();
 }
 
 // Called second in document ready to get user id and task id
@@ -946,6 +947,7 @@ function addActivity() {
     $('#addNote').css('display', 'none');
     $('#viewNote').css('display', 'none');
     $('#viewActivity').css('display', 'none');
+    $("#explanationBox").hide();
     $('#viewCheck').hide();
 
 
@@ -1026,6 +1028,7 @@ function viewNote(si) {
     $('#addNote').hide();
     $('#viewNote').show();
     $('#viewActivity').hide();
+    $("#explanationBox").hide();
     $('#viewCheck').hide();
 
     $('#viewtitle').html(si.data.name);
@@ -1070,6 +1073,7 @@ function viewActivity(si) {
     $('#addNote').css('display', 'none');
     $('#viewNote').css('display', 'none');
     $('#viewActivity').css('display', 'block');
+    $("#explanationBox").hide();
     $('#viewCheck').hide();
 
     actfindLayer.DeleteAllShapes();
@@ -1178,16 +1182,16 @@ function viewActivity(si) {
     $('#addacttoitbutton').show();
     $('#editacttoitbutton').show();
     
-    if (include(finishedAct, si.id)) {
+    if (include(keepAct, si.id)) {
         $('#viewActivityMessage').show();
-        $('#viewActivityMessage').text('The traveler has already done this activity today.');
+        $('#viewActivityMessage').text("The traveler likes this activity and doesn't want it to change.");
         $('#addacttoitbutton').hide();
         $('#editacttoitbutton').hide();
     }
     
-    if (include(keepAct, si.id)) {
+    if (include(finishedAct, si.id)) {
         $('#viewActivityMessage').show();
-        $('#viewActivityMessage').text("The traveler likes this activity and doesn't want it to change.");
+        $('#viewActivityMessage').text('The traveler has already done this activity today.');
         $('#addacttoitbutton').hide();
         $('#editacttoitbutton').hide();
     }
@@ -1230,6 +1234,7 @@ function editStart() {
     $('#addNote').hide();
     $('#viewNote').hide();
     $('#viewActivity').hide();
+    $("#explanationBox").hide();
     $('#editActivity').hide();
     $('#editEnd').hide();
     $('#editStart').show();
@@ -1329,6 +1334,7 @@ function editEnd() {
     $('#addNote').hide();
     $('#viewNote').hide();
     $('#viewActivity').hide();
+    $("#explanationBox").hide();
     $('#editActivity').hide();
     $('#editStart').hide();
     $('#editEnd').show();
@@ -1704,6 +1710,7 @@ function editActivity(si) {
     $('#viewNote').hide();
     $('#viewActivity').hide();
     $('#viewCheck').hide();
+    $("#explanationBox").hide();
 
     $('#editActivity').show();
 
@@ -1821,7 +1828,7 @@ function editNote(si) {
     $('#viewNote').hide();
     $('#viewActivity').hide();
     $('#viewCheck').hide();
-
+    $("#explanationBox").hide();
     $('#editNote').show();
 
 
@@ -1883,6 +1890,7 @@ function addSelect() {
     $('#viewNote').hide();
     $('#viewHelp').hide();
     $('#viewActivity').hide();
+    $("#explanationBox").hide();
     $('#viewMission').hide();
     $('#signup').hide();
 
@@ -1906,6 +1914,7 @@ function addNote() {
     $('#addNote').show();
     $('#viewNote').hide();
     $('#viewActivity').hide();
+    $("#explanationBox").hide();
 
     var txt = $('#searchBox').val();
     if (txt != emptyText) {
@@ -2407,14 +2416,15 @@ function getItem(id) {
     } else {
         stream = sysStream;
     }
+    
     // return just the first element (since they are actually unique)
     var arr = stream.filter(function (x) {
         return x.id == id;
     });
+    
     if (arr != null && arr.length > 0) {
         return arr[0];
     } else {
-
         return null;
     }
 
@@ -2603,9 +2613,11 @@ function loadStream() {
         }),
         async: false,
         success: function (obj) {
+            console.log(obj);
             if (obj == "") {} else {
                 var count = 0;
                 for (var i = 0; i < obj.length; i++) {
+                    console.log(obj[i]);
                     if (obj[i].changeInfo == null) {
                         userStream.push(eval('(' + obj[i].answer + ')'));
                         userStream[count].id = 'user_' + obj[i].hitId;
@@ -3141,6 +3153,7 @@ function viewHelp() {
     $('#viewMission').hide();
     $('#signup').hide();
     $('#viewActivity').hide();
+    $("#explanationBox").hide();
     $('#viewHelp').show();
 
 
@@ -3162,6 +3175,7 @@ function viewMission() {
     $('#viewNote').hide();
     $('#viewHelp').hide();
     $('#viewActivity').hide();
+    $("#explanationBox").hide();
     $('#signup').hide();
 
     $('#box').css('left', '30%');
@@ -3241,6 +3255,7 @@ function showSignup() {
     $('#viewNote').hide();
     $('#viewHelp').hide();
     $('#viewActivity').hide();
+    $("#explanationBox").hide();
     $('#viewMission').hide();
     $('#signup').show();
 

@@ -188,6 +188,10 @@
                     event.backgroundColor="grey";
                 }
                 
+                if (item.data.start < interTime) {
+                    finishedAct.push(itineraryId);
+                }
+                
                 // Push event out and do usual calendar cleanup
                 event.itId = itineraryId;
                 eventSource.push(event);
@@ -557,14 +561,14 @@
             var interTime;
             var interLat;
             var interLog;
-            var finishedAct;
+            var finishedAct = [];
             var fixRequest;
             var keepAct;
             var currentPin;
             
             // Temp test inter state
             var interTest = false;
-            var inter = {time:900, lat:36.114708, long:-115.148717, finishedActivities:["user_450"], keepActivities:["user_460"]};
+            var inter = {time:900, lat:36.114708, long:-115.148717, keepActivities:["user_460"]};
             
             // Load intermediate state
             function loadIntermediateState() {
@@ -575,9 +579,9 @@
                 interTime = inter.time;  // Time of request
                 interLat = inter.lat;   // Latitude location
                 interLong = inter.long; // Longitude location
-                finishedAct = inter.finishedActivities;    // Acitvities already finished (array of id's like itinerary)
-                fixRequest = inter.request;    // What the request is, containing extra info if needed
                 keepAct = inter.keepActivities;    // What activities need to remain on the itinerary (optional)
+                
+                fixRequest = inter.request;    // What the request is, containing extra info if needed
                 
                 // Set calendar check time to intermediate time
                 calBegin = interTime;
@@ -624,22 +628,30 @@
             // EXPLANATION BOX CODE
             ///////////////////////////////////////////
             
+            var showExplanation = true;
+            
+            var planningExplanation = "<br/>You're going to help plan a day trip for a traveler.  You will suggest activity ideas based on what the traveler likes, then put them in the itinerary at the right times. <br/> <br/> In the Brainstream to the left, you can see what you can do to help, marked with the [insert todo icon] icon.  Underneath those items, you can see other ideas people have suggested.  At the top, you can search for items in the stream or add your own.<br/><br/>In the middle, you can see the map and the route of the current plan.  The trip starts at the green dot and ends at the red dot, with each blue flag marking an activity on the itinerary.  The green line shows the route the traveler will take.<br/><br/>Finally, on the right, there's the current itinerary.  You can drag and drop the items, but you can't leave any two of them overlapping.<br/><br/>Thanks again, and have fun!"
+            
             function showExplanationBox() {
-                $('#box').css('left', '30%');
-                $('#box').css('right', '30%');
+                if (showExplanation) {
+                    $('#box').css('left', '30%');
+                    $('#box').css('right', '30%');
 
-                $('#addActivity').hide();
-                $('#addNote').hide();
-                $('#viewCheck').hide();
-                $('#viewActivity').hide();
-                $('#viewNote').hide();
-                $("#explanationBox").show();
-                
-                $('#overlay').fadeIn('fast', function () {
-                    $('#box').animate({
-                        'top': '20px'
-                    }, 500);
-                });
+                    $('#addActivity').hide();
+                    $('#addNote').hide();
+                    $('#viewCheck').hide();
+                    $('#viewActivity').hide();
+                    $('#viewNote').hide();
+                    $("#explanationBox").show();
+                    
+                    $('#overlay').fadeIn('fast', function () {
+                        $('#box').animate({
+                            'top': '20px'
+                        }, 500);
+                    });
+                    
+                    $("#explanationContent").empty().html(planningExplanation);
+                }
             }
             
         </script>
@@ -1220,7 +1232,7 @@
         <div class="box" id="box">
             <a class="boxclose" id="boxclose"></a>
             <div id='signup' style='display:none'>
-                 <h1 id='signupheader'>Welcome to Mobi!<span style='float:right;'></span></h1>
+                <h1 id='signupheader'>Welcome to Mobi!<span style='float:right;'></span></h1>
 
                 <div>
                     <br/>Thanks for coming to help me plan a day of my trip<span id="thanksloc"></span>!
@@ -1247,16 +1259,12 @@
                 </div>
             </div>
             <div id='explanationBox' style='display:none'>
-                 <h1 id='explanationhHeader'>Welcome to Crowdcierge!<span style='float:right;'></span></h1>
-                <div>
-                    <br/>Thanks for coming to help me plan a day of my trip!
+                <h1 id='explanationhHeader'>Welcome to Crowdcierge!<span style='float:right;'></span></h1>
+                <div id="explanationContent">
+                    <br/>
+                    You're going to help plan a day trip for a traveler.  You will suggest activity ideas based on what the traveler likes, then put them in the itinerary at the right times.
                     <br/>
                     <br/>
-                    <div id="explanationContent">
-                        You're going to help plan a day trip for a traveler.  You will suggest activity ideas based on what the traveler likes, then put them in the itinerary at the right times.
-                        <br/>
-                        <br/>
-                    </div>
                     In the Brainstream to the left, you can see what you can do to help, marked with the [insert todo icon] icon.  Underneath those items, you can see other ideas people have suggested.  At the top, you can search for items in the stream or add your own.
                     <br/>
                     <br/>

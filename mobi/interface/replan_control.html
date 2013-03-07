@@ -10,19 +10,19 @@
     
         // Stuff needed to post
         var state;
-        var tid = "72f2a275c14c3af09e6c2f2b73f03241"; // Test task id
         var uid = "57187fd22e931d8b2145d920967e559d"; // Test user id
         var stateId;
         var assignmentId = null;
         
         // Test intermediate state
-        var testInter = {time:900, lat:36.114708, long:-115.148717, finishedActivities:["user_450"], keepActivities:["user_460"]};
+        var testInter = {time:900, lat:36.114708, long:-115.148717, keepActivities:["user_460"]};
         
         // State variables
         var inter = testInter;
         var inProgress = true;
         
-        var taskIds =   ["92f792d5f805b79974466450f528d24e",
+        var taskIds =   ["72f2a275c14c3af09e6c2f2b73f03241",
+                        "92f792d5f805b79974466450f528d24e",
                         "453ad2e6eeda9e3ccd9d2739c0f1025d",
                         "a31b5015bac8dce3a4e417b5d7fdcb31",
                         "6d33280aa09b19776b7721c98c784223",
@@ -33,16 +33,51 @@
                         "2507f771e649290105c5180852db4d01",
                         "1ad763711678e776436bd16678d27dc5",
                         "4b4ef627007a24382602411ca491d1e1"]
+                        
+        var requestTypes = ["replace", "stuck", "delayed", "addMoreLike", "addNow", "custom"];
         
         // Ready form with test data and load state
-        $(document).ready(function (jQuery) {
-            loadTaskState();  
+        $(document).ready(function (jQuery) {            
+            for (i=0;i<taskIds.length;i++){ 
+                var o = $(document.createElement('option'));
+                o.attr('value', taskIds[i]);
+                o.text(taskIds[i]);
+                $("#taskIds").append(o);
+            }
             
+            for (i=0;i<requestTypes.length;i++){ 
+                var o = $(document.createElement('option'));
+                o.attr('value', requestTypes[i]);
+                o.text(requestTypes[i]);
+                $("#requestTypes").append(o);
+            }
+            
+            tid = taskIds[0];
+            loadTaskState();  
+            populateForm();
+        });
+        
+        // Populates the custom state form with state data
+        function populateForm() {
+            $("#tripInfo").html(state.admin.name + " by " + state.admin.creator);
+            $("#times").html("(" + state.admin.beginTime + " - " + state.admin.endTime + ")");
             $("#time").val(testInter.time);
             $("#lat").val(testInter.lat);
             $("#long").val(testInter.long);
-        });
         
+            for (var i=0;i<state.itinerary.length;i++) {
+                $("#keepCheck").append("<input type='checkbox' id='myRadio"
+                    +state.itinerary[i]+"'/>" + state.itinerary[i] + "<br/>");
+            }
+            
+            for (var i=0;i<state.itinerary.length;i++) {
+                $("#requestRadio").append("<input type='radio' name='group1' id='myRadio"
+                    +state.itinerary[i]+"'/>" + state.itinerary[i] + "<br/>");
+            }
+        }
+        
+        // Load the task state
+        // TODO: call again when new task ID is selected
         function loadTaskState() {
             jQuery.ajax({
                 type: "GET",
@@ -63,16 +98,36 @@
             return;
         }
         
+        // Sets the intermediate state to whatever state was filled in in the form
         function setCustomInter() {
             inProgress = true;
             inter = testInter;
+                 
             inter.time = parseInt($("#time").val());
             inter.lat = parseFloat($("#lat").val());
             inter.long = parseFloat($("#long").val());
             
+            var keep = [];
+            for (var i=0;i<state.itinerary.length;i++) {
+                if ($("#myRadio"+state.itinerary[i]).is(":checked")) {
+                    keep.push(state.itinerary[i]);
+                }
+            }
+            inter.keepActivities = keep;
+            
+            var request = {};
+            request.type = $('#requestTypes').val();
+            request.data = {};
+            request.data.activity = $('input:radio[name=group1]:checked').val();
+            request.data.message = $("#requestText").val();
+            inter.request = request;
+            
+            console.log(inter);
+            
             saveState();
         }
         
+        // Save the state
         function saveState() {
             state.inProgress = inProgress;
             state.inter = inter;
@@ -106,20 +161,30 @@
 	</script>
 	<div style="margin-left:auto; margin-right:auto; float:left; width:200px"> 
         Click the button below to set the task to a custom intermediate state: <br/>
-        <button onclick="setCustomInter()"> Custom State </button> <br/><br/><br/>
+        <button onclick="setCustomInter()"> Set Custom State </button> <br/><br/><br/>
     
         Click the button below to set the task to a test intermediate state: <br/>
-        <button onclick="inProgress = true; inter = testInter; saveState()"> Test State </button> <br/><br/><br/>
+        <button onclick="inProgress = true; inter = testInter; saveState()"> Set Test State </button> <br/><br/><br/>
         
         Click the button below to mark the state as no longer in progress: <br/>
-        <button onclick="inProgress = false; saveState()"> Clear Progress </button> <br/><br/><br/>
+        <button onclick="inProgress = false; saveState()"> Clear In Progress </button> <br/><br/><br/>
 	</div>
 
     <div style="float:left; margin-left:50px">
-        TID: <input type="text" id="tid"></input> <br/>
-        Time: <input type="text" id="time"></input> <br/>
+        TID:<select id="taskIds"></select> <br/> 
+        <span id="tripInfo"></span> <br/><br/>
+        Time: <input type="text" id="time"></input> <span id="times"></span> <br/>
         Lat: <input type="text" id="lat"></input> <br/>
         Long: <input type="text" id="long"></input> <br/>
+        Activities to keep: <br/>
+        <div id="keepCheck" style="margin-left:20px">
+        </div> <br/>
+        Request Type :<select id="requestTypes"></select> <br/>
+        Relevant Activity (only used for replace and addMoreLike): <br/>
+        <div id="requestRadio" style="margin-left:20px">
+        </div> <br/> 
+        Request Text (only used for custom):<br/>
+        <textarea id="requestText"></textarea>
     </div>
     
 </body>
