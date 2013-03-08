@@ -174,6 +174,9 @@ $(document).ready(function (jQuery) {
     }
     initializeCalendar();
     
+    if (inProgress) {
+        processRequest();
+    }
     showExplanationBox();
 });
 

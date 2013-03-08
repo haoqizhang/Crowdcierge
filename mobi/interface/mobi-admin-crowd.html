@@ -510,12 +510,9 @@
                     }, 500);
                 });
                 
-                $("#resolvebutton").click(function (){
-                    $("#stream_" + si.id).remove();
-                    delete checkItems[si.id];
-                    saveCheckItems();
-                    closeAdd();
-                });
+                $("#resolvebutton").click(
+                    si.onResolve
+                );
             }
             
             // Save current check item state
@@ -571,6 +568,8 @@
             var keepAct;
             var currentPin;
             
+            var requestCheckItem;
+            
             // Load intermediate state
             function loadIntermediateState() {
                 inter = state.inter
@@ -587,6 +586,29 @@
                 var locLL = new VELatLong(interLat, interLong);
                 currentPin = AddPushpin(map, locLL, "Traveler's Location", "Where the traveler is right now", false, "pin-user.png");
                 map.SetCenter(locLL);
+            }
+            
+            // Create the check item related to the request
+            function processRequest() {
+                if ('sys_request_check' in checkItems) {
+                    requestCheckItem = checkItems['sys_request_check'];
+                    return;
+                }
+                
+                var problem = "TODO: Fill this in with request related information.";
+                var n = new note("Fix the Trip Plan", problem, ['check', 'request']);
+                si = new streamitem('check', n, null);
+                si.id = 'sys_request_check';
+                si.onResolve = function() {
+                    $("#stream_" + si.id).remove();
+                    delete checkItems[si.id];
+                    saveCheckItems();
+                    saveResolution();
+                    closeAdd();
+                };
+                
+                requestCheckItem = si;
+                createCheckItem("#checkStreamBody", si);
             }
             
             // Save that the intermediate problem has been resolved
@@ -627,14 +649,15 @@
             ///////////////////////////////////////////
             
             var showExplanation = true;
-            var replanningExplanation = "<br/>Insert replanning explanation here<br/>";
             
+            // Show either the mission or the check item for the replanning task
             function showExplanationBox() {
                 if (!showExplanation) {
                     return;
                 }
                 
                 if (inProgress) {
+                    viewCheck(requestCheckItem);
                 } else {
                     viewMission();
                 }
