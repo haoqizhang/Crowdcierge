@@ -13,6 +13,7 @@
         var tid;
         var stateId;
         var assignmentId = null;
+        var urlHead = "file:///C:/Users/Joey%20Rafidi/Documents/GitHub/Crowdcierge/mobi/interface/mobi-admin-crowd.html?tid="
         var taskIds =   ["92f792d5f805b79974466450f528d24e",
                         "72f2a275c14c3af09e6c2f2b73f03241",
                         "453ad2e6eeda9e3ccd9d2739c0f1025d",
@@ -55,6 +56,7 @@
             // Handle task ID selection
             $("#taskIds").change(function () {
                 tid = $("#taskIds option:selected").text();
+                $("#taskLink").attr("href", urlHead + tid);
                 loadTaskState();  
                 loadStream();
                 populateForm();
@@ -84,10 +86,7 @@
             })
             
             // Initialize to first task
-            tid = taskIds[0];
-            loadTaskState();  
-            loadStream();
-            populateForm();
+            $("#taskIds").change();
         });
         
         // Populates the custom state form with state data
@@ -234,7 +233,8 @@
         Click the button below to mark the problem as resolved: <br/>
         <button onclick="inProgress = false; saveState()"> Clear In Progress </button> <br/><br/><br/>
         Current Status: <br/>
-        <span id="working" style="color:green"></span>
+        <span id="working" style="color:green"></span> <br/><br/>
+        <a id="taskLink" href="">Go to task</a>
 	</div>
 
     <div style="float:left; margin-left:50px">
