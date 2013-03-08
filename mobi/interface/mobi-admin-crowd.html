@@ -15,6 +15,7 @@
         <script type="text/javascript" src="mobi-admin-crowd.js"></script>
         <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>      
         <script type='text/javascript' src='fullcalendar/fullcalendar.min.js'></script>
+        <script type="text/javascript" src="jquery/jquery.validate.min.js"></script>
         <script type="text/javascript">
         
             ///////////////////////////////////////////
@@ -561,6 +562,7 @@
             var setStart = false;
             
             // Local storage of intermediate state data
+            var inter;
             var interTime;
             var interLat;
             var interLog;
@@ -569,16 +571,9 @@
             var keepAct;
             var currentPin;
             
-            // Temp test inter state
-            var interTest = false;
-            var inter = {time:900, lat:36.114708, long:-115.148717, keepActivities:["user_460"]};
-            
             // Load intermediate state
             function loadIntermediateState() {
-                if (!interTest) {
-                    inter = state.inter;
-                }
-                
+                inter = state.inter
                 interTime = inter.time;  // Time of request
                 interLat = inter.lat;   // Latitude location
                 interLong = inter.long; // Longitude location
@@ -633,7 +628,6 @@
             ///////////////////////////////////////////
             
             var showExplanation = true;
-            
             var replanningExplanation = "<br/>Insert replanning explanation here<br/>";
             
             function showExplanationBox() {
@@ -642,7 +636,6 @@
                 }
                 
                 if (inProgress) {
-                    
                 } else {
                     viewMission();
                 }
