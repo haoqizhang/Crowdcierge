@@ -206,7 +206,6 @@ function closeAdd() {
     $('#editEnd').hide();
     $('#editStart').hide();
     $("#viewCheck").hide();
-    $("#explanationBox").hide();
 }
 
 // Called second in document ready to get user id and task id
@@ -947,7 +946,6 @@ function addActivity() {
     $('#addNote').css('display', 'none');
     $('#viewNote').css('display', 'none');
     $('#viewActivity').css('display', 'none');
-    $("#explanationBox").hide();
     $('#viewCheck').hide();
 
 
@@ -1028,7 +1026,6 @@ function viewNote(si) {
     $('#addNote').hide();
     $('#viewNote').show();
     $('#viewActivity').hide();
-    $("#explanationBox").hide();
     $('#viewCheck').hide();
 
     $('#viewtitle').html(si.data.name);
@@ -1073,7 +1070,6 @@ function viewActivity(si) {
     $('#addNote').css('display', 'none');
     $('#viewNote').css('display', 'none');
     $('#viewActivity').css('display', 'block');
-    $("#explanationBox").hide();
     $('#viewCheck').hide();
 
     actfindLayer.DeleteAllShapes();
@@ -1234,7 +1230,6 @@ function editStart() {
     $('#addNote').hide();
     $('#viewNote').hide();
     $('#viewActivity').hide();
-    $("#explanationBox").hide();
     $('#editActivity').hide();
     $('#editEnd').hide();
     $('#editStart').show();
@@ -1334,7 +1329,6 @@ function editEnd() {
     $('#addNote').hide();
     $('#viewNote').hide();
     $('#viewActivity').hide();
-    $("#explanationBox").hide();
     $('#editActivity').hide();
     $('#editStart').hide();
     $('#editEnd').show();
@@ -1710,7 +1704,6 @@ function editActivity(si) {
     $('#viewNote').hide();
     $('#viewActivity').hide();
     $('#viewCheck').hide();
-    $("#explanationBox").hide();
 
     $('#editActivity').show();
 
@@ -1828,7 +1821,6 @@ function editNote(si) {
     $('#viewNote').hide();
     $('#viewActivity').hide();
     $('#viewCheck').hide();
-    $("#explanationBox").hide();
     $('#editNote').show();
 
 
@@ -1890,7 +1882,6 @@ function addSelect() {
     $('#viewNote').hide();
     $('#viewHelp').hide();
     $('#viewActivity').hide();
-    $("#explanationBox").hide();
     $('#viewMission').hide();
     $('#signup').hide();
 
@@ -1914,7 +1905,6 @@ function addNote() {
     $('#addNote').show();
     $('#viewNote').hide();
     $('#viewActivity').hide();
-    $("#explanationBox").hide();
 
     var txt = $('#searchBox').val();
     if (txt != emptyText) {
@@ -3151,7 +3141,6 @@ function viewHelp() {
     $('#viewMission').hide();
     $('#signup').hide();
     $('#viewActivity').hide();
-    $("#explanationBox").hide();
     $('#viewHelp').show();
 
 
@@ -3173,7 +3162,6 @@ function viewMission() {
     $('#viewNote').hide();
     $('#viewHelp').hide();
     $('#viewActivity').hide();
-    $("#explanationBox").hide();
     $('#signup').hide();
 
     $('#box').css('left', '30%');
@@ -3253,7 +3241,6 @@ function showSignup() {
     $('#viewNote').hide();
     $('#viewHelp').hide();
     $('#viewActivity').hide();
-    $("#explanationBox").hide();
     $('#viewMission').hide();
     $('#signup').show();
 

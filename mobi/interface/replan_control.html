@@ -8,22 +8,13 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	<script type="text/javascript">
     
-        // Stuff needed to post
-        var state;
+        // Task and post data
         var uid = "57187fd22e931d8b2145d920967e559d"; // Test user id
         var tid;
         var stateId;
         var assignmentId = null;
-        
-        // Test intermediate state
-        var testInter = {time:900, lat: 42.36190529903, long: -71.100511550903, keepActivities:["user_460"]};
-        
-        // State variables
-        var inter = testInter;
-        var inProgress = true;
-        
         var taskIds =   ["92f792d5f805b79974466450f528d24e",
-                        "72f2a275c14c3af09e6c2f2b73f03241",                
+                        "72f2a275c14c3af09e6c2f2b73f03241",
                         "453ad2e6eeda9e3ccd9d2739c0f1025d",
                         "a31b5015bac8dce3a4e417b5d7fdcb31",
                         "6d33280aa09b19776b7721c98c784223",
@@ -34,11 +25,26 @@
                         "2507f771e649290105c5180852db4d01",
                         "1ad763711678e776436bd16678d27dc5",
                         "4b4ef627007a24382602411ca491d1e1"]
+
+        // State variables
+        var userStream = {};
+        var state;
+        var inter = {};
+        var inProgress = true;
                         
-        var requestTypes = ["replace", "stuck", "delayed", "addMoreLike", "addNow", "custom"];
+        // Request types and text
+        var requestTypes =  ["replace", "addMoreLike", "stuck", "delayed", "addNow", "custom"];
+        var requestText =   {"replace"      : "I'd like to replace an activity with something else",
+                            "stuck"         : "I can't go very far from where I am",
+                            "delayed"       : "I can't make it to the next activity on time",
+                            "addMoreLike"   : "I'd like more activities like this one",
+                            "addNow"        : "I need something to do right now",
+                            "custom"        : "Custom message"}
+                            
         
         // Ready form with test data and load state
-        $(document).ready(function (jQuery) {            
+        $(document).ready(function (jQuery) {
+            // Populate task ID dropdown
             for (i=0;i<taskIds.length;i++){ 
                 var o = $(document.createElement('option'));
                 o.attr('value', taskIds[i]);
@@ -46,15 +52,41 @@
                 $("#taskIds").append(o);
             }
             
+            // Handle task ID selection
+            $("#taskIds").change(function () {
+                tid = $("#taskIds option:selected").text();
+                loadTaskState();  
+                loadStream();
+                populateForm();
+            })
+            
+            // Populate request type dropdown
             for (i=0;i<requestTypes.length;i++){ 
                 var o = $(document.createElement('option'));
                 o.attr('value', requestTypes[i]);
-                o.text(requestTypes[i]);
+                o.text(requestText[requestTypes[i]]);
                 $("#requestTypes").append(o);
             }
             
+            // Handle request type selection
+            $("#requestTypes").change(function () {
+                var type = $("#requestTypes option:selected").val();
+                $("#radioTop").hide();
+                $("#customMessage").hide()
+                if (type == "replace" || type == "addMoreLike") {
+                    $("#radioTop").show();
+                }
+             
+                if (type == "custom") {
+                    $("#radioTop").show();
+                    $("#customMessage").show()
+                }
+            })
+            
+            // Initialize to first task
             tid = taskIds[0];
             loadTaskState();  
+            loadStream();
             populateForm();
         });
         
@@ -62,23 +94,24 @@
         function populateForm() {
             $("#tripInfo").html(state.admin.name + " by " + state.admin.creator);
             $("#times").html("(" + state.admin.beginTime + " - " + state.admin.endTime + ")");
-            $("#time").val(testInter.time);
-            $("#lat").val(testInter.lat);
-            $("#long").val(testInter.long);
+            $("#time").val(state.admin.beginTime);
+            $("#lat").val(state.admin.start.lat);
+            $("#long").val(state.admin.start.long);
         
+            $("#keepCheck").empty();
             for (var i=0;i<state.itinerary.length;i++) {
                 $("#keepCheck").append("<input type='checkbox' id='myRadio"
-                    +state.itinerary[i]+"'/>" + state.itinerary[i] + "<br/>");
+                    +state.itinerary[i]+"'/>" + userStream[state.itinerary[i]].value + "<br/>");
             }
             
+            $("#requestRadio").empty();
             for (var i=0;i<state.itinerary.length;i++) {
                 $("#requestRadio").append("<input type='radio' name='group1' id='myRadio"
-                    +state.itinerary[i]+"'/>" + state.itinerary[i] + "<br/>");
+                    +state.itinerary[i]+"'/>" + userStream[state.itinerary[i]].value + "<br/>");
             }
         }
         
         // Load the task state
-        // TODO: call again when new task ID is selected
         function loadTaskState() {
             jQuery.ajax({
                 type: "GET",
@@ -99,10 +132,34 @@
             return;
         }
         
+        // Load the user stream
+        function loadStream() {
+            jQuery.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/loadTurkTourStream.php",
+                data: ({
+                    type: "turktour",
+                    id: tid
+                }),
+                async: false,
+                success: function (obj) {
+                    if (obj == "") {} else {
+                        for (var i = 0; i < obj.length; i++) {
+                            if (obj[i].changeInfo == null) {
+                                var ans = eval('(' + obj[i].answer + ')');
+                                userStream['user_' + obj[i].hitId] = ans;
+                            }
+                        }
+                    }
+                }
+            });
+            return;
+        }
+        
         // Sets the intermediate state to whatever state was filled in in the form
         function setCustomInter() {
             inProgress = true;
-            inter = testInter;
                  
             inter.time = parseInt($("#time").val());
             inter.lat = parseFloat($("#lat").val());
@@ -122,8 +179,6 @@
             request.data.activity = $('input:radio[name=group1]:checked').val();
             request.data.message = $("#requestText").val();
             inter.request = request;
-            
-            console.log(inter);
             
             saveState();
         }
@@ -158,15 +213,11 @@
             });
             return ret;
         }
-    
+   
 	</script>
 	<div style="margin-left:auto; margin-right:auto; float:left; width:200px"> 
         Click the button below to set the task to a custom intermediate state: <br/>
         <button onclick="setCustomInter()"> Set Custom State </button> <br/><br/><br/>
-    
-        Click the button below to set the task to a test intermediate state: <br/>
-        <button onclick="inProgress = true; inter = testInter; saveState()"> Set Test State </button> <br/><br/><br/>
-        
         Click the button below to mark the state as no longer in progress: <br/>
         <button onclick="inProgress = false; saveState()"> Clear In Progress </button> <br/><br/><br/>
 	</div>
@@ -181,11 +232,15 @@
         <div id="keepCheck" style="margin-left:20px">
         </div> <br/>
         Request Type :<select id="requestTypes"></select> <br/>
-        Relevant Activity (only used for replace and addMoreLike): <br/>
-        <div id="requestRadio" style="margin-left:20px">
+        <div id="radioTop">
+            Relevant Activity: <br/>
+            <div id="requestRadio" style="margin-left:20px">
+            </div> 
         </div> <br/> 
-        Request Text (only used for custom):<br/>
-        <textarea id="requestText"></textarea>
+        <div id="customMessage" style="display:none">
+            Request Text:<br/>
+            <textarea id="requestText"></textarea>
+        </div>
     </div>
     
 </body>

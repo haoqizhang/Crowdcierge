@@ -151,6 +151,8 @@
                 }
                 
                 $(".fc-slot"+slotNum+" .fc-widget-content").css("background-color", "orange");
+                $(".fc-slot"+slotNum+" .fc-widget-content").css("z-index", 1000);
+                $(".fc-slot"+slotNum+" .fc-widget-content").css("position", "relative");
                 $(".fc-slot"+slotNum+" .fc-widget-content").css("text-align", "center");
                 $(".fc-slot"+slotNum+" .fc-widget-content").text("Current Time");
             }
@@ -189,6 +191,7 @@
                 }
                 
                 if (item.data.start < interTime) {
+                    event.backgroundColor="grey";
                     finishedAct.push(itineraryId);
                 }
                 
@@ -586,9 +589,10 @@
                 // Set calendar check time to intermediate time
                 calBegin = interTime;
                 
-                // Place user pin at current location
+                // Place user pin at current location and center map on that location
                 var locLL = new VELatLong(interLat, interLong);
                 currentPin = AddPushpin(map, locLL, "Traveler's Location", "Where the traveler is right now", false, "pin-user.png");
+                map.SetCenter(locLL);
             }
             
             // Save that the intermediate problem has been resolved
@@ -630,29 +634,17 @@
             
             var showExplanation = true;
             
-            var planningExplanation = "<br/>You're going to help plan a day trip for a traveler.  You will suggest activity ideas based on what the traveler likes, then put them in the itinerary at the right times. <br/> <br/> On the left, you can see what you can do to help, marked with the [insert todo icon] icon.  Below those items, you can see other ideas people have suggested.  At the top, you can search for existing items or add your own.<br/><br/>In the middle, you can see the map and the route of the current plan.  The trip starts at the green dot and ends at the red dot, with each blue flag marking an activity on the itinerary.  The green line shows the route the traveler will take.<br/><br/>Finally, on the right, there's the current itinerary.  You can drag and drop the items, but you can't leave any two of them overlapping.<br/><br/>Thanks for your help, and have fun!"
-            
             var replanningExplanation = "<br/>Insert replanning explanation here<br/>";
             
             function showExplanationBox() {
-                if (showExplanation) {
-                    $('#box').css('left', '30%');
-                    $('#box').css('right', '30%');
-
-                    $('#addActivity').hide();
-                    $('#addNote').hide();
-                    $('#viewCheck').hide();
-                    $('#viewActivity').hide();
-                    $('#viewNote').hide();
-                    $("#explanationBox").show();
+                if (!showExplanation) {
+                    return;
+                }
+                
+                if (inProgress) {
                     
-                    $('#overlay').fadeIn('fast', function () {
-                        $('#box').animate({
-                            'top': '20px'
-                        }, 500);
-                    });
-                    
-                    $("#explanationContent").empty().html(planningExplanation);
+                } else {
+                    viewMission();
                 }
             }
             
@@ -1260,25 +1252,6 @@
                     </div>
                 </div>
             </div>
-            <div id='explanationBox' style='display:none'>
-                <h1 id='explanationhHeader'>Welcome to Crowdcierge!<span style='float:right;'></span></h1>
-                <div id="explanationContent">
-                    <br/>
-                    You're going to help plan a day trip for a traveler.  You will suggest activity ideas based on what the traveler likes, then put them in the itinerary at the right times.
-                    <br/>
-                    <br/>
-                    In the Brainstream to the left, you can see what you can do to help, marked with the [insert todo icon] icon.  Underneath those items, you can see other ideas people have suggested.  At the top, you can search for items in the stream or add your own.
-                    <br/>
-                    <br/>
-                    In the middle, you can see the map and the route of the current plan.  The trip starts at the green dot and ends at the red dot, with each blue flag marking an activity on the itinerary.  The green line shows the route the traveler will take.
-                    <br/>
-                    <br/>
-                    Finally, on the right, there's the current itinerary.  You can drag and drop the items, but you can't leave any two of them overlapping.
-                    <br/>
-                    <br/>
-                    Thanks again, and have fun!
-                </div>
-            </div>
             <div id='viewMission' style='display:none'>
                  <h1 id='missionheader'>Mission<span style='float:right;'><button onclick="editMission()" id='editmissionbutton' class='addit'>edit mission</button></span></h1>
 
@@ -1608,7 +1581,7 @@
             <table id="finishedTable" style="display:none">
                 <tbody id='finishedItinerary'></tbody>
             </table>
-            <div style="overflow:auto; height:87%">
+            <div style="overflow:auto; height:85%">
                 <div id="calendar"></div>
             </div>
             <table id="sortable" style="display:none">
