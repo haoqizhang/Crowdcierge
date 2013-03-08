@@ -2613,11 +2613,9 @@ function loadStream() {
         }),
         async: false,
         success: function (obj) {
-            console.log(obj);
             if (obj == "") {} else {
                 var count = 0;
                 for (var i = 0; i < obj.length; i++) {
-                    console.log(obj[i]);
                     if (obj[i].changeInfo == null) {
                         userStream.push(eval('(' + obj[i].answer + ')'));
                         userStream[count].id = 'user_' + obj[i].hitId;
