@@ -103,7 +103,22 @@
             for (var i=0;i<state.itinerary.length;i++) {
                 $("#keepCheck").append("<input type='checkbox' id='myRadio"
                     +state.itinerary[i]+"'/>" + userStream[state.itinerary[i]].value + "<br/>");
+                if (i != 0) {
+                    var o = $(document.createElement('option'));
+                    o.attr('value', i);
+                    o.text("Between activities " + i + " and " + (i+1));
+                    $("#locationOptions").append(o);
+                }
             }
+            
+            // Location selection
+            $("#").change(function () {
+                tid = $("#taskIds option:selected").text();
+                $("#taskLink").attr("href", urlHead + tid);
+                loadTaskState();  
+                loadStream();
+                populateForm();
+            })
             
             $("#requestRadio").empty();
             for (var i=0;i<state.itinerary.length;i++) {
@@ -243,19 +258,23 @@
         Time: <input type="text" id="time"></input> <span id="times"></span> <br/>
         Lat: <input type="text" id="lat"></input> <br/>
         Long: <input type="text" id="long"></input> <br/>
-        Activities to keep: <br/>
-        <div id="keepCheck" style="margin-left:20px">
-        </div> <br/>
-        Request Type :<select id="requestTypes"></select> <br/>
+        Location: <select id="locationOptions"></select> <br/>
+    </div>
+    
+    <div style="float:left; margin-left:50px">
+        Request Type: <select id="requestTypes"></select> <br/>
         <div id="radioTop">
             Relevant Activity: <br/>
             <div id="requestRadio" style="margin-left:20px">
-            </div> 
-        </div> <br/> 
+            </div> <br/> 
+        </div>
         <div id="customMessage" style="display:none">
             Request Text:<br/>
-            <textarea id="requestText"></textarea>
+            <textarea id="requestText"></textarea><br/> 
         </div>
+        Activities to keep: <br/>
+        <div id="keepCheck" style="margin-left:20px">
+        </div> <br/>
     </div>
     
 </body>
