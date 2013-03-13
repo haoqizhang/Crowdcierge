@@ -575,6 +575,7 @@
                                 }
             
             var submissionInstructions = '<br/><br/> When you are finished, click this item again in the list on the left and click "resolve" to submit.';
+            var oldItinerary;
             
             // Load intermediate state
             function loadIntermediateState() {
@@ -588,6 +589,7 @@
                 interLong = inter.long; // Longitude location
                 keepAct = inter.keepActivities;    // What activities need to remain on the itinerary (optional)
                 fixRequest = inter.request;    // What the request is, containing extra info if needed
+                oldItinerary = JSON.stringify(itinerary);
                 
                 // Set calendar check time to intermediate time
                 calBegin = interTime;
@@ -617,6 +619,12 @@
                         alert("Some items in the plan are overlapping.  You can only submit the task when there is no overlap.");
                         return;
                     }
+                    
+                    if (oldItinerary == JSON.stringify(itinerary)) {
+                        alert("You didn't make any changes to the trip plan, so you can't submit this task yet.  Fix the trip plan and then submit.");
+                        return;
+                    }
+                    
                     $("#stream_" + si.id).remove();
                     delete checkItems[si.id];
                     saveResolution();

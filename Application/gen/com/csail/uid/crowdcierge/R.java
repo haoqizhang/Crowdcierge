@@ -17,8 +17,8 @@ public final class R {
         public static final int createAccountButton=0x7f070004;
         public static final int imageView1=0x7f070008;
         public static final int inProgressTripButton=0x7f070001;
-        public static final int menu_settings=0x7f070009;
-        public static final int menu_signout=0x7f07000a;
+        public static final int menu_settings=0x7f07000a;
+        public static final int menu_signout=0x7f070009;
         public static final int newTripButton=0x7f070000;
         public static final int passwordInput=0x7f070006;
         public static final int pastTripsButton=0x7f070002;
