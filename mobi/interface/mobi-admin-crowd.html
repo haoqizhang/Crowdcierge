@@ -62,13 +62,13 @@
                 initCalendar(shift, start, end);
                 
                 // Add check items stored in state
-                checkItems = state.checkItems;
+                //checkItems = state.checkItems;
                 if (!checkItems || checkItems.length == 0) {
-                    checkItems = {};
+                    //checkItems = {};
                 }
 
                 for (var key in checkItems) {
-                    createCheckItem("#checkStreamBody", checkItems[key]);
+                    //createCheckItem("#checkStreamBody", checkItems[key]);
                 }
             }
             
@@ -226,7 +226,8 @@
                 // Prevent dragging past start time
                 var si = getItem(event.itId);
                 var newStart = si.data.start + minuteDelta;
-                if (keepAct && finishedAct && (newStart < calBegin || include(keepAct, event.itId) || include(finishedAct, event.itId))) {
+                var newEnd = newStart + parseInt(si.data.duration);
+                if (keepAct && finishedAct && (newStart < calBegin || include(keepAct, event.itId) || include(finishedAct, event.itId) || newEnd > endTime)) {
                     revertFunc();
                     return;
                 }
@@ -261,7 +262,9 @@
             // Update activity durations
             // Called on even drag
             function syncEventDrag(event, dayDelta, minuteDelta, revertFunc) {
-                if (include(keepAct, event.itId) || include(finishedAct, event.itId)) {
+                var si = getItem(event.itId);
+                var newEnd = si.data.start + parseInt(si.data.duration) + minuteDelta;
+                if (include(keepAct, event.itId) || include(finishedAct, event.itId) || newEnd > endTime) {
                     revertFunc();
                     return;
                 }
@@ -296,10 +299,10 @@
                     timeBlocks.push(block);
                 }
             
-                var problem = "Two of the items in the itinerary are overlapping.  Move them around so no events cover each other.";
+                var problem = "Two of the items in the itinerary are overlapping.  Move them around so that no activities cover each other, or remove activities to free up time.";
                 var n = new note("Itinerary items are overlapping",
                 problem, ['todo', 'time']);
-                si = new streamitem('todo', n, null);
+                var si = new streamitem('todo', n, null);
                 si.id = 'sys_overlap_items';
                 
                 var add = false;
@@ -315,7 +318,12 @@
                 
                 if (add && $("#stream_sys_overlap_items").length == 0) {
                     sysStream.push(si);
-                    displayStreamItem("#sysStreamBody", si);
+                    
+                    if (inProgress) {
+                        displayStreamItem("#replanStreamBody", si);
+                    } else {
+                        displayStreamItem("#sysStreamBody", si);
+                    }
                 }
             }
             
@@ -428,17 +436,6 @@
             // CHECK ITEM CODE
             ///////////////////////////////////////////
             
-            // Creates a sample check item (for testing)
-            function createSampleCheckItem() {
-                var problem = "This is a sample check item that must be resolved manually.";
-                var n = new note("Sample Check Item " + (new Date()).getTime(),
-                problem, ['check', 'sample']);
-                si = new streamitem('check', n, null);
-                si.id = 'sys_sample_check' + (new Date()).getTime();
-                
-                createCheckItem("#checkStreamBody", si);
-            }
-            
             // Creates a check item from a stream item object
             function createCheckItem(id, si) {
                 var item = $(document.createElement('tr'));
@@ -477,8 +474,8 @@
                 $(item).attr('id', 'stream_' + si.id);
                 $(id).prepend(item);
                 
-                checkItems[si.id] = si;
-                saveCheckItems();
+                //checkItems[si.id] = si;
+                //saveCheckItems();
             }
             
             // View a checked item in the overlay box
@@ -492,17 +489,7 @@
                 $('#viewActivity').hide();
                 $('#viewNote').hide();
 
-                $('#viewchecktitle').html(si.data.name);
                 $('#viewcheckdesc').html(si.data.description);
-                $('#viewchecktags').empty();
-                for (var i = 0; i < si.data.categories.length; i++) {
-                    var d = ', ';
-                    if (i == si.data.categories.length - 1) {
-                        d = '';
-                    }
-                    var c = si.data.categories[i] + d;
-                    $('#viewchecktags').append('#' + c);
-                }
                 
                 $('#overlay').fadeIn('fast', function () {
                     $('#box').animate({
@@ -510,9 +497,10 @@
                     }, 500);
                 });
                 
-                $("#resolvebutton").click(
-                    si.onResolve
-                );
+                $("#resolvebutton").unbind("click");
+                $("#resolvebutton").click(function() {
+                    si.onResolve()
+                });
             }
             
             // Save current check item state
@@ -565,13 +553,35 @@
             var interLog;
             var finishedAct = [];
             var fixRequest;
-            var keepAct;
+            var keepAct = [];
             var currentPin;
             
             var requestCheckItem;
             
+            var requestText =   {
+                                "replace"       : "A traveler needs your help.  He is in the middle of a trip and wants something to do instead of {0}.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Find something for him to do instead.",
+            
+                                "stuck"         : "A traveler needs your help.  He is in the middle of a trip and can't get to his next activity.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Find activities closer to his location that he can do and put them in the plan.",
+                                
+                                "delayed"       : "A traveler needs your help.  He is in the middle of a trip and is delayed.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Move his trip plan around so that he can finish his trip, either by changing the activities or removing items.",
+                                
+                                "addMoreLike"   : "A traveler needs your help.  He is in the middle of a trip and wants more activities like {0}, which is tagged as {1}.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Add more related activities, and you can change or remove parts of the current plan to make time.",
+                                
+                                "addNow"        : "A traveler needs your help.  He is in the middle of a trip and wants something else to do right now.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Add something for him to do right now.",
+                                
+                                "cantGo"        : "A traveler needs your help.  He is in the middle of a trip and his next planned activity, {0}, is not available.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Find him something else to do instead.",
+                                
+                                "custom"        : "A traveler needs your help.  He is located at the orange pin on the map, and the current time is marked on the calendar.  He wants you to follow these instructions: <br/><br/>{2}"
+                                }
+            
+            var submissionInstructions = '<br/><br/> When you are finished, click this item again in the list on the left and click "resolve" to submit.';
+            
             // Load intermediate state
             function loadIntermediateState() {
+                // Show the replanning stream, not the full sys stream
+                $("#sysStreamBody").hide();
+                $("#replanStreamBody").show();
+            
                 inter = state.inter
                 interTime = inter.time;  // Time of request
                 interLat = inter.lat;   // Latitude location
@@ -590,21 +600,28 @@
             
             // Create the check item related to the request
             function processRequest() {
-                if ('sys_request_check' in checkItems) {
-                    requestCheckItem = checkItems['sys_request_check'];
-                    return;
+                var problem;
+                if (fixRequest.data.activity) {
+                    var item = getItem(fixRequest.data.activity);
+                    problem = jQuery.validator.format(requestText[fixRequest.type], item.value, "", fixRequest.data.message);
+                } else {
+                    problem = jQuery.validator.format(requestText[fixRequest.type], "", "", fixRequest.data.message);
                 }
+                problem = problem + submissionInstructions;
                 
-                var problem = "TODO: Fill this in with request related information.";
                 var n = new note("Fix the Trip Plan", problem, ['check', 'request']);
-                si = new streamitem('check', n, null);
+                var si = new streamitem('check', n, null);
                 si.id = 'sys_request_check';
                 si.onResolve = function() {
+                    if ($("#stream_sys_overlap_items").length != 0) {
+                        alert("Some items in the plan are overlapping.  You can only submit the task when there is no overlap.");
+                        return;
+                    }
                     $("#stream_" + si.id).remove();
                     delete checkItems[si.id];
-                    saveCheckItems();
                     saveResolution();
                     closeAdd();
+                    alert("Hurray, you finished!  Thanks for helping me debug this.  Please don't change anything else about the plan now.");
                 };
                 
                 requestCheckItem = si;
@@ -658,6 +675,12 @@
                 
                 if (inProgress) {
                     viewCheck(requestCheckItem);
+                    $("#resolvebutton").hide();
+                    $("#gotit").click(function() {
+                        $("#resolvebutton").show();
+                        closeAdd();
+                        $("#gotit").hide();
+                    });
                 } else {
                     viewMission();
                 }
@@ -1338,24 +1361,25 @@
                 </div>
             </div>
             <div id='viewCheck' style='display:none'>
-                <h1 id='viewcheckheader'>Check
+                <h1 id='viewcheckheader'>Your Task: Fix a Trip Plan
                     <span style='float:right;'>
                         <button id='resolvebutton' class='addit'>resolve</button>
                     </span>
                 </h1>
                 <div>
-                    <table id='viewCheckTable'>
+                    <table id='viewCheckTable' style="margin-top:10px">
                         <tr>
-                            <td>Title:</td>
-                            <td id='viewchecktitle'></td>
+                            <td></td>
                         </tr>
                         <tr>
-                            <td>Message:</td>
                             <td id='viewcheckdesc'></td>
                         </tr>
                         <tr>
-                            <td>Tags:</td>
-                            <td id='viewchecktags'></td>
+                            <td>
+                                <div style='text-align:center; font-size:2.5em'>
+                                    <button id='gotit' class='addit'>got it</button>
+                                </div>
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -1565,6 +1589,7 @@
             </div>
             <table class='streamclass' id="brainstream">
                 <tbody id='checkStreamBody'></tbody>
+                <tbody id='replanStreamBody' style="display:none"></tbody>
                 <tbody id='sysStreamBody'></tbody>
                 <tbody id='userStreamBody'></tbody>
             </table>

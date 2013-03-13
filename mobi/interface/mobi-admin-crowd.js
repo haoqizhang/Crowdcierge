@@ -2727,6 +2727,7 @@ function problemStatement(constraint, predData) {
 }
 
 function updateSysStream() {
+    $('#replanStreamBody').empty();
     $('#sysStreamBody').empty();
     sysStream.length = 0;
 
@@ -3085,7 +3086,12 @@ function updateScheduleConstraints(actualend) {
     } else {
         return;
     }
-    displayStreamItem('#sysStreamBody', si);
+    
+    if (inProgress) {
+        //displayStreamItem("#replanStreamBody", si);
+    } else {
+        displayStreamItem("#sysStreamBody", si);
+    }
 
     var checkexist = false;
     for (var i = 0; i < sysStream; i++) {

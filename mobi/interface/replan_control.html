@@ -15,7 +15,6 @@
         var assignmentId = null;
         var urlHead = "file:///C:/Users/Joey%20Rafidi/Documents/GitHub/Crowdcierge/mobi/interface/mobi-admin-crowd.html?tid="
         var taskIds =   ["92f792d5f805b79974466450f528d24e",
-                        "72f2a275c14c3af09e6c2f2b73f03241",
                         "453ad2e6eeda9e3ccd9d2739c0f1025d",
                         "a31b5015bac8dce3a4e417b5d7fdcb31",
                         "6d33280aa09b19776b7721c98c784223",
@@ -25,7 +24,8 @@
                         "71928f85675acec8da164b317c0acb08",
                         "2507f771e649290105c5180852db4d01",
                         "1ad763711678e776436bd16678d27dc5",
-                        "4b4ef627007a24382602411ca491d1e1"]
+                        "4b4ef627007a24382602411ca491d1e1",
+                        "72f2a275c14c3af09e6c2f2b73f03241"]
 
         // State variables
         var userStream = {};
@@ -34,12 +34,13 @@
         var inProgress = true;
                         
         // Request types and text
-        var requestTypes =  ["replace", "addMoreLike", "stuck", "delayed", "addNow", "custom"];
+        var requestTypes =  ["replace", "addMoreLike", "stuck", "delayed", "addNow", "cantGo", "custom"];
         var requestText =   {"replace"      : "I'd like to replace an activity with something else",
                             "stuck"         : "I can't go very far from where I am",
                             "delayed"       : "I can't make it to the next activity on time",
                             "addMoreLike"   : "I'd like more activities like this one",
                             "addNow"        : "I need something to do right now",
+                            "cantGo"        : "I can't do the next activity because it's closed or inaccessible right now",
                             "custom"        : "Custom message"}
                             
         
@@ -75,7 +76,7 @@
                 var type = $("#requestTypes option:selected").val();
                 $("#radioTop").hide();
                 $("#customMessage").hide()
-                if (type == "replace" || type == "addMoreLike") {
+                if (type == "replace" || type == "addMoreLike" || type == "cantGo") {
                     $("#radioTop").show();
                 }
              
@@ -98,37 +99,47 @@
             $("#time").val(state.admin.beginTime);
             $("#lat").val(state.admin.start.lat);
             $("#long").val(state.admin.start.long);
-        
             $("#keepCheck").empty();
+            
+            // Iterate over itinerary items to fill checklist and location dropdown
+            $("#locationOptions").empty();
+            $("#requestRadio").empty();
             for (var i=0;i<state.itinerary.length;i++) {
-                $("#keepCheck").append("<input type='checkbox' id='myRadio"
+                $("#keepCheck").append("<input type='checkbox' id='keepCheck_"
                     +state.itinerary[i]+"'/>" + userStream[state.itinerary[i]].value + "<br/>");
-                if (i != 0) {
+                $("#requestRadio").append("<input type='radio' name='group1' id='requestAct_"
+                    +state.itinerary[i]+"' value='" + state.itinerary[i] + "'/>" + userStream[state.itinerary[i]].value + "<br/>");
+                var o = $(document.createElement('option'));
+                o.attr('value', state.itinerary[i]);
+                o.text("Activity " + (i+1));
+                $("#locationOptions").append(o);
+                if (i < state.itinerary.length-1) {
                     var o = $(document.createElement('option'));
-                    o.attr('value', i);
-                    o.text("Between activities " + i + " and " + (i+1));
+                    o.attr('value', i+1);
+                    o.text("Between activities " + (i+1) + " and " + (i+2));
                     $("#locationOptions").append(o);
                 }
             }
             
             // Location selection
-            $("#").change(function () {
-                tid = $("#taskIds option:selected").text();
-                $("#taskLink").attr("href", urlHead + tid);
-                loadTaskState();  
-                loadStream();
-                populateForm();
+            $("#locationOptions").change(function () {
+                var value = $("#locationOptions option:selected").val();
+                if (value.indexOf("user") != -1) {
+                    $("#lat").val(userStream[value].data.location.lat);
+                    $("#long").val(userStream[value].data.location.long);
+                    return;
+                }
+                
+                var startItem = userStream[state.itinerary[value-1]];
+                var endItem = userStream[state.itinerary[value]];
+                $("#lat").val((startItem.data.location.lat+endItem.data.location.lat)/2);
+                $("#long").val((startItem.data.location.long+endItem.data.location.long)/2);
             })
-            
-            $("#requestRadio").empty();
-            for (var i=0;i<state.itinerary.length;i++) {
-                $("#requestRadio").append("<input type='radio' name='group1' id='myRadio"
-                    +state.itinerary[i]+"'/>" + userStream[state.itinerary[i]].value + "<br/>");
-            }
         }
         
         // Set working label
         function setWorking(isWorking) {
+            inProgress = isWorking;
             if (isWorking) {
                 $("#working").text("Still working...");
                 $("#working").css("color", "red");
@@ -194,7 +205,7 @@
             
             var keep = [];
             for (var i=0;i<state.itinerary.length;i++) {
-                if ($("#myRadio"+state.itinerary[i]).is(":checked")) {
+                if ($("#keepCheck_"+state.itinerary[i]).is(":checked")) {
                     keep.push(state.itinerary[i]);
                 }
             }
@@ -239,6 +250,36 @@
                 }
             });
             return ret;
+        }
+        
+        // Refreshing interval var
+        var refresh = setInterval(function() {refreshCheck();}, 3000);
+        
+        // Refreshes to check if the task has been completed
+        function refreshCheck() {           
+            jQuery.ajax({
+                type: "GET",
+                url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/loadTurkTourTaskState.php",
+                data: ({
+                    type: "turktour",
+                    id: tid
+                }),
+                async: true,
+                success: function (obj) {
+                    if (obj == "") {} else {
+                        var newState = eval('(' + obj + ')');
+                        newState = eval('(' + newState.state + ')');
+            
+                        if (newState.inProgress != inProgress) {
+                            loadTaskState();  
+                            loadStream();
+                            populateForm();
+                        }
+                    }
+                }
+            });
+            
+            
         }
    
 	</script>
