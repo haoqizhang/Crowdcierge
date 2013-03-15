@@ -90,7 +90,10 @@
                     eventResize: syncEventDrag,
                     eventClick: function(calEvent, jsEvent, view) {
                         eventClick(calEvent, jsEvent, view);
-                    }
+                    },
+					//eventColor: "blue",
+					eventBorderColor: "gray",
+					//eventTextColor: "#000000"
                 });
                 
                 // Add event source
@@ -127,6 +130,12 @@
                         $(".fc-slot" + s).html(newTimes);
                     }
                 }
+				
+				// Set table colors
+				var slotNum = (endTime - beginTime)/30;
+                for (var i = 0; i < slotNum; i++) {
+                    $(".fc-slot"+i+" .fc-widget-content").css("background-color", "#d3f1f2");
+                }
                 
                 // Make event times fix all the time!
                 cal.mousemove(function() {
@@ -150,8 +159,8 @@
                 for (var i = 0; i < slotNum; i++) {
                     $(".fc-slot"+i+" .fc-widget-content").css("background-color", "#BBBBBB");
                 }
-                
-                $(".fc-slot"+slotNum+" .fc-widget-content").css("background-color", "orange");
+				
+                $(".fc-slot"+slotNum+" .fc-widget-content").css("background-color", "rgba(255, 165, 0, 0.8)");
                 $(".fc-slot"+slotNum+" .fc-widget-content").css("z-index", 1000);
                 $(".fc-slot"+slotNum+" .fc-widget-content").css("position", "relative");
                 $(".fc-slot"+slotNum+" .fc-widget-content").css("text-align", "center");
@@ -353,6 +362,8 @@
                         $(times[t]).parent().html(newTimes);
                     }
                 }
+				
+				$(".fc-event").css("font-size", "1em");
             }
      
             // Save dragged and drop edit
