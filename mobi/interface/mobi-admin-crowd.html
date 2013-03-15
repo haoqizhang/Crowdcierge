@@ -89,7 +89,7 @@
                     eventDrop: syncEventDrop,
                     eventResize: syncEventDrag,
                     eventClick: function(calEvent, jsEvent, view) {
-                        viewActivity(getItem(calEvent.itId));
+                        eventClick(calEvent, jsEvent, view);
                     }
                 });
                 
@@ -437,6 +437,21 @@
                 }
             }
           
+			// Click handler for events in the calendar
+			function eventClick(calEvent, jsEvent, view) {
+				var item = getItem(calEvent.itId);
+                map.SetCenter(new VELatLong(item.data.location.lat, item.data.location.long));
+				map.SetCenter(new VELatLong(item.data.location.lat, item.data.location.long));
+				var index = itinerary.indexOf(calEvent.itId) + 1;
+				var pins = $(".pinpos");
+				for (var i = 0; i < pins.length; i++) {
+					if ($(pins[i]).text() == index) {
+						$(pins[i]).mouseover();
+					}
+				}
+				//viewActivity(getItem(calEvent.itId));
+			}
+		  
             ///////////////////////////////////////////
             // CHECK ITEM CODE
             ///////////////////////////////////////////
@@ -601,7 +616,8 @@
                 
                 // Place user pin at current location and center map on that location
                 var locLL = new VELatLong(interLat, interLong);
-                currentPin = AddPushpin(map, locLL, "Traveler's Location", "Where the traveler is right now", false, "pin-user.png");
+                currentPin = AddPushpin(map, locLL, "Traveler's Location", "Where the traveler is right now", false, "pin-user-2.png");
+				$("img[src$='pin-user-2.png']").parent().parent().css("z-index", 10000)
                 map.SetCenter(locLL);
             }
             
