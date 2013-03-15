@@ -172,13 +172,14 @@
             function addNewItemFromId(itineraryId) {
                 var event = {};
                 var item = getItem(itineraryId);
-
+				var saveNew = false;
+				
                 // Get event start and end times
                 event.title = item.data.name;
                 if (!item.data.start) {
-                    event.start = new Date(y, m, d, beginTime/60 - shift, 0);
+                    event.start = new Date(y, m, d, calBegin/60 - shift, 0);
                     item.data.start = event.start.getHours()*60 + event.start.getMinutes() + shift*60;
-                    saveItemEdit(item);
+					saveNew = true;
                 } else {
                     event.start = new Date(y, m, d, Math.floor(item.data.start/60) - shift, item.data.start%60);;
                 }
@@ -202,6 +203,10 @@
                 $("#calendar").fullCalendar('refetchEvents');
                 detectOverlap();
                 shiftEventTimes();
+				
+				if (saveNew) {
+                    saveItemEdit(item);
+				}
             }
             
             // Removes an item from the calendar based on itinerary id
