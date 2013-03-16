@@ -628,8 +628,15 @@
                 // Place user pin at current location and center map on that location
                 var locLL = new VELatLong(interLat, interLong);
                 currentPin = AddPushpin(map, locLL, "Traveler's Location", "Where the traveler is right now", false, "pin-user-2.png");
-				$("img[src$='pin-user-2.png']").parent().parent().css("z-index", 10000)
+				$("img[src$='pin-user-2.png']").parent().parent().css("z-index", 10000);
                 map.SetCenter(locLL);
+				
+				$("html").mouseover(function() {
+					$("img[src$='pin-user-2.png']").parent().parent().css("z-index", 10000);
+				});
+				$("#mapDiv").mouseup(function() {
+					$("img[src$='pin-user-2.png']").parent().parent().css("z-index", 10000);
+				});
             }
             
             // Create the check item related to the request

@@ -779,7 +779,7 @@ function AddWaypointPin(si) {
 
     var shape = new VEShape(VEShapeType.Pushpin, ll);
     shape.SetTitle(si.data.name);
-    shape.SetDescription("<font color='black'>" + si.data.description + "</font><br/>@" + si.data.location.name);
+    shape.SetDescription("<font color='black'>" + si.data.description + "</font><br/>@" + si.data.location.name + "<br/><br/><a href='#' onclick='viewActivityById(\"" + si.id + "\")' style='color:#0000CE'>Click to view or edit</a>");
     //	      var str = "<div style='position: relative; background: url(" + custom + "); width:25px;height:29px'><div style='position: absolute; bottom: 0.5em; left: 0.5em; font-weight: bold; color: #fff;'>" + pos + '</div></div>'
     //	      var str2 = "<img src='" + custom + "'/><div style='color:#ffffff;position:absolute;left:5px; top:0px'>" + pos  + "</div>";
     //    var str3 = "<table width='30px' height='32px'><tr><td style='background: url(" + custom + ") no-repeat; vertical-align: top; text-align: center'><span style='font-weight: bold; color: #fff;'>" + pos + "</span></td></tr></table>";
@@ -789,6 +789,10 @@ function AddWaypointPin(si) {
     waylayer.AddShape(shape);
     wayhash[si.id] = new waypointPin(shape, ll, null, parseInt(si.data.duration));
 
+}
+
+function viewActivityById(id) {
+	viewActivity(getItem(id));
 }
 
 function processFind(a, b, c, d, e) {
