@@ -140,6 +140,7 @@
                 // Make event times fix all the time!
                 cal.mousemove(function() {
                     shiftEventTimes();
+					updateCalendarPins();
                 });
                 
                 // Add items from the itinerary array
@@ -151,6 +152,7 @@
                 if (inProgress) {
                     setCalendarInProgress();
                 }
+				updateCalendarPins();
             }
             
             // Modify calendar to show trip progress
@@ -272,6 +274,19 @@
                 detectOverlap();
                 shiftEventTimes();
             }
+			
+			// Updates the pin numbers on the calendar
+			function updateCalendarPins() {
+				$(".deleteme").remove();
+				var eventDivs = $(".fc-event-title");
+				for (var i = 0; i < itinerary.length; i++) {
+					for (var j = 0; j < eventDivs.length; j++) {
+						if (getItem(itinerary[i]).value == $(eventDivs[j]).html()) {
+							$(eventDivs[j]).parent().prepend("<div class='sspinpos deleteme' style='float:right; margin-right:10px'>"+(i+1)+"</div>");
+						}
+					}
+				}
+			}
             
             // Update activity durations
             // Called on even drag
