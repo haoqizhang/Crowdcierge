@@ -91,9 +91,9 @@
                     eventClick: function(calEvent, jsEvent, view) {
                         eventClick(calEvent, jsEvent, view);
                     },
-					//eventColor: "blue",
+					eventColor: "white",
 					eventBorderColor: "gray",
-					//eventTextColor: "#000000"
+					eventTextColor: "#000000"
                 });
                 
                 // Add event source
@@ -140,6 +140,7 @@
                 // Make event times fix all the time!
                 cal.mousemove(function() {
                     shiftEventTimes();
+					colorHeaders();
 					updateCalendarPins();
                 });
                 
@@ -152,6 +153,7 @@
                 if (inProgress) {
                     setCalendarInProgress();
                 }
+				colorHeaders();
 				updateCalendarPins();
             }
             
@@ -274,19 +276,6 @@
                 detectOverlap();
                 shiftEventTimes();
             }
-			
-			// Updates the pin numbers on the calendar
-			function updateCalendarPins() {
-				$(".deleteme").remove();
-				var eventDivs = $(".fc-event-title");
-				for (var i = 0; i < itinerary.length; i++) {
-					for (var j = 0; j < eventDivs.length; j++) {
-						if (getItem(itinerary[i]).value == $(eventDivs[j]).html()) {
-							$(eventDivs[j]).parent().prepend("<div class='sspinpos deleteme' style='float:right; margin-right:10px'>"+(i+1)+"</div>");
-						}
-					}
-				}
-			}
             
             // Update activity durations
             // Called on even drag
@@ -380,7 +369,36 @@
 				
 				$(".fc-event").css("font-size", "1em");
             }
-     
+     			
+			// Updates the pin numbers on the calendar
+			function updateCalendarPins() {
+				$(".deleteme").remove();
+				var eventDivs = $(".fc-event-title");
+				for (var i = 0; i < itinerary.length; i++) {
+					for (var j = 0; j < eventDivs.length; j++) {
+						if (getItem(itinerary[i]).value == $(eventDivs[j]).html()) {
+							$(eventDivs[j]).parent().prepend("<div class='sspinpos deleteme' style='float:right; margin-right:10px'>"+(i+1)+"</div>");
+						}
+					}
+				}
+			}
+			
+			// Change color of event headers
+			function colorHeaders() {
+				if (!inProgress) {
+					$(".fc-event-head").css("background-color","#CCCCCC");
+				} else {
+					var eventDivs = $(".fc-event-title");
+					for (var i = 0; i < itinerary.length; i++) {
+						for (var j = 0; j < eventDivs.length; j++) {
+							if (getItem(itinerary[i]).data.start >= calBegin && getItem(itinerary[i]).value == $(eventDivs[j]).html()) {
+								$($(eventDivs[j]).parent().parent().children()[0]).css("background-color", "#CCCCCC");
+							}
+						}
+					}
+				}
+			}
+	 
             // Save dragged and drop edit
             function saveItemEdit(oldsi) {
                 var oldid = oldsi.id;
