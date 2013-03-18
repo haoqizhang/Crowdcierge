@@ -377,7 +377,7 @@
 				for (var i = 0; i < itinerary.length; i++) {
 					for (var j = 0; j < eventDivs.length; j++) {
 						if (getItem(itinerary[i]).value == $(eventDivs[j]).html()) {
-							$(eventDivs[j]).parent().prepend("<div class='sspinpos deleteme' style='float:right; margin-right:10px'>"+(i+1)+"</div>");
+							$(eventDivs[j]).parent().prepend("<div class='sspinpos deleteme' style='float:left; margin-right:10px; margin-top:2px'>"+(i+1)+"</div>");
 						}
 					}
 				}
