@@ -530,6 +530,9 @@ function composeRoute() {
     }
     $('#totaltriptime').html(readMinutes(actualend - beginTime));
 
+	// Add travel times to calendar
+	drawTravelTimes(legTimes);
+	
     restDrive = null;
     restWalk = null;
 }
@@ -761,7 +764,6 @@ function computeDistance(l1, l2) {
 }
 
 function AddWaypointPin(si) {
-
     var ll = new VELatLong(si.data.location.lat, si.data.location.long);
 
     // check no pin already at same location
@@ -2783,8 +2785,8 @@ function loadStateIntoInterface() {
 
     // set up itinerary
     itinerary = state.itinerary;
-    //itinerary = [];
-    // 
+    // itinerary = [];
+	
     var itineraryItems = [];
     for (var i = 0; i < itinerary.length; i++) {
         itinerary[i] = itinerary[i].replace(/(\r\n|\n|\r)/gm,"");
@@ -3030,7 +3032,7 @@ function disableItSave() {
     unsavedChanges = false;
     $('#saveitbutton').disabled = 'true';
 
-    $('#saveitbutton').text('drag activities to reorder, click to edit');
+    $('#saveitbutton').text('drag activities to reorder or change length');
     $('#saveitbutton').css('background', '#d3f1f2');
     $('#saveitbutton').css('color', '#0000CE');
     $('#saveitbutton').css('border', '1px solid #d3f1f2');
