@@ -14,7 +14,7 @@
         <script type="text/javascript" src="humane.js"></script>
         <script type="text/javascript" src="mobi-admin-crowd.js"></script>
         <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>      
-        <script type='text/javascript' src='fullcalendar/fullcalendar.min.js'></script>
+        <script type='text/javascript' src='fullcalendar/fullcalendar.js'></script>
         <script type="text/javascript" src="jquery/jquery.validate.min.js"></script>
         <script type="text/javascript">
         
@@ -36,6 +36,7 @@
             
             // Time used for drop checks. Should be begin time unless mid-trip
             var calBegin;
+			var calEnd;
             
             // Event data. Do NOT change reference
             var eventSource = [];
@@ -54,6 +55,9 @@
                     shift = 0;
                 }
                 
+				beginTime = beginTime - 30;
+				endTime = endTime + 30;
+				
                 // Find start and end times pre-shift
                 var start = beginTime/60 - shift;
                 var end = endTime/60 - shift;
@@ -104,7 +108,8 @@
                 $(".fc-header").hide();
                 
                 // Shift table times
-                for (var s = 0; s < 40; s+=2) {
+				var slotNum = (endTime - beginTime)/30;
+                for (var s = 0; s < slotNum; s+=1) {
                     var oldTimes = $(".fc-slot" + s).html();
                     var newTimes = oldTimes;
                     if (newTimes) {
@@ -132,10 +137,18 @@
                 }
 				
 				// Set table colors
-				var slotNum = (endTime - beginTime)/30;
                 for (var i = 0; i < slotNum; i++) {
                     $(".fc-slot"+i+" .fc-widget-content").css("background-color", "#d3f1f2");
                 }
+				
+				// Set start and end banners
+				$(".fc-slot0 .fc-widget-content").css("background-color", "green");
+                $(".fc-slot0 .fc-widget-content").css("text-align", "center");
+                $(".fc-slot0 .fc-widget-content div").text("Start");
+				
+				$(".fc-slot"+(slotNum-1)+" .fc-widget-content").css("background-color", "red");
+                $(".fc-slot"+(slotNum-1)+" .fc-widget-content").css("text-align", "center");
+                $(".fc-slot"+(slotNum-1)+" .fc-widget-content div").text("End");
                 
                 // Make event times fix all the time!
                 cal.mousemove(function() {
@@ -164,7 +177,7 @@
                     $(".fc-slot"+i+" .fc-widget-content").css("background-color", "#BBBBBB");
                 }
 				
-                $(".fc-slot"+slotNum+" .fc-widget-content").css("background-color", "rgba(255, 165, 0, 0.8)");
+                $(".fc-slot"+slotNum+" .fc-widget-content").css("background-color", "rgba(255, 165, 0, 0.6)");
                 $(".fc-slot"+slotNum+" .fc-widget-content").css("z-index", 1000);
                 $(".fc-slot"+slotNum+" .fc-widget-content").css("position", "relative");
                 $(".fc-slot"+slotNum+" .fc-widget-content").css("text-align", "center");
@@ -245,7 +258,7 @@
                 var si = getItem(event.itId);
                 var newStart = si.data.start + minuteDelta;
                 var newEnd = newStart + parseInt(si.data.duration);
-                if (keepAct && finishedAct && (newStart < calBegin || include(keepAct, event.itId) || include(finishedAct, event.itId) || newEnd > endTime)) {
+                if (keepAct && finishedAct && (newStart < calBegin || include(keepAct, event.itId) || include(finishedAct, event.itId) || newEnd > calEnd)) {
                     revertFunc();
                     return;
                 }
@@ -282,7 +295,7 @@
             function syncEventDrag(event, dayDelta, minuteDelta, revertFunc) {
                 var si = getItem(event.itId);
                 var newEnd = si.data.start + parseInt(si.data.duration) + minuteDelta;
-                if (include(keepAct, event.itId) || include(finishedAct, event.itId) || newEnd > endTime) {
+                if (include(keepAct, event.itId) || include(finishedAct, event.itId) || newEnd > calEnd) {
                     revertFunc();
                     return;
                 }
@@ -368,6 +381,7 @@
                 }
 				
 				$(".fc-event").css("font-size", "1em");
+				$(".fc-event").css("font-weight", "bold");
             }
      			
 			// Updates the pin numbers on the calendar
@@ -494,6 +508,18 @@
 					}
 				}
 				//viewActivity(getItem(calEvent.itId));
+			}
+		  
+			///////////////////////////////////////////
+            // TRAVEL TIME CODE
+            ///////////////////////////////////////////
+			
+			// Do NOT change this reference
+			var travelTimeEventSource = [];
+			
+			// Draw travel times after new route calculation
+			function drawTravelTimes(legTimes) {
+			
 			}
 		  
             ///////////////////////////////////////////
