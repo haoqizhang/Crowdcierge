@@ -178,11 +178,24 @@
                     $(".fc-slot"+i+" .fc-widget-content").css("background-color", "#BBBBBB");
                 }
 				
-                $(".fc-slot"+slotNum+" .fc-widget-content").css("background-color", "rgba(255, 165, 0, 0.6)");
-                $(".fc-slot"+slotNum+" .fc-widget-content").css("z-index", 1000);
-                $(".fc-slot"+slotNum+" .fc-widget-content").css("position", "relative");
-                $(".fc-slot"+slotNum+" .fc-widget-content").css("text-align", "center");
-                $(".fc-slot"+slotNum+" .fc-widget-content").text("Current Time");
+				var oldSlot = $(".fc-slot"+slotNum+" .fc-widget-content div");
+				oldSlot.css("background-color", "white");
+				oldSlot.css("position", "absolute");
+				
+				var newSlot = oldSlot.clone();
+				newSlot.css("z-index", 1000);
+				newSlot.css("position", "absolute");
+				newSlot.css("text-align", "center");
+				newSlot.css("background-color", "rgba(255, 165, 0, 0.6)");
+				newSlot.css("width", "85%");
+				newSlot.text("Current Time");
+				newSlot.appendTo(".fc-slot"+slotNum+" .fc-widget-content");
+				
+                //$(".fc-slot"+slotNum+" .fc-widget-content").css("background-color", "rgba(255, 165, 0, 0.6)");
+                //$(".fc-slot"+slotNum+" .fc-widget-content").css("z-index", 1000);
+                //$(".fc-slot"+slotNum+" .fc-widget-content").css("position", "relative");
+                //$(".fc-slot"+slotNum+" .fc-widget-content").css("text-align", "center");
+                //$(".fc-slot"+slotNum+" .fc-widget-content").text("Current Time");
             }
             
             // Load events on start
@@ -255,8 +268,6 @@
             // Update the event source with the events in the calendar and updates route order
             // Called on event drops
             function syncEventDrop(event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view) {
-				clearTravelTimes();
-			
                 // Prevent dragging past start time
                 var si = getItem(event.itId);
                 var newStart = si.data.start + minuteDelta;
@@ -265,6 +276,7 @@
                     revertFunc();
                     return;
                 }
+				clearTravelTimes();
             
                 // Sort event source list based on client events
                 eventSource.length = 0;
@@ -296,14 +308,13 @@
             // Update activity durations
             // Called on even drag
             function syncEventDrag(event, dayDelta, minuteDelta, revertFunc) {
-				clearTravelTimes();
-			
                 var si = getItem(event.itId);
                 var newEnd = si.data.start + parseInt(si.data.duration) + minuteDelta;
                 if (include(keepAct, event.itId) || include(finishedAct, event.itId) || newEnd > calEnd) {
                     revertFunc();
                     return;
                 }
+				clearTravelTimes();
             
                 eventSource.length = 0;
                 var newEvents = $("#calendar").fullCalendar( 'clientEvents' );
@@ -524,7 +535,6 @@
 						$(pins[i]).mouseover();
 					}
 				}
-				//viewActivity(getItem(calEvent.itId));
 			}
 		  
 			///////////////////////////////////////////
@@ -859,7 +869,7 @@
             }
             
             #brainstream tr.check {
-                background: #8FF2BD;
+                background: yellow;
             }
             
             .badge_check {

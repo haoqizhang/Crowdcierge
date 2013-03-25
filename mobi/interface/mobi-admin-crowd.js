@@ -798,6 +798,7 @@ function AddWaypointPin(si) {
     waylayer.AddShape(shape);
     wayhash[si.id] = new waypointPin(shape, ll, null, parseInt(si.data.duration));
 
+	return shape;
 }
 
 function viewActivityById(id) {
@@ -2403,13 +2404,27 @@ function createInItineraryButton(si) {
 }
 
 /// opens up the time for viewing, or additional editting...
+var oldShape = undefined;
+
 function openItem(item) {
     //    var item = getItem(id);
 
     if (item.type == 'note' || item.type == 'todo') {
         viewNote(item);
     } else if (item.type == 'activity') {
-        viewActivity(item);
+		if (oldShape) {
+			waylayer.DeleteShape(oldShape);
+		}
+		if (include(itinerary, item.id)) {
+			var dumby = {};
+			dumby.itId = item.id;
+			eventClick(dumby, dumby, dumby);
+		} else {	
+			oldShape = AddWaypointPin(item);
+			map.SetCenter(new VELatLong(item.data.location.lat, item.data.location.long));
+			map.SetCenter(new VELatLong(item.data.location.lat, item.data.location.long));
+			$("a[id^=" + oldShape.GetID() + "] div").mouseover();
+		}
     }
 
 }
