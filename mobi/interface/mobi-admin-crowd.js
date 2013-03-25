@@ -327,7 +327,7 @@ function readySearchBox() {
 }
 
 function GetNewActMap() {
-    newactmap = new VEMap('addmapDiv');
+    newactmap = new VEMap('addmapDivMap');
 
     var mapOptions = new VEMapOptions();
     mapOptions.DashboardColor = 'black';
@@ -947,6 +947,7 @@ function addActivity() {
 
     // cleanup view activity stuff
     $('#addmapDiv').parentsUntil('#addActivity').andSelf().siblings().show();
+	$("#pinDirections").show();
     newactmap.SetZoomLevel(defaultZoom);
     newactmap.SetCenter(mapCenter);
 
@@ -1088,6 +1089,7 @@ function viewActivity(si) {
     $('#viewNote').css('display', 'none');
     $('#viewActivity').css('display', 'block');
     $('#viewCheck').hide();
+	$("#pinDirections").hide();
 
     actfindLayer.DeleteAllShapes();
     $('#addActivity').show();
@@ -1726,6 +1728,7 @@ function editActivity(si) {
 
     $('#addActivity').show();
     $('#addmapDiv').show().parentsUntil('#addActivity').andSelf().siblings().hide();
+	$("#pinDirections").show();
 
     actfindLayer.DeleteAllShapes();
     // hide theirs, show mine

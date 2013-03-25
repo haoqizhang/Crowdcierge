@@ -619,6 +619,7 @@
                 time.attr('id', 'stime_' + si.id);
                 var tt = $(document.createElement('div'));
                 tt.addClass('badge_' + si.type);
+				tt.text("!!");
                 time.append(tt);
                 item.append(msg);
                 item.append(time);
@@ -730,7 +731,7 @@
                                 "custom"        : "A traveler needs your help.  He is located at the orange pin on the map, and the current time is marked on the calendar.  He wants you to follow these instructions: <br/><br/>{2}"
                                 }
             
-            var submissionInstructions = '<br/><br/> When you are finished, click this item again in the list on the left and click "resolve" to submit.';
+            var submissionInstructions = '<br/><br/> When you are finished, click the Submit button to see this again and confirm you solved the problem.';
             var oldItinerary;
             
             // Load intermediate state
@@ -847,9 +848,9 @@
                 
                 if (inProgress) {
                     viewCheck(requestCheckItem);
-                    $("#resolvebutton").hide();
+                    $(".resolveSelect").hide();
                     $("#gotit").click(function() {
-                        $("#resolvebutton").show();
+                        $(".resolveSelect").show();
                         closeAdd();
                         $("#gotit").hide();
                     });
@@ -873,16 +874,15 @@
             }
             
             .badge_check {
-                background: url('check_icon.png');
                 background-position:top center;
                 background-repeat:no-repeat;
                 vertical-align: top;
                 text-align: center;
                 font-weight: bold;
-                color: #fff;
+                color: black;
                 width:25px;
                 height:26px;
-                font-size: 85%;
+                font-size: 2em;
             }
         </style>
         
@@ -1535,7 +1535,6 @@
             <div id='viewCheck' style='display:none'>
                 <h1 id='viewcheckheader'>Your Task: Fix a Trip Plan
                     <span style='float:right;'>
-                        <button id='resolvebutton' class='addit'>resolve</button>
                     </span>
                 </h1>
                 <div>
@@ -1550,6 +1549,8 @@
                             <td>
                                 <div style='text-align:center; font-size:2.5em'>
                                     <button id='gotit' class='addit'>got it</button>
+									<button id='resolvebutton' class='addit resolveSelect'>I've solved the problem</button>
+									<button class='addit resolveSelect' onclick="closeAdd();" >I haven't solved the problem yet</button>
                                 </div>
                             </td>
                         </tr>
@@ -1561,7 +1562,7 @@
                 <div id="viewActivityMessage" style="display:none; margin-left:auto; margin-right:auto; font-size:2em; text-align:center">
                     The traveler has already done this activity today.
                 </div>
-                <div>
+                <div style="float:left; width:40%">
                     <table id='viewActivityTable'>
                         <tr>
                             <td class='vlabel'>Activity:</td>
@@ -1689,25 +1690,25 @@
             <div id='editActivity' style='display:none'>
                  <h1 id='editactheader'>Edit activity<span style='float:right;'><button id='saveeditbutton' class='addit'>save changes</button></span></h1>
 
-                <div>
+                <div style="float:left; width:40%">
                     <div class="row"><span class="label">Activity: </span><span class="formw"><input id='editacttitle' type='text' maxlength='60' size='30'/></span>
                     </div>
                     <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='editAutoNearby()' id='editactloc' type='text' maxlength='60' size='30'/></span>
                     </div>
-                    <div class="row"><span class="label">What to do/see:</span><span class="formw"><textarea id='editactdesc' type='text' style='width:100%' rows='4'></textarea></span>
+                    <div class="row"><span class="label">What to do/see:</span><span class="formw"><textarea id='editactdesc' type='text' style='width:90%' rows='6'></textarea></span>
                     </div>
                     <div class="row"><span class="label">Takes about:</span><span class="formw"><select id='editactduration'></select></span>
                     </div>
                     <div class="row"><span class="label">Category:</span><span id='editacttags' class="formw">
       </span>
                     </div>
-                    <div class="spacer"></div>
+                    <!--<div class="spacer"></div>
                     <div style='color:black'>Drag the location pin
                         <img style='vertical-align:text-bottom' src='pin-end.png'
                         />to its correct location. Suggestions (when available) are shown as
                         <img
                         style='vertical-align:text-bottom' src='pin2.gif' />.</div>
-                    <div style='height:10px'>&nbsp;</div>
+                    <div style='height:10px'>&nbsp;</div>-->
                 </div>
             </div>
             <div id='addActivity'>
@@ -1715,26 +1716,33 @@
       <span id='addcontrols' style='float:right;'><button class='addit' onClick='saveAddActivity(true)'>add it to stream only</button>&nbsp;<button class='addit' onClick='saveAddActivity(false)'>add it to itinerary & stream</button></span></h1>
 
                 <!-- <h1 id='addactheader'>Add an activity<span style='float:right;'><button class='addit' onClick='saveAddActivity(true)'>add it to stream only</button>&nbsp;<button class='addit' onClick='saveAddActivity(false)'>add it to itinerary & stream</button></span></h1> -->
-                <div>
-                    <div class="row"><span class="label">Activity: </span><span class="formw"><input id='addacttitle' type='text' maxlength='60' size='30'/></span>
+                <div style="float:left; width:40%">
+                    <div class="row">
+						<span class="label">Activity: </span><span class="formw"><input id='addacttitle' type='text' maxlength='60' size='30'/></span>
                     </div>
-                    <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='autoNearby()' id='addactloc' type='text' maxlength='60' size='30'/></span>
+                    <div class="row">
+						<span class="label">Location name: </span><span class="formw"><input onblur='autoNearby()' id='addactloc' type='text' maxlength='60' size='30'/></span>
                     </div>
-                    <div class="row"><span class="label">What to do/see:</span><span class="formw"><textarea id='addactdesc' type='text' style='width:100%' rows='4'></textarea></span>
+                    <div class="row">
+						<span class="label">What to do/see:</span><span class="formw"><textarea id='addactdesc' type='text' style='width:90%' rows='6'></textarea></span>
                     </div>
-                    <div class="row"><span class="label">Takes about:</span><span class="formw"><select id='addactduration'></select></span>
+                    <div class="row">
+						<span class="label">Takes about:</span><span class="formw"><select id='addactduration'></select></span>
                     </div>
-                    <div class="row"><span class="label">Category:</span><span id='addacttags' class="formw">
-      </span>
+                    <div class="row">
+						<span class="label">Category:</span><span id='addacttags' class="formw"></span>
                     </div>
-                    <div class="spacer"></div>
-                    <div style='color:black'>Drag the location pin
+                    <div class="spacer">
+					</div>
+				</div>
+				<div id="addmapDiv" style="float:left; width:60%">
+                    <div style='color:black' id="pinDirections" >Drag the location pin
                         <img style='vertical-align:text-bottom' src='pin-end.png'
                         />to its correct location. Suggestions (when available) are shown as
                         <img
                         style='vertical-align:text-bottom' src='pin2.gif' />.</div>
                     <div style='height:10px'>&nbsp;</div>
-                    <div id='addmapDiv' style="position:relative;width:100%;height:200px;"></div>
+                    <div id='addmapDivMap' style="position:relative;width:100%;height:300px"></div>
                 </div>
                 <!-- <div style='text-align:center'><button onclick='saveAddActivity(false)'>add activity to itinerary and stream</button><button onclick='saveAddActivity(true)'>add activity to stream only</button><button onclick='closeAdd()'>cancel</button></div>--></div>
         </div>
