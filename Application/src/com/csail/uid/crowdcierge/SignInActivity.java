@@ -3,7 +3,9 @@ package com.csail.uid.crowdcierge;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 
 /**
@@ -17,6 +19,15 @@ public class SignInActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.signin);
+		
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		if (prefs.getString("uid", null) != null) {
+			Intent in = new Intent(SignInActivity.this, MainActivity.class);
+			in.putExtra("uid", prefs.getString("uid", null));
+			SignInActivity.this.startActivity(in);
+			this.finish();
+		}
 
 		ActionBar bar = getActionBar();
 		bar.hide();
@@ -37,6 +48,8 @@ public class SignInActivity extends Activity {
 	 * Gets the user ID for the user signing in. Currently just returns test
 	 * user ID.
 	 * 
+	 * TODO Get User ID
+	 * 
 	 * @return User ID matching email entered
 	 */
 	public String getUserId() {
@@ -45,6 +58,8 @@ public class SignInActivity extends Activity {
 
 	/**
 	 * Launches create account activity. Currently void.
+	 * 
+	 * TODO
 	 */
 	public void launchCreateAccount(View v) {
 		//

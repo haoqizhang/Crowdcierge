@@ -58,6 +58,10 @@ public class MainActivity extends Activity {
 	 * Currently just jumps back to SignInActivity.
 	 */
 	public void signOut() {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		prefs.edit().putString("uid", null).commit();
+
 		Intent in = new Intent(MainActivity.this, SignInActivity.class);
 		MainActivity.this.startActivity(in);
 		this.finish();
@@ -69,7 +73,7 @@ public class MainActivity extends Activity {
 	public void launchRequestTripActivity(View v) {
 		//
 	}
-	
+
 	/**
 	 * Launches ViewListActivity with only the in progress trips.
 	 */
@@ -78,7 +82,7 @@ public class MainActivity extends Activity {
 		in.putExtra("inProgress", true);
 		MainActivity.this.startActivity(in);
 	}
-	
+
 	/**
 	 * Launches ViewListActivity with all trips available.
 	 */

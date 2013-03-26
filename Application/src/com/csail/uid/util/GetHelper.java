@@ -13,7 +13,6 @@ import org.apache.http.util.EntityUtils;
 
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class GetHelper {
 

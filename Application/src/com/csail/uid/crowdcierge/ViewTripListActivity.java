@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -57,6 +54,8 @@ public class ViewTripListActivity extends Activity {
 
 	/**
 	 * Gets list of task IDs. Currently uses a static set.
+	 * 
+	 * TODO Get trips
 	 */
 	private void getTaskList() {
 		taskIds = new ArrayList<String>();
@@ -77,35 +76,26 @@ public class ViewTripListActivity extends Activity {
 			taskIds.add("72f2a275c14c3af09e6c2f2b73f03241");
 		}
 	}
-	
+
 	/**
-	 * Gets trip info for each trip ID in the list. Adds to adapter to populate list.
+	 * Gets trip info for each trip ID in the list. Adds to adapter to populate
+	 * list.
 	 */
 	private void addTripsToList() {
 		mAdapter.clear();
-		
+
 		for (final String tid : taskIds) {
 			String url = "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/loadTurkTourTaskState.php";
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("type", "turktour");
 			params.put("id", tid);
-		
+
 			(new GetHelper(url, params, new GetCallback() {
 				@Override
 				public void onGetExecute(String JSON) {
-					try {
-						JSONObject top = new JSONObject(JSON);
-						JSONObject state = new JSONObject(top.getString("state"));
-						JSONObject admin = state.getJSONObject("admin");
-						
-						Trip t = new Trip(tid);
-						t.setTitle(admin.getString("name"));
-						
-						mAdapter.add(t);
-						mAdapter.notifyDataSetChanged();
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
+					Trip t = new Trip(JSON);
+					mAdapter.add(t);
+					mAdapter.notifyDataSetChanged();
 				}
 			})).execute();
 		}
@@ -126,23 +116,24 @@ public class ViewTripListActivity extends Activity {
 			view.setText(getItem(position).getTitle());
 			view.setTextSize(20);
 			view.setGravity(Gravity.CENTER_HORIZONTAL);
-			
+
 			convertView = view;
 			return convertView;
 		}
 	}
-	
+
 	/**
 	 * Listener for clicks on items in the trip list.
 	 */
 	public class OnTripClickListener implements OnItemClickListener {
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-			Intent in = new Intent(ViewTripListActivity.this, ViewTripActivity.class);
+		public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+				long arg3) {
+			Intent in = new Intent(ViewTripListActivity.this,
+					ViewTripActivity.class);
 			in.putExtra("inProgress", inProgress);
-			in.putExtra("tid", mAdapter.getItem(position).getTid());
+			in.putExtra("trip", mAdapter.getItem(position));
 			ViewTripListActivity.this.startActivity(in);
 		}
 	}
-
 }

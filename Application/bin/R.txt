@@ -199,13 +199,14 @@ int drawable card_shadow 0x7f020003
 int drawable ic_launcher 0x7f020004
 int drawable top_shadow 0x7f020005
 int id ScrollView1 0x7f040006
+int id activityList 0x7f040016
 int id cardContent 0x7f04000b
 int id createAccountButton 0x7f040012
 int id imageView1 0x7f040015
 int id inProgressTripButton 0x7f04000f
 int id listView 0x7f040004
-int id menu_settings 0x7f040018
-int id menu_signout 0x7f040017
+int id menu_settings 0x7f040019
+int id menu_signout 0x7f040018
 int id newTripButton 0x7f04000e
 int id none 0x7f040000
 int id normal 0x7f040001
@@ -221,7 +222,7 @@ int id tableLayout 0x7f040007
 int id terrain 0x7f040003
 int id textView2 0x7f04000a
 int id title 0x7f040009
-int id tripList 0x7f040016
+int id tripList 0x7f040017
 int id usernameInput 0x7f040014
 int layout cards_view 0x7f030000
 int layout cards_view_multicolumn 0x7f030001
