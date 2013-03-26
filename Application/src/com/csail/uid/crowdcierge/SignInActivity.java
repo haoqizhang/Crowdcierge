@@ -3,12 +3,14 @@ package com.csail.uid.crowdcierge;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
-import android.widget.EditText;
 
+/**
+ * Sign in activity shown at launch. Gets user ID from entered email address.
+ * 
+ * @author Joey Rafidi
+ */
 public class SignInActivity extends Activity {
 
 	@Override
@@ -18,10 +20,6 @@ public class SignInActivity extends Activity {
 
 		ActionBar bar = getActionBar();
 		bar.hide();
-		
-		EditText pwView = (EditText) findViewById(R.id.passwordInput);
-		pwView.setTypeface(Typeface.DEFAULT);
-		pwView.setTransformationMethod(new PasswordTransformationMethod());
 	}
 
 	/**
@@ -30,8 +28,19 @@ public class SignInActivity extends Activity {
 	 */
 	public void signIn(View v) {
 		Intent in = new Intent(SignInActivity.this, MainActivity.class);
+		in.putExtra("uid", getUserId());
 		SignInActivity.this.startActivity(in);
 		this.finish();
+	}
+
+	/**
+	 * Gets the user ID for the user signing in. Currently just returns test
+	 * user ID.
+	 * 
+	 * @return User ID matching email entered
+	 */
+	public String getUserId() {
+		return "57187fd22e931d8b2145d920967e559d";
 	}
 
 	/**

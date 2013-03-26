@@ -35,6 +35,7 @@
             android:layout_marginRight="10dp"
             android:gravity="center"
             android:text="Plan a New Trip"
+            android:onClick="launchRequestTripActivity"
             android:textSize="20sp" />
 
         <TextView
@@ -55,6 +56,7 @@
             android:layout_marginRight="10dp"
             android:gravity="center"
             android:text="Trips in Progress"
+            android:onClick="launchInProgressTripsActivity"
             android:textSize="20sp" />
         
         <TextView
@@ -75,6 +77,7 @@
             android:layout_marginRight="10dp"
             android:gravity="center"
             android:text="View Past Trips"
+            android:onClick="launchPastTripsActivity"
             android:textSize="20sp" />
     </LinearLayout>
 

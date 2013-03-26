@@ -28,20 +28,10 @@
         android:text="Sign In" />
 
     <EditText
-        android:id="@+id/passwordInput"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/signInButton"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:hint="Password"
-        android:inputType="textPassword" />
-
-    <EditText
         android:id="@+id/usernameInput"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/passwordInput"
+        android:layout_above="@id/signInButton"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:hint="Email"
