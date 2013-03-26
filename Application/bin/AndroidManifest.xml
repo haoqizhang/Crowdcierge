@@ -17,6 +17,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.csail.uid.crowdcierge.SignInActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,18 +27,27 @@
         </activity>
         <activity
             android:name="com.csail.uid.crowdcierge.MainActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
         <activity
             android:name="com.csail.uid.crowdcierge.ViewTripActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
         <activity
             android:name="com.csail.uid.crowdcierge.RequestTripActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
         <activity
             android:name="com.csail.uid.crowdcierge.ViewTripListActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.csail.uid.crowdcierge.ViewActivityActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
     </application>

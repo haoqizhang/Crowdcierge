@@ -71,7 +71,8 @@ public class MainActivity extends Activity {
 	 * Launches RequestTripActivity. Bound to New Trip button.
 	 */
 	public void launchRequestTripActivity(View v) {
-		//
+		Intent in = new Intent(MainActivity.this, RequestTripActivity.class);
+		MainActivity.this.startActivity(in);
 	}
 
 	/**

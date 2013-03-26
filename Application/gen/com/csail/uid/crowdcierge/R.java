@@ -321,14 +321,14 @@ containing a value of this type.
     }
     public static final class id {
         public static final int ScrollView1=0x7f040006;
-        public static final int activityList=0x7f040016;
+        public static final int activityList=0x7f04001a;
         public static final int cardContent=0x7f04000b;
         public static final int createAccountButton=0x7f040012;
         public static final int imageView1=0x7f040015;
         public static final int inProgressTripButton=0x7f04000f;
         public static final int listView=0x7f040004;
-        public static final int menu_settings=0x7f040019;
-        public static final int menu_signout=0x7f040018;
+        public static final int menu_settings=0x7f04001d;
+        public static final int menu_signout=0x7f04001c;
         public static final int newTripButton=0x7f04000e;
         public static final int none=0x7f040000;
         public static final int normal=0x7f040001;
@@ -344,8 +344,12 @@ containing a value of this type.
         public static final int terrain=0x7f040003;
         public static final int textView2=0x7f04000a;
         public static final int title=0x7f040009;
-        public static final int tripList=0x7f040017;
+        public static final int tripList=0x7f04001b;
         public static final int usernameInput=0x7f040014;
+        public static final int viewActivityDescription=0x7f040017;
+        public static final int viewActivityDuration=0x7f040019;
+        public static final int viewActivityName=0x7f040016;
+        public static final int viewActivityStart=0x7f040018;
     }
     public static final class layout {
         public static final int cards_view=0x7f030000;
@@ -359,8 +363,9 @@ containing a value of this type.
         public static final int main=0x7f030008;
         public static final int request_trip=0x7f030009;
         public static final int signin=0x7f03000a;
-        public static final int view_trip=0x7f03000b;
-        public static final int view_trip_list=0x7f03000c;
+        public static final int view_activity=0x7f03000b;
+        public static final int view_trip=0x7f03000c;
+        public static final int view_trip_list=0x7f03000d;
     }
     public static final class menu {
         public static final int activity_main=0x7f090000;
