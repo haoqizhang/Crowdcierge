@@ -19,11 +19,11 @@ public class GetHelper {
 	AsyncTask<Map<String, String>, Void, String> task;
 	Map<String, String> params;
 	
-	public interface GetCallback {
-		public void onGetExecute(String JSON);
+	public interface HttpCallback {
+		public void onHttpExecute(String JSON);
 	}
 	
-	public GetHelper(String URL, Map<String, String> params, final GetCallback callback) {
+	public GetHelper(String URL, Map<String, String> params, final HttpCallback callback) {
 		this.params = params;
 		this.params.put("URL", URL);
 		
@@ -58,7 +58,7 @@ public class GetHelper {
 			
 			@Override 
 			protected void onPostExecute(String result) {
-				callback.onGetExecute(result);
+				callback.onHttpExecute(result);
 			}
 		};
 	}

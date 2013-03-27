@@ -8,16 +8,16 @@ package com.fima.cardsui;
 
 public final class R {
 	public static final class id {
-		public static final int textView2 = 0x7f04000a;
+		public static final int textView2 = 0x7f04000e;
 		public static final int listView = 0x7f040004;
-		public static final int title = 0x7f040009;
+		public static final int title = 0x7f04000d;
 		public static final int sticky = 0x7f040005;
-		public static final int cardContent = 0x7f04000b;
-		public static final int placeholder = 0x7f040008;
+		public static final int cardContent = 0x7f04000f;
+		public static final int placeholder = 0x7f04000c;
 		public static final int tableLayout = 0x7f040007;
-		public static final int stackContainer = 0x7f04000d;
+		public static final int stackContainer = 0x7f040011;
 		public static final int ScrollView1 = 0x7f040006;
-		public static final int stackTitle = 0x7f04000c;
+		public static final int stackTitle = 0x7f040010;
 	}
 	public static final class style {
 		public static final int CardTitleBold = 0x7f080003;
@@ -40,14 +40,14 @@ public final class R {
 		public static final int card_grid_text = 0x7f060005;
 	}
 	public static final class layout {
-		public static final int item_card = 0x7f030003;
-		public static final int item_card_empty_first = 0x7f030005;
-		public static final int item_stack = 0x7f030007;
-		public static final int item_card_empty_last = 0x7f030006;
+		public static final int item_card = 0x7f030004;
+		public static final int item_card_empty_first = 0x7f030006;
+		public static final int item_stack = 0x7f030008;
+		public static final int item_card_empty_last = 0x7f030007;
 		public static final int cards_view = 0x7f030000;
 		public static final int cards_view_multicolumn = 0x7f030001;
-		public static final int item_card_empty = 0x7f030004;
-		public static final int header = 0x7f030002;
+		public static final int item_card_empty = 0x7f030005;
+		public static final int header = 0x7f030003;
 	}
 	public static final class drawable {
 		public static final int card_background_shadow = 0x7f020002;

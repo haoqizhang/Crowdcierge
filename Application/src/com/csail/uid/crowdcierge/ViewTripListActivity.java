@@ -21,8 +21,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.csail.uid.data.Trip;
+import com.csail.uid.util.Constants;
 import com.csail.uid.util.GetHelper;
-import com.csail.uid.util.GetHelper.GetCallback;
+import com.csail.uid.util.GetHelper.HttpCallback;
 
 public class ViewTripListActivity extends Activity {
 
@@ -85,14 +86,14 @@ public class ViewTripListActivity extends Activity {
 		mAdapter.clear();
 
 		for (final String tid : taskIds) {
-			String url = "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/loadTurkTourTaskState.php";
+			String url = Constants.PHP_URL + "loadTurkTourTaskState.php";
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("type", "turktour");
 			params.put("id", tid);
 
-			(new GetHelper(url, params, new GetCallback() {
+			(new GetHelper(url, params, new HttpCallback() {
 				@Override
-				public void onGetExecute(String JSON) {
+				public void onHttpExecute(String JSON) {
 					Trip t = new Trip(JSON);
 					mAdapter.add(t);
 					mAdapter.notifyDataSetChanged();

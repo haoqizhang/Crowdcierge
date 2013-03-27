@@ -28,7 +28,7 @@ public final class R {
 		public static final int common_google_play_services_enable_text = 0x7f050006;
 	}
 	public static final class layout {
-		public static final int main = 0x7f030008;
+		public static final int main = 0x7f030009;
 	}
 	public static final class styleable {
 		public static final int MapAttrs_uiCompass = 6;

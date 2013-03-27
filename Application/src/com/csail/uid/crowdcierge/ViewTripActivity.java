@@ -21,8 +21,9 @@ import android.widget.TextView;
 
 import com.csail.uid.data.Trip;
 import com.csail.uid.data.TripActivity;
+import com.csail.uid.util.Constants;
 import com.csail.uid.util.GetHelper;
-import com.csail.uid.util.GetHelper.GetCallback;
+import com.csail.uid.util.GetHelper.HttpCallback;
 
 public class ViewTripActivity extends Activity {
 	private boolean inProgress;
@@ -52,14 +53,14 @@ public class ViewTripActivity extends Activity {
 	 * Load the user stream for the trip
 	 */
 	private void loadUserStream() {
-		String url = "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/loadTurkTourStream.php";
+		String url = Constants.PHP_URL + "loadTurkTourStream.php";
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("type", "turktour");
 		params.put("id", trip.getTid());
 
-		(new GetHelper(url, params, new GetCallback() {
+		(new GetHelper(url, params, new HttpCallback() {
 			@Override
-			public void onGetExecute(String JSON) {
+			public void onHttpExecute(String JSON) {
 				try {
 					JSONArray top = new JSONArray(JSON);
 					for (int i = 0; i < top.length(); i++) {

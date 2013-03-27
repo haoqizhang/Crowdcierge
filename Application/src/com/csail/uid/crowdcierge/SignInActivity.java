@@ -19,7 +19,7 @@ public class SignInActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.signin);
-		
+
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		if (prefs.getString("uid", null) != null) {
@@ -35,7 +35,7 @@ public class SignInActivity extends Activity {
 
 	/**
 	 * Sign in function, bound to the sign in button. Currently starts
-	 * MainActivity with test user and task.
+	 * MainActivity with test user id.
 	 */
 	public void signIn(View v) {
 		Intent in = new Intent(SignInActivity.this, MainActivity.class);
@@ -62,6 +62,8 @@ public class SignInActivity extends Activity {
 	 * TODO
 	 */
 	public void launchCreateAccount(View v) {
-		//
+		Intent in = new Intent(SignInActivity.this, CreateAccountActivity.class);
+		this.startActivity(in);
+		this.finish();
 	}
 }
