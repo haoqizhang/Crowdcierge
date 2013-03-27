@@ -15,6 +15,17 @@ public class Trip implements Parcelable {
 	private String title;
 	private ArrayList<String> activityIds = new ArrayList<String>();
 
+	private String startName;
+	private long startLat;
+	private long startLong;
+
+	private String endName;
+	private long endLat;
+	private long endLong;
+
+	private int startTime;
+	private int endTime;
+
 	private JSONObject originalObj;
 
 	public Trip(String JSON) {
@@ -29,6 +40,20 @@ public class Trip implements Parcelable {
 			for (int i = 0; i < itinerary.length(); i++) {
 				activityIds.add(itinerary.getString(i));
 			}
+
+			startTime = admin.getInt("beginTime");
+			endTime = admin.getInt("endTime");
+
+			JSONObject start = admin.getJSONObject("start");
+			JSONObject end = admin.getJSONObject("end");
+
+			startName = start.getString("name");
+			startLat = start.getLong("lat");
+			startLong = start.getLong("long");
+
+			endName = end.getString("name");
+			endLat = end.getLong("lat");
+			endLong = end.getLong("long");
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -48,6 +73,38 @@ public class Trip implements Parcelable {
 
 	public String getTid() {
 		return tid;
+	}
+
+	public String getStartName() {
+		return startName;
+	}
+
+	public long getStartLat() {
+		return startLat;
+	}
+
+	public long getStartLong() {
+		return startLong;
+	}
+
+	public String getEndName() {
+		return endName;
+	}
+
+	public long getEndLat() {
+		return endLat;
+	}
+
+	public long getEndLong() {
+		return endLong;
+	}
+
+	public int getStartTime() {
+		return startTime;
+	}
+
+	public int getEndTime() {
+		return endTime;
 	}
 
 	public ArrayList<String> getActivityIds() {

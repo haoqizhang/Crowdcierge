@@ -63,7 +63,6 @@ public class ViewTripListActivity extends Activity {
 		if (inProgress) {
 			taskIds.add("a31b5015bac8dce3a4e417b5d7fdcb31");
 		} else {
-			taskIds.add("92f792d5f805b79974466450f528d24e");
 			taskIds.add("453ad2e6eeda9e3ccd9d2739c0f1025d");
 			taskIds.add("a31b5015bac8dce3a4e417b5d7fdcb31");
 			taskIds.add("6d33280aa09b19776b7721c98c784223");

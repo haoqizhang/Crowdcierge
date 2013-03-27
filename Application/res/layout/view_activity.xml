@@ -2,23 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:layout_margin="10dp">
+    android:layout_margin="10dp"
+    android:orientation="vertical" >
 
     <TextView
         android:id="@+id/viewActivityName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test"
         android:layout_marginBottom="10dp"
+        android:text="Test"
         android:textSize="24sp" />
 
     <TextView
         android:id="@+id/viewActivityDescription"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Test Description"
         android:layout_marginBottom="10dp"
+        android:maxLines="7"
+        android:scrollbars="vertical"
+        android:singleLine="false"
+        android:text="Test Description"
         android:textSize="18sp" />
 
     <LinearLayout
@@ -30,15 +33,15 @@
             android:id="@+id/viewActivityStart"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Starts at: 100"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="Starts at: 100" />
 
         <TextView
             android:id="@+id/viewActivityDuration"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Takes: 100 min"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="Takes: 100 min" />
     </LinearLayout>
 
 </LinearLayout>

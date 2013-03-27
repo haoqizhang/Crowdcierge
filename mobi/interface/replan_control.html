@@ -153,7 +153,7 @@
         function loadTaskState() {
             jQuery.ajax({
                 type: "GET",
-                url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/loadTurkTourTaskState.php",
+                url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourTaskState.php",
                 data: ({
                     type: "turktour",
                     id: tid
@@ -175,7 +175,7 @@
             jQuery.ajax({
                 type: "GET",
                 dataType: "json",
-                url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/loadTurkTourStream.php",
+                url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourStream.php",
                 data: ({
                     type: "turktour",
                     id: tid
@@ -230,7 +230,7 @@
 
             jQuery.ajax({
                 type: "POST",
-                url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/submitTurkTourItinerary.php",
+                url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourItinerary.php",
                 async: false,
                 data: ({
                     userId: uid,
@@ -259,7 +259,7 @@
         function refreshCheck() {           
             jQuery.ajax({
                 type: "GET",
-                url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/loadTurkTourTaskState.php",
+                url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourTaskState.php",
                 data: ({
                     type: "turktour",
                     id: tid

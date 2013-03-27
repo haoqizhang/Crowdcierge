@@ -2,6 +2,7 @@ package com.csail.uid.crowdcierge;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 
 import com.csail.uid.data.TripActivity;
@@ -26,6 +27,7 @@ public class ViewActivityActivity extends Activity {
 		title.setText(activity.getLabel());
 		
 		TextView desc = (TextView) findViewById(R.id.viewActivityDescription);
+		desc.setMovementMethod(ScrollingMovementMethod.getInstance());
 		desc.setText(activity.getDescription());
 		
 		TextView start = (TextView) findViewById(R.id.viewActivityStart);
