@@ -20,10 +20,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.csail.uid.data.Trip;
-import com.csail.uid.util.Constants;
-import com.csail.uid.util.GetHelper;
-import com.csail.uid.util.GetHelper.HttpCallback;
+import com.csail.uid.crowdcierge.data.Trip;
+import com.csail.uid.crowdcierge.util.Constants;
+import com.csail.uid.crowdcierge.util.GetHelper;
+import com.csail.uid.crowdcierge.util.GetHelper.HttpCallback;
 
 public class ViewTripListActivity extends Activity {
 

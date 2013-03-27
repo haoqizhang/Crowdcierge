@@ -13,9 +13,9 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
-import com.csail.uid.util.Constants;
-import com.csail.uid.util.GetHelper.HttpCallback;
-import com.csail.uid.util.PostHelper;
+import com.csail.uid.crowdcierge.util.Constants;
+import com.csail.uid.crowdcierge.util.PostHelper;
+import com.csail.uid.crowdcierge.util.GetHelper.HttpCallback;
 
 public class CreateAccountActivity extends Activity {
 	@Override

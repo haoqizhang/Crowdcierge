@@ -1,4 +1,4 @@
-package com.csail.uid.util;
+package com.csail.uid.crowdcierge.util;
 
 import java.io.IOException;
 import java.util.Map;

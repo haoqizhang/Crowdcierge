@@ -1,4 +1,4 @@
-package com.csail.uid.data;
+package com.csail.uid.crowdcierge.data;
 
 import java.util.ArrayList;
 
@@ -16,12 +16,12 @@ public class Trip implements Parcelable {
 	private ArrayList<String> activityIds = new ArrayList<String>();
 
 	private String startName;
-	private long startLat;
-	private long startLong;
+	private double startLat;
+	private double startLong;
 
 	private String endName;
-	private long endLat;
-	private long endLong;
+	private double endLat;
+	private double endLong;
 
 	private int startTime;
 	private int endTime;
@@ -48,13 +48,13 @@ public class Trip implements Parcelable {
 			JSONObject end = admin.getJSONObject("end");
 
 			startName = start.getString("name");
-			startLat = start.getLong("lat");
-			startLong = start.getLong("long");
+			startLat = start.getDouble("lat");
+			startLong = start.getDouble("long");
 
 			endName = end.getString("name");
-			endLat = end.getLong("lat");
-			endLong = end.getLong("long");
-
+			endLat = end.getDouble("lat");
+			endLong = end.getDouble("long");
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -65,6 +65,16 @@ public class Trip implements Parcelable {
 		tid = b.getString("tid");
 		title = b.getString("title");
 		activityIds = b.getStringArrayList("activityIds");
+		
+		startName = b.getString("startName");
+		startTime = b.getInt("startTime");
+		startLat = b.getDouble("startLat");
+		startLong = b.getDouble("startLong");
+		
+		endName = b.getString("endName");
+		endTime = b.getInt("endTime");
+		endLat = b.getDouble("endLat");
+		endLong = b.getDouble("endLong");
 	}
 
 	public String getTitle() {
@@ -79,11 +89,11 @@ public class Trip implements Parcelable {
 		return startName;
 	}
 
-	public long getStartLat() {
+	public double getStartLat() {
 		return startLat;
 	}
 
-	public long getStartLong() {
+	public double getStartLong() {
 		return startLong;
 	}
 
@@ -91,11 +101,11 @@ public class Trip implements Parcelable {
 		return endName;
 	}
 
-	public long getEndLat() {
+	public double getEndLat() {
 		return endLat;
 	}
 
-	public long getEndLong() {
+	public double getEndLong() {
 		return endLong;
 	}
 
@@ -130,6 +140,16 @@ public class Trip implements Parcelable {
 		b.putString("tid", tid);
 		b.putString("title", title);
 		b.putStringArrayList("activityIds", activityIds);
+		
+		b.putString("startName", startName);
+		b.putInt("startTime", startTime);
+		b.putDouble("startLat", startLat);
+		b.putDouble("startLong", startLong);
+
+		b.putString("endName", endName);
+		b.putInt("endTime", endTime);
+		b.putDouble("endLat", endLat);
+		b.putDouble("endLong", endLong);
 
 		dest.writeBundle(b);
 	}

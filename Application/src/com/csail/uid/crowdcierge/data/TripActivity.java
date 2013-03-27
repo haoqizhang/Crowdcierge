@@ -1,4 +1,4 @@
-package com.csail.uid.data;
+package com.csail.uid.crowdcierge.data;
 
 import java.util.ArrayList;
 
@@ -17,9 +17,10 @@ public class TripActivity implements Parcelable {
 	private String description;
 	private int duration;
 	private int start;
-	private long latitude;
-	private long longitude;
+	private double latitude;
+	private double longitude;
 	private ArrayList<String> categories = new ArrayList<String>();
+	private boolean isEndpoint = false;
 
 	public TripActivity(String mapId, JSONObject obj) {
 		this.mapId = mapId;
@@ -36,10 +37,10 @@ public class TripActivity implements Parcelable {
 			}
 			
 			JSONObject loc = data.getJSONObject("location");
-			locationName = loc.getString("name");
-			latitude = loc.getLong("lat");
-			longitude = loc.getLong("long");
-			
+			locationName = loc.getString("name");			
+			latitude = loc.getDouble("lat");
+	        longitude = loc.getDouble("long");
+
 			JSONArray catArray = data.getJSONArray("categories");
 			for (int i = 0; i < catArray.length(); i++) {
 				categories.add(catArray.getString(i));
@@ -61,11 +62,30 @@ public class TripActivity implements Parcelable {
 		description = b.getString("description");
 		duration = b.getInt("duration");
 		start = b.getInt("start");
-		latitude = b.getLong("latitude");
-		longitude = b.getLong("longitude");
+		latitude = b.getDouble("latitude");
+		longitude = b.getDouble("longitude");
 		categories = b.getStringArrayList("categories");
+		isEndpoint = b.getBoolean("isEndpoint");
 	}
 
+	/**
+	 * Creates a start or end point trip activity
+	 */
+	public TripActivity(String label, String locationName, int start, double latitude, double longitude, boolean isStart) {
+		this.label = label;
+		this.locationName = locationName;
+		this.start = start;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.isEndpoint = true;
+		
+		if (isStart) {
+			this.description = "Your trip start location.";
+		} else {
+			this.description = "Your trip end location.";
+		}
+	}
+	
 	public String getMapId() {
 		return mapId;
 	}
@@ -90,16 +110,20 @@ public class TripActivity implements Parcelable {
 		return start;
 	}
 
-	public long getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
-	public long getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
 	public ArrayList<String> getCategories() {
 		return categories;
+	}
+	
+	public boolean isEndpoint() {
+		return isEndpoint;
 	}
 
 	@Override
@@ -116,9 +140,10 @@ public class TripActivity implements Parcelable {
 		b.putString("description", description);
 		b.putInt("duration", duration);
 		b.putInt("start", start);
-		b.putLong("latitude", latitude);
-		b.putLong("longitude", longitude);
+		b.putDouble("latitude", latitude);
+		b.putDouble("longitude", longitude);
 		b.putStringArrayList("categories", categories);
+		b.putBoolean("isEndpoint", isEndpoint);
 		dest.writeBundle(b);	
 	}
 

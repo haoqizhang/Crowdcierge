@@ -1,4 +1,4 @@
-package com.csail.uid.util;
+package com.csail.uid.crowdcierge.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import org.apache.http.util.EntityUtils;
 
 import android.os.AsyncTask;
 
-import com.csail.uid.util.GetHelper.HttpCallback;
+import com.csail.uid.crowdcierge.util.GetHelper.HttpCallback;
 
 public class PostHelper {
 	AsyncTask<Map<String, String>, Void, String> task;

@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,14 +20,14 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.csail.uid.data.Trip;
-import com.csail.uid.data.TripActivity;
-import com.csail.uid.util.Constants;
-import com.csail.uid.util.GetHelper;
-import com.csail.uid.util.GetHelper.HttpCallback;
+import com.csail.uid.crowdcierge.data.Trip;
+import com.csail.uid.crowdcierge.data.TripActivity;
+import com.csail.uid.crowdcierge.util.Constants;
+import com.csail.uid.crowdcierge.util.GetHelper;
+import com.csail.uid.crowdcierge.util.TimeUtils;
+import com.csail.uid.crowdcierge.util.GetHelper.HttpCallback;
 
 public class ViewTripActivity extends Activity {
-	private boolean inProgress;
 	private Trip trip;
 	private HashMap<String, TripActivity> userStream = new HashMap<String, TripActivity>();
 
@@ -39,7 +40,6 @@ public class ViewTripActivity extends Activity {
 		setContentView(R.layout.view_trip);
 
 		trip = getIntent().getParcelableExtra("trip");
-		inProgress = getIntent().getBooleanExtra("inProgress", false);
 
 		activityList = (ListView) findViewById(R.id.activityList);
 		mAdapter = new ActivityListAdapter(this);
@@ -90,9 +90,17 @@ public class ViewTripActivity extends Activity {
 	 */
 	private void populateActivityList() {
 		mAdapter.clear();
+
+		mAdapter.add(new TripActivity("Start", trip.getStartName(), trip
+				.getStartTime(), trip.getStartLat(), trip.getStartLong(), true));
+
 		for (String id : trip.getActivityIds()) {
 			mAdapter.add(userStream.get(id));
 		}
+		
+		mAdapter.add(new TripActivity("End", trip.getEndName(), trip
+				.getEndTime(), trip.getEndLat(), trip.getEndLong(), false));
+		
 		mAdapter.notifyDataSetChanged();
 	}
 
@@ -107,13 +115,28 @@ public class ViewTripActivity extends Activity {
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
-			TextView view = new TextView(ViewTripActivity.this);
 			TripActivity act = getItem(position);
-			view.setText(act.getLabel() + " / " + act.getStart() + " / "
-					+ act.getDuration());
-			view.setTextSize(20);
+			convertView = LayoutInflater.from(getContext()).inflate(
+					R.layout.activity_row, null);
 
-			convertView = view;
+			TextView label = (TextView) convertView
+					.findViewById(R.id.activityLabel);
+			label.setText(act.getLabel());
+
+			TextView location = (TextView) convertView
+					.findViewById(R.id.activityLocation);
+			location.setText("@" + act.getLocationName());
+
+			TextView times = (TextView) convertView
+					.findViewById(R.id.activityTimes);
+
+			if (act.isEndpoint()) {
+				times.setText(TimeUtils.minToTime(act.getStart()));
+			} else {
+				times.setText(TimeUtils.minToTime(act.getStart())
+						+ "-" + TimeUtils.minToTime(act.getStart()
+								+ act.getDuration()));
+			}
 			return convertView;
 		}
 	}
