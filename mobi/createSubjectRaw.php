@@ -13,6 +13,7 @@ $id = md5($name . rand());
 $query = "INSERT INTO tour_subjects (id, name, email) VALUES ('$id', '$name', '$email')";
 
 mysql_query($query);
+echo mysql_error();
 mysql_close();
 
 echo $id;
