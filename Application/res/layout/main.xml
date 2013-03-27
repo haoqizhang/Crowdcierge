@@ -44,7 +44,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:gravity="center"
-            android:text="Have our people plan a trip just for you, custom tailored to your request"
+            android:text="Have our people plan a trip just for you"
             android:textSize="14sp" />
 
         <Button
@@ -55,7 +55,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:gravity="center"
-            android:text="Trips in Progress"
+            android:text="Current Trip"
             android:onClick="launchInProgressTripsActivity"
             android:textSize="20sp" />
         
@@ -65,7 +65,28 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:gravity="center"
-            android:text="View your current trip or trips currently being planned"
+            android:text="Get directions or request changes"
+            android:textSize="14sp" />
+        
+        <Button
+            android:id="@+id/upcomingTripButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:text="Upcoming Trips"
+            android:onClick="launchUpcomingTripsActivity"
+            android:textSize="20sp" />
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:text="See what we're planning for your upcoming trips"
             android:textSize="14sp" />
 
         <Button
@@ -79,6 +100,16 @@
             android:text="View Past Trips"
             android:onClick="launchPastTripsActivity"
             android:textSize="20sp" />
+            
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:text="Take a look at your past travels"
+            android:textSize="14sp" />
+        
     </LinearLayout>
 
 </LinearLayout>

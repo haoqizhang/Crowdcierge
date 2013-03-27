@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
-    android:orientation="vertical" >
+    android:layout_margin="10dp" >
+
+    <LinearLayout
+        android:id="@+id/viewTripButtons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/viewTripEdit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@android:drawable/ic_menu_agenda"
+            android:text="Edit Trip" />
+
+        <Button
+            android:id="@+id/viewTripMap"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@android:drawable/ic_menu_mapmode"
+            android:onClick="showMap"
+            android:text="View Map" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/activityList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content"
+        android:layout_above="@id/viewTripButtons"
+        android:layout_alignParentTop="true" >
     </ListView>
 
-</LinearLayout>
+</RelativeLayout>

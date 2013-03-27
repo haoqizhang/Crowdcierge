@@ -26,6 +26,9 @@ public class Trip implements Parcelable {
 	private int startTime;
 	private int endTime;
 
+	// TODO: actually get directions mode
+	private String directionsMode = "driving";
+
 	private JSONObject originalObj;
 
 	public Trip(String JSON) {
@@ -54,7 +57,7 @@ public class Trip implements Parcelable {
 			endName = end.getString("name");
 			endLat = end.getDouble("lat");
 			endLong = end.getDouble("long");
-			
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -65,16 +68,18 @@ public class Trip implements Parcelable {
 		tid = b.getString("tid");
 		title = b.getString("title");
 		activityIds = b.getStringArrayList("activityIds");
-		
+
 		startName = b.getString("startName");
 		startTime = b.getInt("startTime");
 		startLat = b.getDouble("startLat");
 		startLong = b.getDouble("startLong");
-		
+
 		endName = b.getString("endName");
 		endTime = b.getInt("endTime");
 		endLat = b.getDouble("endLat");
 		endLong = b.getDouble("endLong");
+
+		directionsMode = b.getString("directionsMode");
 	}
 
 	public String getTitle() {
@@ -121,6 +126,10 @@ public class Trip implements Parcelable {
 		return activityIds;
 	}
 
+	public String getDirectionsMode() {
+		return directionsMode;
+	}
+
 	/**
 	 * Exposed for convenience when editing trip state. Much easier to modify
 	 * old JSON object than rebuild.
@@ -140,7 +149,7 @@ public class Trip implements Parcelable {
 		b.putString("tid", tid);
 		b.putString("title", title);
 		b.putStringArrayList("activityIds", activityIds);
-		
+
 		b.putString("startName", startName);
 		b.putInt("startTime", startTime);
 		b.putDouble("startLat", startLat);
@@ -150,6 +159,8 @@ public class Trip implements Parcelable {
 		b.putInt("endTime", endTime);
 		b.putDouble("endLat", endLat);
 		b.putDouble("endLong", endLong);
+
+		b.putString("directionsMode", directionsMode);
 
 		dest.writeBundle(b);
 	}
@@ -163,4 +174,5 @@ public class Trip implements Parcelable {
 			return new Trip[size];
 		}
 	};
+
 }
