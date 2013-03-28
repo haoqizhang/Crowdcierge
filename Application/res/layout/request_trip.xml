@@ -164,7 +164,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Trips are at most 24 hours long and can rollover into the next day.  We interpret your choices to make the shortest possible trip."
+            android:text="Trips are at most 24 hours long and can rollover into the next day.  We interpret your choices to make the shortest possible trip starting on the date specified."
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
     </LinearLayout>
 
@@ -178,8 +178,8 @@
             android:id="@+id/requestTripStart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_alignParentTop="true"
+            android:orientation="vertical"
             android:visibility="gone" >
 
             <LinearLayout
@@ -193,7 +193,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Address or intersection" />
+                    android:hint="Start address or intersection" />
 
                 <ImageButton
                     android:id="@+id/requestStartSearchButton"
@@ -221,9 +221,9 @@
             android:id="@+id/requestTripEnd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentTop="true"
             android:layout_alignBottom="@id/requestTripStart"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical"
             android:visibility="gone" >
 
             <LinearLayout
@@ -237,10 +237,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Address or intersection" />
+                    android:hint="End address or intersection" />
 
                 <ImageButton
-                    android:id="@+id/requestEndSearchQuery"
+                    android:id="@+id/requestEndSearchButton"
                     android:layout_width="80dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -272,7 +272,7 @@
         class="com.google.android.gms.maps.MapFragment"
         map:cameraTargetLat="42.360161"
         map:cameraTargetLng="-71.094975"
-        map:cameraZoom="14" />
+        map:cameraZoom="12" />
 
     <LinearLayout
         android:id="@+id/requestTripDescription"
@@ -282,6 +282,26 @@
         android:layout_alignParentTop="true"
         android:orientation="vertical"
         android:visibility="gone" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="What you want to do:"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+        <EditText
+            android:id="@+id/requestTripDescriptionInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="What do you want to do?  What kind of trip do you want?"
+            android:maxLines="15"
+            android:minLines="7" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="You can write as little or as much as you want.  If you know you want to do something specific, make sure to point it out." />
     </LinearLayout>
 
 </RelativeLayout>
