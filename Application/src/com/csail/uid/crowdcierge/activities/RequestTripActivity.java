@@ -299,12 +299,14 @@ public class RequestTripActivity extends Activity {
 		if (startName == null || startName.equals("")) {
 			if (start != null) {
 				start.remove();
+				start = null;
 			}
 		}
 		
 		if (endName == null || endName.equals("")) {
 			if (end != null) {
 				end.remove();
+				end = null;
 			}
 		}
 	}
