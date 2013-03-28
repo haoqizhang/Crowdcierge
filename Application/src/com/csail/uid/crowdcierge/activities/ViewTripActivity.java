@@ -43,6 +43,7 @@ public class ViewTripActivity extends Activity {
 	private View prog;
 	private Button editBtn;
 	private Button mapBtn;
+	private Button cancelBtn;
 	private ActivityListAdapter mAdapter;
 
 	@Override
@@ -62,6 +63,7 @@ public class ViewTripActivity extends Activity {
 
 		editBtn = (Button) findViewById(R.id.viewTripEdit);
 		mapBtn = (Button) findViewById(R.id.viewTripMap);
+		cancelBtn = (Button) findViewById(R.id.viewTripCancel);
 		
 		ActionBar bar = getActionBar();
 		bar.setTitle(trip.getTitle());
@@ -91,12 +93,13 @@ public class ViewTripActivity extends Activity {
 	}
 
 	public void showMap(View v) {
-		Intent in = new Intent(ViewTripActivity.this, MapsActivity.class);
+		Intent in = new Intent(ViewTripActivity.this, TripMapActivity.class);
 		ArrayList<TripActivity> activities = new ArrayList<TripActivity>();
 		for (int i = 0; i < mAdapter.getCount(); i++) {
 			activities.add(mAdapter.getItem(i));
 		}
 		in.putExtra("activities", activities);
+		in.putExtra("trip", trip);
 		this.startActivity(in);
 	}
 
@@ -132,6 +135,7 @@ public class ViewTripActivity extends Activity {
 				}
 
 				populateActivityList();
+				setTripType();
 			}
 		})).execute();
 	}
@@ -155,6 +159,21 @@ public class ViewTripActivity extends Activity {
 		activityList.setVisibility(View.VISIBLE);
 		editBtn.setEnabled(true);
 		mapBtn.setEnabled(true);
+	}
+	
+	/**
+	 * TODO: change view depending on type
+	 */
+	private void setTripType() {
+		switch (type) {
+		case FUTURE:
+			cancelBtn.setVisibility(View.VISIBLE);
+			break;
+		case PRESENT:
+			break;
+		case PAST:
+			editBtn.setEnabled(false);
+		}
 	}
 
 	/**
