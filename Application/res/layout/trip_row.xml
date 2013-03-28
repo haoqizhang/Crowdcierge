@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="2dp" >
+
+    <TextView
+        android:id="@+id/tripLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test label here"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tripLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="Dest City"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+        <TextView
+            android:id="@+id/tripDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="Date"
+            android:layout_marginRight="7dp"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+    </LinearLayout>
+
+</LinearLayout>

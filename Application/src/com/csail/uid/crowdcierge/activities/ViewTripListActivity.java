@@ -10,7 +10,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -52,6 +53,30 @@ public class ViewTripListActivity extends Activity {
 
 		getTaskList();
 		addTripsToList();
+		
+		switch (type) {
+		case FUTURE:
+			getActionBar().setTitle("Upcoming Trips");
+			break;
+		case PRESENT:
+			getActionBar().setTitle("Current Trips");
+			break;
+		case PAST:
+			getActionBar().setTitle("Past Trips");
+			break;
+		}
+		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			onBackPressed();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	/**
@@ -64,14 +89,12 @@ public class ViewTripListActivity extends Activity {
 		
 		switch (type) {
 		case FUTURE:
-			taskIds.add("a31b5015bac8dce3a4e417b5d7fdcb31");
+			taskIds.add("453ad2e6eeda9e3ccd9d2739c0f1025d");
 			break;
 		case PRESENT:
 			taskIds.add("a31b5015bac8dce3a4e417b5d7fdcb31");
 			break;
 		case PAST:
-			taskIds.add("453ad2e6eeda9e3ccd9d2739c0f1025d");
-			taskIds.add("a31b5015bac8dce3a4e417b5d7fdcb31");
 			taskIds.add("6d33280aa09b19776b7721c98c784223");
 			taskIds.add("083bae9b539973499cf654cd97928b97");
 			taskIds.add("07b00cdb35f7d7b6f78b143435be4233");
@@ -109,6 +132,7 @@ public class ViewTripListActivity extends Activity {
 						in.putExtra("isSingle", true);
 						in.putExtra("trip", t);
 						ViewTripListActivity.this.startActivity(in);
+						ViewTripListActivity.this.finish();
 						return;
 					}
 					
@@ -130,12 +154,22 @@ public class ViewTripListActivity extends Activity {
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
-			TextView view = new TextView(ViewTripListActivity.this);
-			view.setText(getItem(position).getTitle());
-			view.setTextSize(20);
-			view.setGravity(Gravity.CENTER_HORIZONTAL);
+			Trip trip = getItem(position);
+			convertView = LayoutInflater.from(getContext()).inflate(
+					R.layout.trip_row, null);
 
-			convertView = view;
+			TextView label = (TextView) convertView
+					.findViewById(R.id.tripLabel);
+			label.setText(trip.getTitle());
+
+			TextView location = (TextView) convertView
+					.findViewById(R.id.tripLocation);
+			location.setText(trip.getCity());
+
+			TextView times = (TextView) convertView
+					.findViewById(R.id.tripDate);
+			times.setText(trip.getDate());
+			
 			return convertView;
 		}
 	}

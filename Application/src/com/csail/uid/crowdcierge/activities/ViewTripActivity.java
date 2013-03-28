@@ -78,6 +78,7 @@ public class ViewTripActivity extends Activity {
 		} else {
 			Intent in = new Intent(ViewTripActivity.this, MainActivity.class);
 			this.startActivity(in);
+			this.finish();
 		}
 	}
 

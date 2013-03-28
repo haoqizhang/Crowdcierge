@@ -26,6 +26,10 @@ public class Trip implements Parcelable {
 	private int startTime;
 	private int endTime;
 
+	// TODO: actually store the city and date
+	private String city;
+	private String date;
+
 	// TODO: actually get directions mode
 	private String directionsMode = "driving";
 
@@ -58,6 +62,18 @@ public class Trip implements Parcelable {
 			endLat = end.getDouble("lat");
 			endLong = end.getDouble("long");
 
+			if (!admin.has("city")) {
+				city = title.substring(9);
+			} else {				
+				city = admin.getString("city");
+			}
+
+			if (!admin.has("date")) {
+				date = "No Date";
+			} else {
+				date = admin.getString("date");				
+			}
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -78,6 +94,9 @@ public class Trip implements Parcelable {
 		endTime = b.getInt("endTime");
 		endLat = b.getDouble("endLat");
 		endLong = b.getDouble("endLong");
+
+		city = b.getString("city");
+		date = b.getString("date");
 
 		directionsMode = b.getString("directionsMode");
 	}
@@ -129,6 +148,14 @@ public class Trip implements Parcelable {
 	public String getDirectionsMode() {
 		return directionsMode;
 	}
+	
+	public String getCity() {
+		return city;
+	}
+	
+	public String getDate() {
+		return date;
+	}
 
 	/**
 	 * Exposed for convenience when editing trip state. Much easier to modify
@@ -161,6 +188,9 @@ public class Trip implements Parcelable {
 		b.putDouble("endLong", endLong);
 
 		b.putString("directionsMode", directionsMode);
+
+		b.putString("city", city);
+		b.putString("date", date);
 
 		dest.writeBundle(b);
 	}

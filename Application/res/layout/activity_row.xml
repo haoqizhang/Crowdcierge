@@ -52,6 +52,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="time-time"
+                android:layout_marginRight="7dp"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
         </LinearLayout>
     </LinearLayout>
