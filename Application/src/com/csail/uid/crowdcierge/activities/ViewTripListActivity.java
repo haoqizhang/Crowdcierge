@@ -34,6 +34,7 @@ public class ViewTripListActivity extends Activity {
 	private TripTimeType type;
 
 	private ListView tripList;
+	private View prog;
 	private TripListAdapter mAdapter;
 
 	@Override
@@ -46,6 +47,7 @@ public class ViewTripListActivity extends Activity {
 		uid = prefs.getString("uid", null);
 		type = (TripTimeType) getIntent().getSerializableExtra("listType");
 
+		prog = findViewById(R.id.tripListProgress);
 		tripList = (ListView) findViewById(R.id.tripList);
 		mAdapter = new TripListAdapter(this);
 		tripList.setAdapter(mAdapter);
@@ -135,9 +137,14 @@ public class ViewTripListActivity extends Activity {
 						ViewTripListActivity.this.finish();
 						return;
 					}
-					
 					mAdapter.add(t);
 					mAdapter.notifyDataSetChanged();
+					
+					// Only remove progress bar when all trips are loaded
+					if (mAdapter.getCount() == taskIds.size()) {
+						prog.setVisibility(View.GONE);
+						tripList.setVisibility(View.VISIBLE);
+					}
 				}
 			})).execute();
 		}

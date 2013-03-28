@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableLeft="@android:drawable/ic_menu_agenda"
+            android:enabled="false"
             android:text="Edit Trip" />
 
         <Button
@@ -26,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableLeft="@android:drawable/ic_menu_mapmode"
+            android:enabled="false"
             android:onClick="showMap"
             android:text="View Map" />
     </LinearLayout>
@@ -35,7 +37,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/viewTripButtons"
-        android:layout_alignParentTop="true" >
+        android:layout_alignParentTop="true"
+        android:visibility="gone" >
     </ListView>
+
+    <RelativeLayout
+        android:id="@+id/activityListProgress"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/viewTripButtons"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp" >
+
+        <ProgressBar
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:indeterminate="true"
+            android:indeterminateBehavior="cycle" />
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,6 +40,9 @@ public class ViewTripActivity extends Activity {
 	private HashMap<String, TripActivity> userStream = new HashMap<String, TripActivity>();
 
 	private ListView activityList;
+	private View prog;
+	private Button editBtn;
+	private Button mapBtn;
 	private ActivityListAdapter mAdapter;
 
 	@Override
@@ -50,11 +54,15 @@ public class ViewTripActivity extends Activity {
 		type = (TripTimeType) getIntent().getSerializableExtra("tripType");
 		isSinglePresent = getIntent().getBooleanExtra("isSingle", false);
 
+		prog = findViewById(R.id.activityListProgress);
 		activityList = (ListView) findViewById(R.id.activityList);
 		mAdapter = new ActivityListAdapter(this);
 		activityList.setAdapter(mAdapter);
 		activityList.setOnItemClickListener(new OnActivityClickListener());
 
+		editBtn = (Button) findViewById(R.id.viewTripEdit);
+		mapBtn = (Button) findViewById(R.id.viewTripMap);
+		
 		ActionBar bar = getActionBar();
 		bar.setTitle(trip.getTitle());
 		bar.setDisplayHomeAsUpEnabled(true);
@@ -131,7 +139,7 @@ public class ViewTripActivity extends Activity {
 	/**
 	 * Fill activity list with the trip's activities
 	 */
-	private void populateActivityList() {
+	private void populateActivityList() {		
 		mAdapter.clear();
 		mAdapter.add(new TripActivity("Start", trip.getStartName(), trip
 				.getStartTime(), trip.getStartLat(), trip.getStartLong(), true));
@@ -142,6 +150,11 @@ public class ViewTripActivity extends Activity {
 		mAdapter.add(new TripActivity("End", trip.getEndName(), trip
 				.getEndTime(), trip.getEndLat(), trip.getEndLong(), false));
 		mAdapter.notifyDataSetChanged();
+		
+		prog.setVisibility(View.GONE);
+		activityList.setVisibility(View.VISIBLE);
+		editBtn.setEnabled(true);
+		mapBtn.setEnabled(true);
 	}
 
 	/**

@@ -168,25 +168,111 @@
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/requestTripStart"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/requestBottom"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical"
-        android:visibility="gone" >
-    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/mapControlBlock"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" >
 
-    <LinearLayout
-        android:id="@+id/requestTripEnd"
+        <LinearLayout
+            android:id="@+id/requestTripStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentTop="true"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <com.csail.uid.crowdcierge.views.SearchText
+                    android:id="@+id/requestStartSearchQuery"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="Address or intersection" />
+
+                <ImageButton
+                    android:id="@+id/requestStartSearchButton"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:src="@android:drawable/ic_menu_search" />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/requestTripStartMyLoc"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Use my location as the start" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:text="If you don&apos;t know yet, just leave it blank and we&apos;ll start you in the city" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/requestTripEnd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentTop="true"
+            android:layout_alignBottom="@id/requestTripStart"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <com.csail.uid.crowdcierge.views.SearchText
+                    android:id="@+id/requestEndSearchQuery"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="Address or intersection" />
+
+                <ImageButton
+                    android:id="@+id/requestEndSearchQuery"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:src="@android:drawable/ic_menu_search" />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/requestTripEndMyLoc"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Use my location as the end" />
+
+            <CheckBox
+                android:id="@+id/requestTripEndIsStart"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="End location same as start" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <fragment
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/requestTripMap"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/requestBottom"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical"
-        android:visibility="gone" >
-    </LinearLayout>
+        android:layout_below="@id/mapControlBlock"
+        class="com.google.android.gms.maps.MapFragment"
+        map:cameraTargetLat="42.360161"
+        map:cameraTargetLng="-71.094975"
+        map:cameraZoom="14" />
 
     <LinearLayout
         android:id="@+id/requestTripDescription"

@@ -2,15 +2,16 @@ package com.csail.uid.crowdcierge.activities;
 
 import java.util.Calendar;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -24,7 +25,7 @@ import android.widget.Toast;
 import com.csail.uid.crowdcierge.R;
 import com.csail.uid.crowdcierge.util.TimeUtils;
 
-public class RequestTripActivity extends FragmentActivity {
+public class RequestTripActivity extends Activity {
 
 	private String uid;
 	private String title;
@@ -69,7 +70,8 @@ public class RequestTripActivity extends FragmentActivity {
 		nextBtn = (Button) findViewById(R.id.requestTripNextBtn);
 		submitBtn = (Button) findViewById(R.id.requestTripSubmitBtn);
 		updateTitleBar();
-
+		updateMaps();
+		
 		configureWhenWhere();
 	}
 
@@ -81,11 +83,13 @@ public class RequestTripActivity extends FragmentActivity {
 
 		updateTitleBar();
 		updateButtons();
+		updateMaps();
 	}
 
 	public void showPreviousStep(View v) {
 		step--;
 
+		updateMaps();
 		findViewById(stepIds[step]).setVisibility(View.GONE);
 		findViewById(stepIds[step - 1]).setVisibility(View.VISIBLE);
 
@@ -116,6 +120,18 @@ public class RequestTripActivity extends FragmentActivity {
 			nextBtn.setVisibility(View.VISIBLE);
 			submitBtn.setVisibility(View.GONE);
 		}
+	}
+	
+	private void updateMaps() {
+		Fragment Map = getFragmentManager().findFragmentById(R.id.requestTripMap);
+		
+		if (step == 2 || step == 3) {
+			getFragmentManager().beginTransaction().show(Map).commit();
+		} else {
+			getFragmentManager().beginTransaction().hide(Map).commit();
+		}
+		
+		getFragmentManager().executePendingTransactions();
 	}
 
 	/**
