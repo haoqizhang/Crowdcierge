@@ -159,6 +159,13 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:text="End Time: 6:00pm" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Trips are at most 24 hours long and can rollover into the next day.  We interpret your choices to make the shortest possible trip."
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
     </LinearLayout>
 
     <LinearLayout

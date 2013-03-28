@@ -32,6 +32,10 @@ public class TimeUtils {
 			}
 		}
 		
+		if (hour == 0) {
+			hour = 12;
+		}
+		
 		String min = "" + minutes;
 		if (minutes < 10) {
 			min = "0" + minutes;
