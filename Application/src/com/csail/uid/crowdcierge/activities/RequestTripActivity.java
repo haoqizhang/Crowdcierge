@@ -100,14 +100,19 @@ public class RequestTripActivity extends Activity {
 	private EditText requestInput;
 
 	private GoogleMap map;
-
 	private ProgressDialog progress;
 
-	private Handler mHandler = new Handler(new Callback() {
+	// Handler for when reverse geocoding task returns
+	private Handler addressHandler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message msg) {
 			progress.dismiss();
-			startNameInput.setText((String) msg.obj);
+
+			if (msg.what == 0) {
+				startNameInput.setText((String) msg.obj);
+			} else {
+				endNameInput.setText((String) msg.obj);
+			}
 			saveInputs();
 			updateMap();
 			return true;
@@ -139,6 +144,7 @@ public class RequestTripActivity extends Activity {
 		updateTitleBar();
 		updateMap();
 
+		// Configure UI elements for various steps
 		configureWhenWhere();
 		configureStart();
 		configureEnd();
@@ -173,6 +179,9 @@ public class RequestTripActivity extends Activity {
 		findViewById(stepIds[step - 1]).setVisibility(View.VISIBLE);
 	}
 
+	/**
+	 * Update title bar text to reflect step number
+	 */
 	private void updateTitleBar() {
 		getActionBar()
 				.setTitle(
@@ -180,6 +189,9 @@ public class RequestTripActivity extends Activity {
 								+ stepNames[step - 1]);
 	}
 
+	/**
+	 * Change the step control buttons based on what step we are on.
+	 */
 	private void updateButtons() {
 		if (step == 1) {
 			backBtn.setVisibility(View.GONE);
@@ -199,7 +211,8 @@ public class RequestTripActivity extends Activity {
 	}
 
 	/**
-	 * Show or hide the map display and update camera location
+	 * Show or hide the map display and update camera location. Also does pins
+	 * and start/end lat and long if on correct step.
 	 */
 	private void updateMap() {
 		Fragment Map = getFragmentManager().findFragmentById(
@@ -255,12 +268,18 @@ public class RequestTripActivity extends Activity {
 		return location;
 	}
 
+	/**
+	 * Async task for reverse geocoding (get address from lat long). Sends
+	 * response to addressHandler.
+	 */
 	private class ReverseGeocodingTask extends AsyncTask<Location, Void, Void> {
 		Context mContext;
+		int type;
 
-		public ReverseGeocodingTask(Context context) {
+		public ReverseGeocodingTask(Context context, int t) {
 			super();
 			mContext = context;
+			type = t;
 		}
 
 		@Override
@@ -282,7 +301,8 @@ public class RequestTripActivity extends Activity {
 						address.getMaxAddressLineIndex() > 0 ? address
 								.getAddressLine(0) : "", address.getLocality(),
 						address.getCountryName());
-				Message.obtain(mHandler, 0, addressText).sendToTarget();
+				Message.obtain(addressHandler, type, addressText)
+						.sendToTarget();
 			}
 			return null;
 		}
@@ -364,6 +384,9 @@ public class RequestTripActivity extends Activity {
 		});
 	}
 
+	/**
+	 * Configure the views in the start location step of the request
+	 */
 	private void configureStart() {
 		ImageButton startSearchBtn = (ImageButton) findViewById(R.id.requestStartSearchButton);
 		startSearchBtn.setOnClickListener(new OnClickListener() {
@@ -388,10 +411,10 @@ public class RequestTripActivity extends Activity {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				if (isChecked) {
-					progress = ProgressDialog.show(RequestTripActivity.this, "Finding location",
-								"One moment please...", true);
+					progress = ProgressDialog.show(RequestTripActivity.this,
+							"Finding location", "One moment please...", true);
 					Location loc = getBestLocation();
-					(new ReverseGeocodingTask(RequestTripActivity.this))
+					(new ReverseGeocodingTask(RequestTripActivity.this, 0))
 							.execute(loc);
 				}
 				startNameInput.setEnabled(!isChecked);
@@ -399,6 +422,9 @@ public class RequestTripActivity extends Activity {
 		});
 	}
 
+	/**
+	 * Configure the views in the end location step of the request
+	 */
 	private void configureEnd() {
 		ImageButton endSearchBtn = (ImageButton) findViewById(R.id.requestEndSearchButton);
 		endSearchBtn.setOnClickListener(new OnClickListener() {
@@ -414,6 +440,37 @@ public class RequestTripActivity extends Activity {
 			public void onTextClear() {
 				saveInputs();
 				updateMap();
+			}
+		});
+
+		final CheckBox endMy = (CheckBox) findViewById(R.id.requestTripEndMyLoc);
+		endMy.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (isChecked) {
+					progress = ProgressDialog.show(RequestTripActivity.this,
+							"Finding location", "One moment please...", true);
+					Location loc = getBestLocation();
+					(new ReverseGeocodingTask(RequestTripActivity.this, 1))
+							.execute(loc);
+				}
+				endNameInput.setEnabled(!isChecked);
+			}
+		});
+
+		CheckBox sameAsStart = (CheckBox) findViewById(R.id.requestTripEndIsStart);
+		sameAsStart.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (isChecked) {
+					endNameInput.setText(startNameInput.getText().toString());
+					saveInputs();
+					updateMap();
+				}
+				endNameInput.setEnabled(!isChecked);
+				endMy.setEnabled(!isChecked);
 			}
 		});
 	}
@@ -443,6 +500,13 @@ public class RequestTripActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Sets the map location to wherever query specifies. Centers map on query
+	 * based on center input.
+	 * 
+	 * If startName or endName are entered, removes old pin and adds new one.
+	 * Sets the lat and long for the start and end in this case.
+	 */
 	private void getMapLocationAndUpdate(final String query,
 			final boolean center) {
 		if (query == null || query.equals("")) {
