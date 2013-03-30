@@ -10,6 +10,7 @@ import android.os.Bundle;
 import com.csail.uid.crowdcierge.R;
 import com.csail.uid.crowdcierge.data.Trip;
 import com.csail.uid.crowdcierge.data.TripActivity;
+import com.csail.uid.crowdcierge.util.BitmapUtils;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,7 +34,7 @@ public class TripMapActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maps_activity_exp);
 		getActionBar().hide();
-		
+
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
 				.getMap();
 		trip = getIntent().getParcelableExtra("trip");
@@ -41,33 +42,36 @@ public class TripMapActivity extends Activity {
 
 		for (int i = 0; i < activities.size(); i++) {
 			TripActivity activity = activities.get(i);
-			
+
 			LatLng latLng = new LatLng(activity.getLatitude(),
 					activity.getLongitude());
 			String label = activity.getLabel();
-			
+
 			BitmapDescriptor icon;
 			if (activity.getLabel().equals("Start")) {
-				icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+				icon = BitmapDescriptorFactory
+						.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
 				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
 						latLng, 13);
 				map.moveCamera(cameraUpdate);
 			} else if (activity.getLabel().equals("End")) {
-				icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-				latLng = new LatLng(activity.getLatitude() + 0.00015, activity.getLongitude() + 0.00015);
+				icon = BitmapDescriptorFactory
+						.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+				latLng = new LatLng(activity.getLatitude() + 0.00015,
+						activity.getLongitude() + 0.00015);
 			} else {
-				label = i + ". " + label;
-				icon = BitmapDescriptorFactory.fromResource(R.drawable.azure_pin_large_2);
+				icon = BitmapDescriptorFactory.fromBitmap(BitmapUtils
+						.drawNumberOnPin(this, R.drawable.azure_pin_large_2, i
+								+ ""));
 			}
 
 			Marker m = map.addMarker(new MarkerOptions().title(label)
-					.snippet("@" + activity.getLocationName())
-					.icon(icon)
+					.snippet("@" + activity.getLocationName()).icon(icon)
 					.position(latLng));
-			
+
 			markerMap.put(m, activity);
 		}
-		
+
 		map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			public void onInfoWindowClick(Marker marker) {
 				Intent in = new Intent(TripMapActivity.this,
