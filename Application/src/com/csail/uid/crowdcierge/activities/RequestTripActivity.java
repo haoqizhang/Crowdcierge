@@ -1,7 +1,10 @@
 package com.csail.uid.crowdcierge.activities;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,8 +16,14 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -110,11 +119,17 @@ public class RequestTripActivity extends Activity {
 
 		updateTitleBar();
 		updateMap();
-		
+
 		configureWhenWhere();
 		configureStartEnd();
+
+		Location loc = getBestLocation();
+		(new ReverseGeocodingTask(this)).execute(loc);
 	}
 
+	/**
+	 * Move to next step of request process.
+	 */
 	public void showNextStep(View v) {
 		step++;
 		saveInputs();
@@ -127,6 +142,9 @@ public class RequestTripActivity extends Activity {
 		updateMap();
 	}
 
+	/**
+	 * Move to previous step of request process.
+	 */
 	public void showPreviousStep(View v) {
 		step--;
 		saveInputs();
@@ -188,6 +206,69 @@ public class RequestTripActivity extends Activity {
 			getFragmentManager().beginTransaction().hide(Map).commit();
 		}
 		getFragmentManager().executePendingTransactions();
+	}
+
+	/**
+	 * Try to get the 'best' location selected from all providers
+	 */
+	private Location getBestLocation() {
+		Location gpslocation = getLocationByProvider(LocationManager.GPS_PROVIDER);
+		Location networkLocation = getLocationByProvider(LocationManager.NETWORK_PROVIDER);
+		if (gpslocation == null) {
+			return networkLocation;
+		} else {
+			return gpslocation;
+		}
+	}
+
+	/**
+	 * Get the last known location from a specific provider (network/gps)
+	 */
+	private Location getLocationByProvider(String provider) {
+		Location location = null;
+		LocationManager locationManager = (LocationManager) getApplicationContext()
+				.getSystemService(Context.LOCATION_SERVICE);
+		try {
+			if (locationManager.isProviderEnabled(provider)) {
+				location = locationManager.getLastKnownLocation(provider);
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		return location;
+	}
+
+	private class ReverseGeocodingTask extends AsyncTask<Location, Void, Void> {
+		Context mContext;
+
+		public ReverseGeocodingTask(Context context) {
+			super();
+			mContext = context;
+		}
+
+		@Override
+		protected Void doInBackground(Location... params) {
+			Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
+
+			Location loc = params[0];
+			List<Address> addresses = null;
+			try {
+				addresses = geocoder.getFromLocation(loc.getLatitude(),
+						loc.getLongitude(), 1);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (addresses != null && addresses.size() > 0) {
+				Address address = addresses.get(0);
+				String addressText = String.format(
+						"%s, %s, %s",
+						address.getMaxAddressLineIndex() > 0 ? address
+								.getAddressLine(0) : "", address.getLocality(),
+						address.getCountryName());
+				startNameInput.setText(addressText);
+			}
+			return null;
+		}
 	}
 
 	/**
@@ -275,7 +356,7 @@ public class RequestTripActivity extends Activity {
 				getMapLocationAndUpdate(startName, true);
 			}
 		});
-		
+
 		ImageButton endSearchBtn = (ImageButton) findViewById(R.id.requestEndSearchButton);
 		endSearchBtn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -285,7 +366,7 @@ public class RequestTripActivity extends Activity {
 			}
 		});
 	}
-	
+
 	/**
 	 * Saves the inputs that have been entered in the text fields.
 	 */
@@ -295,14 +376,14 @@ public class RequestTripActivity extends Activity {
 		startName = startNameInput.getText().toString();
 		endName = endNameInput.getText().toString();
 		request = requestInput.getText().toString();
-		
+
 		if (startName == null || startName.equals("")) {
 			if (start != null) {
 				start.remove();
 				start = null;
 			}
 		}
-		
+
 		if (endName == null || endName.equals("")) {
 			if (end != null) {
 				end.remove();
@@ -341,7 +422,7 @@ public class RequestTripActivity extends Activity {
 						map.moveCamera(cameraUpdate);
 
 					}
-					
+
 					if (query.equals(startName)) {
 						if (start != null) {
 							start.remove();

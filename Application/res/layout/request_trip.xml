@@ -192,6 +192,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:maxLines="1"
                     android:ems="10"
                     android:hint="Start address or intersection" />
 
@@ -236,6 +237,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:maxLines="1"
                     android:ems="10"
                     android:hint="End address or intersection" />
 
