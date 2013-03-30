@@ -167,7 +167,7 @@ public class TripMapActivity extends Activity {
 		params.put("distanceUnit", "mi");
 		params.put("key",
 				"AmoK7LJck9Ce_JO_n_NAiDlRv88YZROwdvPzWdLi57iP3XQeGon28HJVdnHsUSkp");
-
+		
 		(new GetHelper(url, params, new HttpCallback() {
 			@Override
 			public void onHttpExecute(String JSON) {
@@ -188,11 +188,9 @@ public class TripMapActivity extends Activity {
 								coord.getDouble(1));
 						polyline.add(point);
 					}
-
 					polyline.color(Color.GREEN).width(7);
 
 					map.addPolyline(polyline);
-
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
