@@ -118,4 +118,6 @@ if(strcmp("both", $type) == 0){
 
 mysql_close();
 
+echo $id;
+
 ?>

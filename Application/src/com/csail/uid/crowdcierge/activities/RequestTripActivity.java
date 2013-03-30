@@ -674,12 +674,12 @@ public class RequestTripActivity extends Activity {
 		(new PostHelper(url, params, new HttpCallback() {
 			@Override
 			public void onHttpExecute(String JSON) {
+				System.out.println(JSON);
 				Toast.makeText(RequestTripActivity.this, "Trip request submitted!", Toast.LENGTH_LONG)
 				.show();		
-				Intent in = new Intent(RequestTripActivity.this, MainActivity.class);
-				RequestTripActivity.this.startActivity(in);				
+				//Intent in = new Intent(RequestTripActivity.this, MainActivity.class);
+				//RequestTripActivity.this.startActivity(in);			
 			}
 		})).execute();
-		
 	}
 }
