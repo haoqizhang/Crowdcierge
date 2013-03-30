@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:hint="Destination City" />
+                android:hint="City, State" />
         </LinearLayout>
 
         <TextView

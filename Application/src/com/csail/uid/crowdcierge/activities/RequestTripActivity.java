@@ -154,6 +154,11 @@ public class RequestTripActivity extends Activity {
 	 * Move to next step of request process.
 	 */
 	public void showNextStep(View v) {
+		boolean error = checkErrors();
+		if (error) {
+			return;
+		}
+
 		step++;
 		saveInputs();
 		updateTitleBar();
@@ -322,6 +327,26 @@ public class RequestTripActivity extends Activity {
 					boolean isChecked) {
 				startBtn.setEnabled(!isChecked);
 				dateBtn.setEnabled(!isChecked);
+
+				today = Calendar.getInstance();
+				String minute = today.get(Calendar.MINUTE) + "";
+				if (minute.length() == 1) {
+					minute = "0" + minute;
+				}
+				minute += today.get(Calendar.AM_PM) == Calendar.AM ? "am"
+						: "pm";
+
+				startBtn.setText("Start Time: " + today.get(Calendar.HOUR)
+						+ ":" + minute);
+				dateBtn.setText("Trip Date: " + (today.get(Calendar.MONTH) + 1)
+						+ "/" + today.get(Calendar.DAY_OF_MONTH) + "/"
+						+ today.get(Calendar.YEAR));
+
+				startTime = today.get(Calendar.HOUR) * 60
+						+ today.get(Calendar.MINUTE);
+				date = today.get(Calendar.DAY_OF_MONTH) * 1000000
+						+ (today.get(Calendar.MONTH) + 1) * 10000
+						+ today.get(Calendar.YEAR);
 			}
 		});
 
@@ -490,6 +515,8 @@ public class RequestTripActivity extends Activity {
 				start.remove();
 				start = null;
 			}
+		} else {
+			startName = startName + " " + city;
 		}
 
 		if (endName == null || endName.equals("")) {
@@ -497,7 +524,26 @@ public class RequestTripActivity extends Activity {
 				end.remove();
 				end = null;
 			}
+		} else {
+			endName = endName + " " + city;
 		}
+	}
+
+	/**
+	 * Check if there are form errors on the current step
+	 */
+	private boolean checkErrors() {
+		boolean error = false;
+		if (titleInput.getText().toString().length() == 0) {
+			error = true;
+			titleInput.setError("Please enter a title");
+		}
+
+		if (cityInput.getText().toString().length() == 0) {
+			error = true;
+			cityInput.setError("Please enter a city");
+		}
+		return error;
 	}
 
 	/**
