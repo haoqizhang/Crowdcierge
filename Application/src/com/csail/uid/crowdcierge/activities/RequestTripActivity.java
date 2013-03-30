@@ -43,8 +43,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.csail.uid.crowdcierge.R;
+import com.csail.uid.crowdcierge.util.Constants;
 import com.csail.uid.crowdcierge.util.GetHelper;
 import com.csail.uid.crowdcierge.util.GetHelper.HttpCallback;
+import com.csail.uid.crowdcierge.util.PostHelper;
 import com.csail.uid.crowdcierge.util.TimeUtils;
 import com.csail.uid.crowdcierge.views.SearchText;
 import com.csail.uid.crowdcierge.views.SearchText.OnTextClearListener;
@@ -634,9 +636,50 @@ public class RequestTripActivity extends Activity {
 	 * TODO: Actually submit trip request
 	 */
 	public void submitRequest(View v) {
-		Toast.makeText(this, "Trip request submitted!", Toast.LENGTH_LONG)
-				.show();
-		Intent in = new Intent(RequestTripActivity.this, MainActivity.class);
-		this.startActivity(in);
+		// Package the JSON for request post
+		JSONObject startObj = new JSONObject();
+		JSONObject endObj = new JSONObject();
+		try {
+			// Package up the start
+			startObj.put("name", startName);
+			startObj.put("lat", startLat);
+			startObj.put("long", startLong);
+			
+			// Package up the end
+			endObj.put("name", endName);
+			endObj.put("lat", endLat);
+			endObj.put("long", endLong);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		String url = Constants.PHP_URL + "createStudyTourTaskRaw.php";
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("type", "both");
+		params.put("city", city);
+		params.put("name", title);
+		params.put("description", request);
+		params.put("categories", "[]");
+		params.put("constraints", "[]");
+		params.put("start", startObj.toString());
+		params.put("end", endObj.toString());
+		params.put("beginTime", startTime+"");
+		params.put("endTime", endTime+"");
+		params.put("zoom", "14");
+		params.put("transitAvailable", "0");
+		params.put("uid", uid);
+		params.put("creator", "Tester");
+		params.put("email", "jrafidi@mit.edu");
+
+		(new PostHelper(url, params, new HttpCallback() {
+			@Override
+			public void onHttpExecute(String JSON) {
+				Toast.makeText(RequestTripActivity.this, "Trip request submitted!", Toast.LENGTH_LONG)
+				.show();		
+				Intent in = new Intent(RequestTripActivity.this, MainActivity.class);
+				RequestTripActivity.this.startActivity(in);				
+			}
+		})).execute();
+		
 	}
 }
