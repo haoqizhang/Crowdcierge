@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
@@ -25,6 +26,9 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,6 +46,8 @@ import com.csail.uid.crowdcierge.R;
 import com.csail.uid.crowdcierge.util.GetHelper;
 import com.csail.uid.crowdcierge.util.GetHelper.HttpCallback;
 import com.csail.uid.crowdcierge.util.TimeUtils;
+import com.csail.uid.crowdcierge.views.SearchText;
+import com.csail.uid.crowdcierge.views.SearchText.OnTextClearListener;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -89,11 +95,24 @@ public class RequestTripActivity extends Activity {
 
 	private EditText titleInput;
 	private EditText cityInput;
-	private EditText startNameInput;
-	private EditText endNameInput;
+	private SearchText startNameInput;
+	private SearchText endNameInput;
 	private EditText requestInput;
 
 	private GoogleMap map;
+
+	private ProgressDialog progress;
+
+	private Handler mHandler = new Handler(new Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
+			progress.dismiss();
+			startNameInput.setText((String) msg.obj);
+			saveInputs();
+			updateMap();
+			return true;
+		}
+	});
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +129,8 @@ public class RequestTripActivity extends Activity {
 
 		titleInput = (EditText) findViewById(R.id.requestTripTitle);
 		cityInput = (EditText) findViewById(R.id.requestTripCity);
-		startNameInput = (EditText) findViewById(R.id.requestStartSearchQuery);
-		endNameInput = (EditText) findViewById(R.id.requestEndSearchQuery);
+		startNameInput = (SearchText) findViewById(R.id.requestStartSearchQuery);
+		endNameInput = (SearchText) findViewById(R.id.requestEndSearchQuery);
 		requestInput = (EditText) findViewById(R.id.requestTripDescriptionInput);
 
 		map = ((MapFragment) getFragmentManager().findFragmentById(
@@ -121,10 +140,8 @@ public class RequestTripActivity extends Activity {
 		updateMap();
 
 		configureWhenWhere();
-		configureStartEnd();
-
-		Location loc = getBestLocation();
-		(new ReverseGeocodingTask(this)).execute(loc);
+		configureStart();
+		configureEnd();
 	}
 
 	/**
@@ -265,7 +282,7 @@ public class RequestTripActivity extends Activity {
 						address.getMaxAddressLineIndex() > 0 ? address
 								.getAddressLine(0) : "", address.getLocality(),
 						address.getCountryName());
-				startNameInput.setText(addressText);
+				Message.obtain(mHandler, 0, addressText).sendToTarget();
 			}
 			return null;
 		}
@@ -347,7 +364,7 @@ public class RequestTripActivity extends Activity {
 		});
 	}
 
-	private void configureStartEnd() {
+	private void configureStart() {
 		ImageButton startSearchBtn = (ImageButton) findViewById(R.id.requestStartSearchButton);
 		startSearchBtn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -357,12 +374,46 @@ public class RequestTripActivity extends Activity {
 			}
 		});
 
+		startNameInput.setOnTextClearListener(new OnTextClearListener() {
+			@Override
+			public void onTextClear() {
+				saveInputs();
+				updateMap();
+			}
+		});
+
+		CheckBox startMy = (CheckBox) findViewById(R.id.requestTripStartMyLoc);
+		startMy.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (isChecked) {
+					progress = ProgressDialog.show(RequestTripActivity.this, "Finding location",
+								"One moment please...", true);
+					Location loc = getBestLocation();
+					(new ReverseGeocodingTask(RequestTripActivity.this))
+							.execute(loc);
+				}
+				startNameInput.setEnabled(!isChecked);
+			}
+		});
+	}
+
+	private void configureEnd() {
 		ImageButton endSearchBtn = (ImageButton) findViewById(R.id.requestEndSearchButton);
 		endSearchBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				saveInputs();
 				getMapLocationAndUpdate(endName, true);
+			}
+		});
+
+		endNameInput.setOnTextClearListener(new OnTextClearListener() {
+			@Override
+			public void onTextClear() {
+				saveInputs();
+				updateMap();
 			}
 		});
 	}

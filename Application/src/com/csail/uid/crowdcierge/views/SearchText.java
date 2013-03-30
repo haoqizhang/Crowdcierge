@@ -13,6 +13,12 @@ import com.csail.uid.crowdcierge.R;
 
 public class SearchText extends EditText {
 
+	private OnTextClearListener clearListener = null;
+	
+	public interface OnTextClearListener {
+		public void onTextClear();
+	}
+	
 	public SearchText(Context context) {
 		super(context);
 		init();
@@ -26,6 +32,10 @@ public class SearchText extends EditText {
 	public SearchText(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
+	}
+	
+	public void setOnTextClearListener(OnTextClearListener listener) {
+		clearListener = listener;
 	}
 	
 	private void init() {
@@ -45,6 +55,10 @@ public class SearchText extends EditText {
 						- SearchText.this.getPaddingRight() - x.getIntrinsicWidth()) {
 					SearchText.this.setText("");
 					SearchText.this.setCompoundDrawables(null, null, null, null);
+					
+					if (clearListener != null) {
+						clearListener.onTextClear();
+					}
 				}
 				return false;
 			}
