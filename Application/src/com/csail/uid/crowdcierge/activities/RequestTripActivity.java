@@ -18,7 +18,6 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
@@ -344,7 +343,7 @@ public class RequestTripActivity extends Activity {
 						+ "/" + today.get(Calendar.DAY_OF_MONTH) + "/"
 						+ today.get(Calendar.YEAR));
 
-				startTime = today.get(Calendar.HOUR) * 60
+				startTime = today.get(Calendar.HOUR_OF_DAY) * 60
 						+ today.get(Calendar.MINUTE);
 				date = today.get(Calendar.DAY_OF_MONTH) * 1000000
 						+ (today.get(Calendar.MONTH) + 1) * 10000
@@ -636,6 +635,8 @@ public class RequestTripActivity extends Activity {
 	 * TODO: Actually submit trip request
 	 */
 	public void submitRequest(View v) {
+		saveInputs();
+		
 		// Package the JSON for request post
 		JSONObject startObj = new JSONObject();
 		JSONObject endObj = new JSONObject();
@@ -657,7 +658,7 @@ public class RequestTripActivity extends Activity {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("type", "both");
 		params.put("city", city);
-		params.put("name", title);
+		params.put("activity", title);
 		params.put("description", request);
 		params.put("categories", "[]");
 		params.put("constraints", "[]");
@@ -670,16 +671,16 @@ public class RequestTripActivity extends Activity {
 		params.put("uid", uid);
 		params.put("creator", "Tester");
 		params.put("email", "jrafidi@mit.edu");
-
-		(new PostHelper(url, params, new HttpCallback() {
-			@Override
-			public void onHttpExecute(String JSON) {
-				System.out.println(JSON);
-				Toast.makeText(RequestTripActivity.this, "Trip request submitted!", Toast.LENGTH_LONG)
-				.show();		
-				//Intent in = new Intent(RequestTripActivity.this, MainActivity.class);
-				//RequestTripActivity.this.startActivity(in);			
-			}
-		})).execute();
+		
+//		(new PostHelper(url, params, new HttpCallback() {
+//			@Override
+//			public void onHttpExecute(String JSON) {
+//				System.out.println(JSON);
+//				Toast.makeText(RequestTripActivity.this, "Trip request submitted!", Toast.LENGTH_LONG)
+//				.show();		
+//				//Intent in = new Intent(RequestTripActivity.this, MainActivity.class);
+//				//RequestTripActivity.this.startActivity(in);			
+//			}
+//		})).execute();
 	}
 }
