@@ -22,6 +22,7 @@ $transitAvailable = intval($_POST["transit"]);
 $creator = mysql_real_escape_string($_POST["creator"]);
 $id = md5($name . rand());
 $email = mysql_real_escape_string($_POST["email"]);
+$date = intval($_POST["date"]);
 
 
 if(strcmp("both", $type) == 0){
@@ -81,6 +82,7 @@ if(strcmp("both", $type) == 0){
   $state['admin']['transit'] = $transitAvailable;
   $state['admin']['zoom'] = $zoom;
   $state['admin']['creator'] = $creator; //$uid;//_POST["creator"];
+  $state['admin']['date'] = $date;
   $stateAct =  mysql_real_escape_string(json_encode($state));
   echo $stateAct;
 

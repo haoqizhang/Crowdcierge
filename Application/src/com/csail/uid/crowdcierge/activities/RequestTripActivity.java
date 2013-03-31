@@ -18,6 +18,7 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
@@ -227,17 +228,17 @@ public class RequestTripActivity extends Activity {
 		if (step == 2) {
 			getFragmentManager().beginTransaction().show(Map).commit();
 			if (start == null) {
-				getMapLocationAndUpdate(city, true);
+				getMapLocationAndUpdate(city, true, false, false);
 			}
-			getMapLocationAndUpdate(endName, false);
-			getMapLocationAndUpdate(startName, true);
+			getMapLocationAndUpdate(endName, false, false, true);
+			getMapLocationAndUpdate(startName, true, true, false);
 		} else if (step == 3) {
 			getFragmentManager().beginTransaction().show(Map).commit();
 			if (end == null) {
-				getMapLocationAndUpdate(city, true);
+				getMapLocationAndUpdate(city, true, false, false);
 			}
-			getMapLocationAndUpdate(startName, false);
-			getMapLocationAndUpdate(endName, true);
+			getMapLocationAndUpdate(startName, false, true, false);
+			getMapLocationAndUpdate(endName, true, false, true);
 		} else {
 			getFragmentManager().beginTransaction().hide(Map).commit();
 		}
@@ -419,7 +420,7 @@ public class RequestTripActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				saveInputs();
-				getMapLocationAndUpdate(startName, true);
+				getMapLocationAndUpdate(startName, true, true, false);
 			}
 		});
 
@@ -457,7 +458,7 @@ public class RequestTripActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				saveInputs();
-				getMapLocationAndUpdate(endName, true);
+				getMapLocationAndUpdate(endName, true, false, true);
 			}
 		});
 
@@ -532,6 +533,8 @@ public class RequestTripActivity extends Activity {
 
 	/**
 	 * Check if there are form errors on the current step
+	 * 
+	 * TODO: Check for off limits locations or 
 	 */
 	private boolean checkErrors() {
 		boolean error = false;
@@ -555,7 +558,7 @@ public class RequestTripActivity extends Activity {
 	 * Sets the lat and long for the start and end in this case.
 	 */
 	private void getMapLocationAndUpdate(final String query,
-			final boolean center) {
+			final boolean center, final boolean isStart, final boolean isEnd) {
 		if (query == null || query.equals("")) {
 			return;
 		}
@@ -585,7 +588,7 @@ public class RequestTripActivity extends Activity {
 
 					}
 
-					if (query.equals(startName)) {
+					if (isStart) {
 						if (start != null) {
 							start.remove();
 						}
@@ -598,7 +601,9 @@ public class RequestTripActivity extends Activity {
 								.position(loc));
 						startLat = loc.latitude;
 						startLong = loc.longitude;
-					} else if (query.equals(endName)) {
+					}
+
+					if (isEnd) {
 						if (end != null) {
 							end.remove();
 						}
@@ -632,55 +637,57 @@ public class RequestTripActivity extends Activity {
 	}
 
 	/**
-	 * TODO: Actually submit trip request
+	 * Submits the trip request with all the entered data
 	 */
 	public void submitRequest(View v) {
 		saveInputs();
-		
+
 		// Package the JSON for request post
 		JSONObject startObj = new JSONObject();
 		JSONObject endObj = new JSONObject();
 		try {
 			// Package up the start
-			startObj.put("name", startName);
+			startObj.put("name", startName.split(" " + city)[0]);
 			startObj.put("lat", startLat);
 			startObj.put("long", startLong);
-			
+
 			// Package up the end
-			endObj.put("name", endName);
+			endObj.put("name", endName.split(" " + city)[0]);
 			endObj.put("lat", endLat);
 			endObj.put("long", endLong);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+
 		String url = Constants.PHP_URL + "createStudyTourTaskRaw.php";
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("type", "both");
 		params.put("city", city);
 		params.put("activity", title);
+		params.put("date", date + "");
 		params.put("description", request);
 		params.put("categories", "[]");
 		params.put("constraints", "[]");
 		params.put("start", startObj.toString());
 		params.put("end", endObj.toString());
-		params.put("beginTime", startTime+"");
-		params.put("endTime", endTime+"");
+		params.put("beginTime", startTime + "");
+		params.put("endTime", endTime + "");
 		params.put("zoom", "14");
 		params.put("transitAvailable", "0");
 		params.put("uid", uid);
 		params.put("creator", "Tester");
 		params.put("email", "jrafidi@mit.edu");
-		
-//		(new PostHelper(url, params, new HttpCallback() {
-//			@Override
-//			public void onHttpExecute(String JSON) {
-//				System.out.println(JSON);
-//				Toast.makeText(RequestTripActivity.this, "Trip request submitted!", Toast.LENGTH_LONG)
-//				.show();		
-//				//Intent in = new Intent(RequestTripActivity.this, MainActivity.class);
-//				//RequestTripActivity.this.startActivity(in);			
-//			}
-//		})).execute();
+
+		(new PostHelper(url, params, new HttpCallback() {
+			@Override
+			public void onHttpExecute(String JSON) {
+				System.out.println(JSON);
+				Toast.makeText(RequestTripActivity.this,
+						"Trip request submitted!", Toast.LENGTH_LONG).show();
+				Intent in = new Intent(RequestTripActivity.this,
+						MainActivity.class);
+				RequestTripActivity.this.startActivity(in);
+			}
+		})).execute();
 	}
 }
