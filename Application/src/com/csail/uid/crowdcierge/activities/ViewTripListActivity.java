@@ -30,7 +30,10 @@ import com.csail.uid.crowdcierge.util.GetHelper.HttpCallback;
 public class ViewTripListActivity extends Activity {
 
 	private List<String> taskIds;
+	
+	@SuppressWarnings("unused")
 	private String uid;
+	
 	private TripTimeType type;
 
 	private ListView tripList;

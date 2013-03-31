@@ -534,7 +534,7 @@ public class RequestTripActivity extends Activity {
 	/**
 	 * Check if there are form errors on the current step
 	 * 
-	 * TODO: Check for off limits locations or 
+	 * TODO: Check for off limits locations or timing issues
 	 */
 	private boolean checkErrors() {
 		boolean error = false;
@@ -624,6 +624,9 @@ public class RequestTripActivity extends Activity {
 		})).execute();
 	}
 
+	/**
+	 * Go back in steps until at first step, then exit
+	 */
 	public void onBackPressed() {
 		if (step == 1) {
 			super.onBackPressed();
@@ -632,6 +635,9 @@ public class RequestTripActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Called when cancel pressed. Same as onBackPressed().
+	 */
 	public void cancel(View v) {
 		super.onBackPressed();
 	}
@@ -659,6 +665,7 @@ public class RequestTripActivity extends Activity {
 			e.printStackTrace();
 		}
 
+		// Fill the post params
 		String url = Constants.PHP_URL + "createStudyTourTaskRaw.php";
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("type", "both");
@@ -678,6 +685,7 @@ public class RequestTripActivity extends Activity {
 		params.put("creator", "Tester");
 		params.put("email", "jrafidi@mit.edu");
 
+		// Execute the post
 		(new PostHelper(url, params, new HttpCallback() {
 			@Override
 			public void onHttpExecute(String JSON) {

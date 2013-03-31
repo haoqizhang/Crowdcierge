@@ -99,6 +99,7 @@ public class TripMapActivity extends Activity {
 	 * Adds route between all points at once. Does not work with public transit
 	 * for some reason.
 	 */
+	@SuppressWarnings("unused")
 	private void addFullRouteLine() {
 		String url = "http://dev.virtualearth.net/REST/v1/Routes/Walking";
 		HashMap<String, String> params = new HashMap<String, String>();
