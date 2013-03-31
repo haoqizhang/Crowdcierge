@@ -76,9 +76,9 @@ public class RequestTripActivity extends Activity {
 	private Marker end;
 
 	private Calendar today = Calendar.getInstance();
-	private int date = today.get(Calendar.DAY_OF_MONTH) * 1000000
-			+ (today.get(Calendar.MONTH) + 1) * 10000
-			+ today.get(Calendar.YEAR);
+	private int date = today.get(Calendar.DAY_OF_MONTH)
+			+ (today.get(Calendar.MONTH) + 1) * 100 + today.get(Calendar.YEAR)
+			* 10000;
 	private int startTime = 600;
 	private int endTime = 1080;
 
@@ -346,9 +346,9 @@ public class RequestTripActivity extends Activity {
 
 				startTime = today.get(Calendar.HOUR_OF_DAY) * 60
 						+ today.get(Calendar.MINUTE);
-				date = today.get(Calendar.DAY_OF_MONTH) * 1000000
-						+ (today.get(Calendar.MONTH) + 1) * 10000
-						+ today.get(Calendar.YEAR);
+				date = today.get(Calendar.DAY_OF_MONTH)
+						+ (today.get(Calendar.MONTH) + 1) * 100
+						+ today.get(Calendar.YEAR) * 10000;
 			}
 		});
 
@@ -364,15 +364,15 @@ public class RequestTripActivity extends Activity {
 							@Override
 							public void onDateSet(DatePicker view, int year,
 									int monthOfYear, int dayOfMonth) {
-								date = dayOfMonth * 1000000 + (monthOfYear + 1)
-										* 10000 + year;
+								date = dayOfMonth + (monthOfYear + 1) * 100
+										+ year * 10000;
 								dateBtn.setText("Trip Date: "
 										+ (monthOfYear + 1) + "/" + dayOfMonth
 										+ "/" + year);
 							}
-						}, (date % 10000), (int) Math
-								.floor((date % 1000000) / 10000) - 1,
-						(int) Math.floor(date / 1000000))).show();
+						}, (int) Math.floor(date / 10000), (int) Math
+								.floor((date % 10000) / 100) - 1, date % 100))
+						.show();
 			}
 		});
 
