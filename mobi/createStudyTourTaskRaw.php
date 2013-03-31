@@ -63,7 +63,6 @@ if(strcmp("both", $type) == 0){
   $tsquery = "CREATE TABLE turktour_state_$id (stateId mediumint PRIMARY KEY NOT NULL AUTO_INCREMENT, state mediumtext, userId char(32), assignmentId char(32), submitTime datetime, changeInfo text, UNIQUE(stateId))";
    mysql_query($tsquery);
 
-
   // insert the host's info and create initial state
   $state = array();
   $state['itinerary'] = array();
@@ -110,12 +109,14 @@ if(strcmp("both", $type) == 0){
   $bossquery = "INSERT INTO tour_users_$id (userId, name, email) VALUES ('$uid', '$creator', '$email')";
   mysql_query($bossquery);
 
-
-
   // create a user account for host
   $tbossquery = "INSERT INTO turktour_users_$id (userId, name, email) VALUES ('$uid', '$creator', '$email')";
   mysql_query($tbossquery);
 
+  // store task id and user id together for crowdcierge app
+  $userhistquery = "INSERT INTO crowdcierge_tasks (tid, uid) VALUES ('$id', '$uid')";
+  mysql_query($userhistquery);
+  
 }
 
 mysql_close();
