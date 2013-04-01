@@ -7,22 +7,23 @@ include "settings.php";
 mysql_connect(MOBI_MYSQL_SERVER, MOBI_MYSQL_USERNAME, MOBI_MYSQL_PASSWORD);
 @mysql_select_db(MOBI_MYSQL_DATABASE) or die( "Unable to select database");
 
-$email = $_GET['email'];
+$uid = $_GET['uid'];
 
-if($email != 'null'){
+if($uid != 'null'){
 	// Update the state
 	// read latest state information
-	$squery = "SELECT * from tour_subjects WHERE email='$email'";
+	$squery = "SELECT * from crowdcierge_tasks WHERE uid='$uid'";
 	$results = mysql_query($squery);
 	if(mysql_num_rows($results) == 0){
 		echo 'no user found';
-	}else{
-		$row = mysql_fetch_array($results, MYSQL_ASSOC);
-		echo json_encode($row);
-    }
+	} else {
+		while($row = mysql_fetch_array($results, MYSQL_ASSOC))
+			echo json_encode($row);
+		}
+	}
 
 }else{
-	echo 'ERROR: no email specified';
+	echo 'ERROR: no uid specified';
 }
 mysql_close();
 ?>

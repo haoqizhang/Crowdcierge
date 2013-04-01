@@ -26,9 +26,8 @@ public class Trip implements Parcelable {
 	private int startTime;
 	private int endTime;
 
-	// TODO: actually store the city and date
 	private String city;
-	private String date;
+	private int date;
 
 	// TODO: actually get directions mode
 	private String directionsMode = "driving";
@@ -69,9 +68,9 @@ public class Trip implements Parcelable {
 			}
 
 			if (!admin.has("date")) {
-				date = "No Date";
+				date = -1;
 			} else {
-				date = admin.getString("date");				
+				date = admin.getInt("date");				
 			}
 
 		} catch (JSONException e) {
@@ -96,7 +95,7 @@ public class Trip implements Parcelable {
 		endLong = b.getDouble("endLong");
 
 		city = b.getString("city");
-		date = b.getString("date");
+		date = b.getInt("date");
 
 		directionsMode = b.getString("directionsMode");
 	}
@@ -153,7 +152,7 @@ public class Trip implements Parcelable {
 		return city;
 	}
 	
-	public String getDate() {
+	public int getDate() {
 		return date;
 	}
 
@@ -190,7 +189,7 @@ public class Trip implements Parcelable {
 		b.putString("directionsMode", directionsMode);
 
 		b.putString("city", city);
-		b.putString("date", date);
+		b.putInt("date", date);
 
 		dest.writeBundle(b);
 	}

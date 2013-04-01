@@ -2,6 +2,7 @@ package com.csail.uid.crowdcierge.activities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import android.app.Activity;
@@ -55,9 +56,6 @@ public class ViewTripListActivity extends Activity {
 		mAdapter = new TripListAdapter(this);
 		tripList.setAdapter(mAdapter);
 		tripList.setOnItemClickListener(new OnTripClickListener());
-
-		getTaskList();
-		addTripsToList();
 		
 		switch (type) {
 		case FUTURE:
@@ -72,6 +70,13 @@ public class ViewTripListActivity extends Activity {
 		}
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		getTaskList();
+		addTripsToList();
+		
+		HashSet<String> set = new HashSet<String>();
+		set.addAll(taskIds);
+		prefs.edit().putStringSet("test", new HashSet<String>());
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
