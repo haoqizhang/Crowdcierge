@@ -62,6 +62,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class RequestTripActivity extends Activity {
 
 	private String uid;
+	private String name;
+	private String email;
+	
 	private String title;
 	private String city;
 	private String request;
@@ -128,6 +131,8 @@ public class RequestTripActivity extends Activity {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		uid = prefs.getString("uid", null);
+		name = prefs.getString("name", null);
+		email = prefs.getString("email", null);
 
 		cancelBtn = (Button) findViewById(R.id.requestTripCancelBtn);
 		backBtn = (Button) findViewById(R.id.requestTripBackBtn);
@@ -682,8 +687,8 @@ public class RequestTripActivity extends Activity {
 		params.put("zoom", "14");
 		params.put("transitAvailable", "0");
 		params.put("uid", uid);
-		params.put("creator", "Tester");
-		params.put("email", "jrafidi@mit.edu");
+		params.put("creator", name);
+		params.put("email", email);
 
 		// Execute the post
 		(new PostHelper(url, params, new HttpCallback() {

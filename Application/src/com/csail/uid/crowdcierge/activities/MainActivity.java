@@ -18,9 +18,7 @@ import com.csail.uid.crowdcierge.activities.ViewTripListActivity.TripTimeType;
  * @author Joey Rafidi
  */
 public class MainActivity extends Activity {
-
-	private String uid;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,10 +28,18 @@ public class MainActivity extends Activity {
 
 		// Get the user id and store in shared prefs
 		if (getIntent().hasExtra("uid")) {
-			uid = getIntent().getStringExtra("uid");
+			String uid = getIntent().getStringExtra("uid");
 			prefs.edit().putString("uid", uid).commit();
-		} else {
-			uid = prefs.getString("uid", null);
+		}
+
+		if (getIntent().hasExtra("name")) {
+			String name = getIntent().getStringExtra("name");
+			prefs.edit().putString("name", name).commit();
+		}
+
+		if (getIntent().hasExtra("email")) {
+			String email = getIntent().getStringExtra("email");
+			prefs.edit().putString("email", email).commit();
 		}
 	}
 
@@ -64,6 +70,8 @@ public class MainActivity extends Activity {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		prefs.edit().putString("uid", null).commit();
+		prefs.edit().putString("name", null).commit();
+		prefs.edit().putString("email", null).commit();
 
 		Intent in = new Intent(MainActivity.this, SignInActivity.class);
 		MainActivity.this.startActivity(in);
@@ -77,7 +85,7 @@ public class MainActivity extends Activity {
 		Intent in = new Intent(MainActivity.this, RequestTripActivity.class);
 		MainActivity.this.startActivity(in);
 	}
-	
+
 	/**
 	 * Launches ViewListActivity with only the in progress trips.
 	 */

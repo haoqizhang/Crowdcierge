@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.csail.uid.crowdcierge.R;
 import com.csail.uid.crowdcierge.util.Constants;
+import com.csail.uid.crowdcierge.util.GetHelper;
 import com.csail.uid.crowdcierge.util.GetHelper.HttpCallback;
 import com.csail.uid.crowdcierge.util.PostHelper;
 
@@ -26,7 +27,7 @@ public class CreateAccountActivity extends Activity {
 
 		final Button createBtn = (Button) findViewById(R.id.createAccountCreateButton);
 		createBtn.setEnabled(false);
-		
+
 		CheckBox approve = (CheckBox) findViewById(R.id.approvalCheckbox);
 		approve.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
@@ -48,8 +49,6 @@ public class CreateAccountActivity extends Activity {
 	 * Create account based on form info
 	 */
 	public void createAccount(View v) {
-		final ProgressDialog progress = ProgressDialog.show(this,
-				"Creating Your Account", "One moment please...", true);
 
 		final TextView nameView = (TextView) findViewById(R.id.nameInput);
 		final TextView emailView = (TextView) findViewById(R.id.emailInput);
@@ -66,27 +65,48 @@ public class CreateAccountActivity extends Activity {
 		}
 
 		if (error) {
-			progress.dismiss();
 			return;
 		}
-		
-		String url = Constants.PHP_URL + "createSubjectRaw.php";
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("name", nameView.getText().toString());
-		params.put("email", emailView.getText().toString());
 
-		(new PostHelper(url, params, new HttpCallback() {
+		final String name = nameView.getText().toString();
+		final String email = emailView.getText().toString();
+
+		final String url = Constants.PHP_URL + "createSubjectRaw.php";
+		final HashMap<String, String> params = new HashMap<String, String>();
+		params.put("name", name);
+		params.put("email", email);
+
+		String checkUrl = Constants.PHP_URL + "getUserInfo.php";
+		HashMap<String, String> checkParams = new HashMap<String, String>();
+		checkParams.put("email", email);
+
+		final ProgressDialog progress = ProgressDialog.show(this,
+				"Creating Your Account", "One moment please...", true);
+		(new GetHelper(checkUrl, checkParams, new HttpCallback() {
 			@Override
 			public void onHttpExecute(String JSON) {
 				progress.dismiss();
-				if (JSON.contains("error")) {
-					return;
+				if (JSON.contains("no user")) {
+					(new PostHelper(url, params, new HttpCallback() {
+						@Override
+						public void onHttpExecute(String JSON) {
+							if (JSON.contains("error")) {
+								return;
+							}
+							Intent in = new Intent(CreateAccountActivity.this,
+									MainActivity.class);
+							in.putExtra("uid", JSON.trim());
+							in.putExtra("name", name);
+							in.putExtra("email", email);
+							CreateAccountActivity.this.startActivity(in);
+							CreateAccountActivity.this.finish();
+						}
+					})).execute();
+				} else {
+					emailView.setError("A user with this email address already exists");
 				}
-				Intent in = new Intent(CreateAccountActivity.this, MainActivity.class);
-				in.putExtra("uid", JSON.trim());
-				CreateAccountActivity.this.startActivity(in);
-				CreateAccountActivity.this.finish();
 			}
 		})).execute();
+
 	}
 }
