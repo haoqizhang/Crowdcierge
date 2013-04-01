@@ -15,9 +15,9 @@ if($uid != 'null'){
 	$squery = "SELECT * from crowdcierge_tasks WHERE uid='$uid'";
 	$results = mysql_query($squery);
 	if(mysql_num_rows($results) == 0){
-		echo 'no user found';
+		echo 'no tasks found';
 	} else {
-		while($row = mysql_fetch_array($results, MYSQL_ASSOC))
+		while($row = mysql_fetch_array($results, MYSQL_ASSOC)) {
 			echo json_encode($row);
 		}
 	}
