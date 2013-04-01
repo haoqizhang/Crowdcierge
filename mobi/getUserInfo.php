@@ -9,10 +9,10 @@ mysql_connect(MOBI_MYSQL_SERVER, MOBI_MYSQL_USERNAME, MOBI_MYSQL_PASSWORD);
 
 $email = $_GET['email'];
 
-if($id != 'null'){
+if($email != 'null'){
 	// Update the state
 	// read latest state information
-	$squery = "SELECT * from tour_subjects WHERE id='$id'";
+	$squery = "SELECT * from tour_subjects WHERE email='$email'";
 	$results = mysql_query($squery);
 	if(mysql_num_rows($results) == 0){
 		echo 'no user found';
@@ -22,7 +22,7 @@ if($id != 'null'){
     }
 
 }else{ // TODO: look up what hits are available
-	echo 'ERROR: no id specified';
+	echo 'ERROR: no email specified';
 }
 mysql_close();
 ?>
