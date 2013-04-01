@@ -17,11 +17,10 @@ if($id != 'null'){
 	if(mysql_num_rows($results) == 0){
 		echo 'no user found';
 	}else{
-		$row = mysql_fetch_array($results, MYSQL_ASSOC)
+		$row = mysql_fetch_array($results, MYSQL_ASSOC);
 		echo json_encode($row);
     }
-}
-  
+
 }else{ // TODO: look up what hits are available
 	echo 'ERROR: no id specified';
 }
