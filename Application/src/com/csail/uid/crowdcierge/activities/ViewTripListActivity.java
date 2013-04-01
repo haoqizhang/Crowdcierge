@@ -30,11 +30,10 @@ import com.csail.uid.crowdcierge.util.GetHelper.HttpCallback;
 
 public class ViewTripListActivity extends Activity {
 
-	private List<String> taskIds;
-	
-	@SuppressWarnings("unused")
+	private List<String> taskIds = new ArrayList<String>();
+
 	private String uid;
-	
+
 	private TripTimeType type;
 
 	private ListView tripList;
@@ -56,7 +55,8 @@ public class ViewTripListActivity extends Activity {
 		mAdapter = new TripListAdapter(this);
 		tripList.setAdapter(mAdapter);
 		tripList.setOnItemClickListener(new OnTripClickListener());
-		
+
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		switch (type) {
 		case FUTURE:
 			getActionBar().setTitle("Upcoming Trips");
@@ -69,16 +69,17 @@ public class ViewTripListActivity extends Activity {
 			break;
 		}
 		
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		getTaskList();
-		addTripsToList();
+		if (Constants.TEST_TRIPS) {
+			addTestTrips();
+		} else {
+			getTaskList();
+		}
 		
 		HashSet<String> set = new HashSet<String>();
 		set.addAll(taskIds);
 		prefs.edit().putStringSet("test", new HashSet<String>());
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
@@ -90,13 +91,47 @@ public class ViewTripListActivity extends Activity {
 	}
 
 	/**
-	 * Gets list of task IDs. Currently uses a static set.
-	 * 
-	 * TODO Get trips
+	 * Gets list of task IDs
 	 */
 	private void getTaskList() {
-		taskIds = new ArrayList<String>();
-		
+		String url = Constants.PHP_URL + "getUserTaskIds.php";
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("uid", uid);
+
+		(new GetHelper(url, params, new HttpCallback() {
+			@Override
+			public void onHttpExecute(String JSON) {
+				if (JSON.contains("no task")) {
+					// TODO: display nothing view
+					return;
+				}
+				Trip t = new Trip(JSON);
+				if (type == TripTimeType.PRESENT && taskIds.size() == 1) {
+					Intent in = new Intent(ViewTripListActivity.this,
+							ViewTripActivity.class);
+					in.putExtra("tripType", type);
+					in.putExtra("isSingle", true);
+					in.putExtra("trip", t);
+					ViewTripListActivity.this.startActivity(in);
+					ViewTripListActivity.this.finish();
+					return;
+				}
+				mAdapter.add(t);
+				mAdapter.notifyDataSetChanged();
+
+				// Only remove progress bar when all trips are loaded
+				if (mAdapter.getCount() == taskIds.size()) {
+					prog.setVisibility(View.GONE);
+					tripList.setVisibility(View.VISIBLE);
+				}
+			}
+		})).execute();
+	}
+
+	/**
+	 * Adds test trip task ids
+	 */
+	private void addTestTrips() {
 		switch (type) {
 		case FUTURE:
 			taskIds.add("453ad2e6eeda9e3ccd9d2739c0f1025d");
@@ -116,46 +151,46 @@ public class ViewTripListActivity extends Activity {
 			taskIds.add("72f2a275c14c3af09e6c2f2b73f03241");
 			break;
 		}
+
+		for (String tid : taskIds) {
+			addTripToList(tid);
+		}
 	}
 
 	/**
 	 * Gets trip info for each trip ID in the list. Adds to adapter to populate
 	 * list.
 	 */
-	private void addTripsToList() {
-		mAdapter.clear();
+	private void addTripToList(final String tid) {
+		String url = Constants.PHP_URL + "loadTurkTourTaskState.php";
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("type", "turktour");
+		params.put("id", tid);
 
-		for (final String tid : taskIds) {
-			String url = Constants.PHP_URL + "loadTurkTourTaskState.php";
-			HashMap<String, String> params = new HashMap<String, String>();
-			params.put("type", "turktour");
-			params.put("id", tid);
-
-			(new GetHelper(url, params, new HttpCallback() {
-				@Override
-				public void onHttpExecute(String JSON) {
-					Trip t = new Trip(JSON);
-					if (type == TripTimeType.PRESENT && taskIds.size() == 1) {
-						Intent in = new Intent(ViewTripListActivity.this,
-								ViewTripActivity.class);
-						in.putExtra("tripType", type);
-						in.putExtra("isSingle", true);
-						in.putExtra("trip", t);
-						ViewTripListActivity.this.startActivity(in);
-						ViewTripListActivity.this.finish();
-						return;
-					}
-					mAdapter.add(t);
-					mAdapter.notifyDataSetChanged();
-					
-					// Only remove progress bar when all trips are loaded
-					if (mAdapter.getCount() == taskIds.size()) {
-						prog.setVisibility(View.GONE);
-						tripList.setVisibility(View.VISIBLE);
-					}
+		(new GetHelper(url, params, new HttpCallback() {
+			@Override
+			public void onHttpExecute(String JSON) {
+				Trip t = new Trip(JSON);
+				if (type == TripTimeType.PRESENT && taskIds.size() == 1) {
+					Intent in = new Intent(ViewTripListActivity.this,
+							ViewTripActivity.class);
+					in.putExtra("tripType", type);
+					in.putExtra("isSingle", true);
+					in.putExtra("trip", t);
+					ViewTripListActivity.this.startActivity(in);
+					ViewTripListActivity.this.finish();
+					return;
 				}
-			})).execute();
-		}
+				mAdapter.add(t);
+				mAdapter.notifyDataSetChanged();
+
+				// Only remove progress bar when all trips are loaded
+				if (mAdapter.getCount() == taskIds.size()) {
+					prog.setVisibility(View.GONE);
+					tripList.setVisibility(View.VISIBLE);
+				}
+			}
+		})).execute();
 	}
 
 	/**
@@ -181,10 +216,9 @@ public class ViewTripListActivity extends Activity {
 					.findViewById(R.id.tripLocation);
 			location.setText(trip.getCity());
 
-			TextView times = (TextView) convertView
-					.findViewById(R.id.tripDate);
+			TextView times = (TextView) convertView.findViewById(R.id.tripDate);
 			times.setText(trip.getDate());
-			
+
 			return convertView;
 		}
 	}
@@ -203,7 +237,7 @@ public class ViewTripListActivity extends Activity {
 			ViewTripListActivity.this.startActivity(in);
 		}
 	}
-	
+
 	public enum TripTimeType {
 		PAST, PRESENT, FUTURE;
 	}

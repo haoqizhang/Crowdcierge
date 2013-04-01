@@ -17,9 +17,12 @@ if($uid != 'null'){
 	if(mysql_num_rows($results) == 0){
 		echo 'no tasks found';
 	} else {
+		$i = 0;
 		while($row = mysql_fetch_array($results, MYSQL_ASSOC)) {
-			echo json_encode($row);
+			$tasks[$i] = $row;
+			$i += 1;
 		}
+		echo json_encode($tasks);
 	}
 
 }else{
