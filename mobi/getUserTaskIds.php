@@ -12,7 +12,7 @@ $uid = $_GET['uid'];
 if($uid != 'null'){
 	// Update the state
 	// read latest state information
-	$squery = "SELECT tid from crowdcierge_tasks WHERE uid='$uid'";
+	$squery = "SELECT * from crowdcierge_tasks WHERE uid='$uid'";
 	$results = mysql_query($squery);
 	if(mysql_num_rows($results) == 0){
 		echo 'no tasks found';
@@ -22,7 +22,7 @@ if($uid != 'null'){
 			$tasks[$i] = $row;
 			$i += 1;
 		}
-		echo $tasks;
+		echo json_encode($tasks);
 	}
 
 }else{
