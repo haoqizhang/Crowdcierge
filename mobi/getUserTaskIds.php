@@ -22,7 +22,7 @@ if($uid != 'null'){
 			$tasks[$i] = $row;
 			$i += 1;
 		}
-		echo json_encode($tasks);
+		echo $tasks;
 	}
 
 }else{
