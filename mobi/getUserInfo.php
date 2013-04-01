@@ -12,7 +12,7 @@ $email = $_GET['email'];
 if($email != 'null'){
 	// Update the state
 	// read latest state information
-	$squery = "SELECT * from tour_subjects WHERE email='$email'";
+	$squery = "SELECT tid from tour_subjects WHERE email='$email'";
 	$results = mysql_query($squery);
 	if(mysql_num_rows($results) == 0){
 		echo 'no user found';
