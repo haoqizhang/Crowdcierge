@@ -1,9 +1,14 @@
 package com.csail.uid.crowdcierge.activities;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,6 +36,11 @@ import com.csail.uid.crowdcierge.util.GetHelper.HttpCallback;
 public class ViewTripListActivity extends Activity {
 
 	private List<String> taskIds = new ArrayList<String>();
+	private List<String> timelyTaskIds = new ArrayList<String>();
+	private Calendar today = Calendar.getInstance();
+	private int todayDate = today.get(Calendar.YEAR) * 10000
+			+ (today.get(Calendar.MONTH) + 1) * 100
+			+ today.get(Calendar.DAY_OF_MONTH);
 
 	private String uid;
 
@@ -68,13 +78,13 @@ public class ViewTripListActivity extends Activity {
 			getActionBar().setTitle("Past Trips");
 			break;
 		}
-		
+
 		if (Constants.TEST_TRIPS) {
 			addTestTrips();
 		} else {
 			getTaskList();
 		}
-		
+
 		HashSet<String> set = new HashSet<String>();
 		set.addAll(taskIds);
 		prefs.edit().putStringSet("test", new HashSet<String>());
@@ -105,24 +115,16 @@ public class ViewTripListActivity extends Activity {
 					// TODO: display nothing view
 					return;
 				}
-				Trip t = new Trip(JSON);
-				if (type == TripTimeType.PRESENT && taskIds.size() == 1) {
-					Intent in = new Intent(ViewTripListActivity.this,
-							ViewTripActivity.class);
-					in.putExtra("tripType", type);
-					in.putExtra("isSingle", true);
-					in.putExtra("trip", t);
-					ViewTripListActivity.this.startActivity(in);
-					ViewTripListActivity.this.finish();
-					return;
-				}
-				mAdapter.add(t);
-				mAdapter.notifyDataSetChanged();
 
-				// Only remove progress bar when all trips are loaded
-				if (mAdapter.getCount() == taskIds.size()) {
-					prog.setVisibility(View.GONE);
-					tripList.setVisibility(View.VISIBLE);
+				try {
+					JSONArray rows = new JSONArray(JSON);
+					for (int i = 0; i < rows.length(); i++) {
+						JSONObject row = rows.getJSONObject(i);
+						taskIds.add(row.getString("tid"));
+						addTripToList(row.getString("tid"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
 				}
 			}
 		})).execute();
@@ -171,21 +173,29 @@ public class ViewTripListActivity extends Activity {
 			@Override
 			public void onHttpExecute(String JSON) {
 				Trip t = new Trip(JSON);
-				if (type == TripTimeType.PRESENT && taskIds.size() == 1) {
-					Intent in = new Intent(ViewTripListActivity.this,
-							ViewTripActivity.class);
-					in.putExtra("tripType", type);
-					in.putExtra("isSingle", true);
-					in.putExtra("trip", t);
-					ViewTripListActivity.this.startActivity(in);
-					ViewTripListActivity.this.finish();
-					return;
+
+				if ((t.getDate() > todayDate && type == TripTimeType.FUTURE)
+						|| (t.getDate() == todayDate && type == TripTimeType.PRESENT)
+						|| (t.getDate() < todayDate && type == TripTimeType.PAST)) {
+					timelyTaskIds.add(tid);
+					mAdapter.add(t);
+					mAdapter.notifyDataSetChanged();
 				}
-				mAdapter.add(t);
-				mAdapter.notifyDataSetChanged();
 
 				// Only remove progress bar when all trips are loaded
-				if (mAdapter.getCount() == taskIds.size()) {
+				if (tid.equals(taskIds.get(taskIds.size() - 1))) {
+					// If looking at current trip and only one available, jump to that trip
+					if (type == TripTimeType.PRESENT && taskIds.size() == 1) {
+						Intent in = new Intent(ViewTripListActivity.this,
+								ViewTripActivity.class);
+						in.putExtra("tripType", type);
+						in.putExtra("isSingle", true);
+						in.putExtra("trip", t);
+						ViewTripListActivity.this.startActivity(in);
+						ViewTripListActivity.this.finish();
+						return;
+					}
+
 					prog.setVisibility(View.GONE);
 					tripList.setVisibility(View.VISIBLE);
 				}

@@ -2630,7 +2630,7 @@ function loadStream() {
     jQuery.ajax({
         type: "GET",
         dataType: "json",
-        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourStream.php",
+        url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/loadTurkTourStream.php",
         data: ({
             type: "turktour",
             id: tid
