@@ -44,6 +44,8 @@
             // Local check item list
             var checkItems = {};
             
+			var slotMinutes = 15;
+			
             // Called from document ready to initialize the calendar
             // TODO get the actual date of the trip here
             function initializeCalendar() {
@@ -55,8 +57,8 @@
                     shift = 0;
                 }
                 
-				beginTime = beginTime - 30;
-				endTime = endTime + 30;
+				beginTime = beginTime - slotMinutes;
+				endTime = endTime + slotMinutes;
 				
                 // Find start and end times pre-shift
                 var start = beginTime/60 - shift;
@@ -82,14 +84,14 @@
                 shift = timeShift;
                 var cal = $("#calendar");
                 cal.fullCalendar({
-                    aspectRatio: 0.01,
+                    height: 1000000,
                     editable: true,
                     allDayDefault:false,
                     events: [],
                     minTime: start,
                     maxTime: end,
                     allDaySlot: false,
-                    slotMinutes: 30,
+                    slotMinutes: slotMinutes,
                     eventDrop: syncEventDrop,
                     eventResize: syncEventDrag,
                     eventClick: function(calEvent, jsEvent, view) {
@@ -109,7 +111,7 @@
                 $(".fc-header").hide();
                 
                 // Shift table times
-				var slotNum = (endTime - beginTime)/30;
+				var slotNum = (endTime - beginTime)/slotMinutes;
                 for (var s = 0; s < slotNum; s+=1) {
                     var oldTimes = $(".fc-slot" + s).html();
                     var newTimes = oldTimes;
@@ -173,7 +175,7 @@
             
             // Modify calendar to show trip progress
             function setCalendarInProgress() {
-                var slotNum = (interTime - beginTime - 30)/30;
+                var slotNum = (interTime - beginTime - slotMinutes)/slotMinutes;
                 for (var i = 0; i < slotNum; i++) {
                     $(".fc-slot"+i+" .fc-widget-content").css("background-color", "#BBBBBB");
                 }
