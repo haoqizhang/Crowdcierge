@@ -2639,6 +2639,7 @@ function loadStream() {
         success: function (obj) {
             if (obj == "") {} else {
                 var count = 0;
+				console.log(obj);
                 for (var i = 0; i < obj.length; i++) {
                     if (obj[i].changeInfo == null) {
 						obj[i].answer = obj[i].answer.replace(/Â/g, "");
