@@ -2630,7 +2630,7 @@ function loadStream() {
     jQuery.ajax({
         type: "GET",
         dataType: "json",
-        url: "http://people.csail.mit.edu/hqz/Crowdcierge/mobi/loadTurkTourStream.php",
+        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourStream.php",
         data: ({
             type: "turktour",
             id: tid
@@ -2639,7 +2639,6 @@ function loadStream() {
         success: function (obj) {
             if (obj == "") {} else {
                 var count = 0;
-				console.log(obj);
                 for (var i = 0; i < obj.length; i++) {
                     if (obj[i].changeInfo == null) {
 						obj[i].answer = obj[i].answer.replace(/Â/g, "");

@@ -9,7 +9,7 @@ include "settings.php";
 
 mysql_connect(MOBI_MYSQL_SERVER, MOBI_MYSQL_USERNAME, MOBI_MYSQL_PASSWORD);
 @mysql_select_db(MOBI_MYSQL_DATABASE) or die( "Unable to select database");
-//mysql_set_charset('UTF8');
+mysql_set_charset('UTF8');
 
 $id = $_GET['id'];
 
@@ -19,7 +19,6 @@ if($id != 'null'){
 
   $arr = array();
   while($row = mysql_fetch_array($results, MYSQL_ASSOC)) {
-	$row['answer'] = utf8_encode($row['answer']);
     array_push($arr, $row);
   }
   echo json_encode($arr);
