@@ -19,7 +19,9 @@ if($id != 'null'){
 
   $arr = array();
   while($row = mysql_fetch_array($results, MYSQL_ASSOC)) {
-    array_push($arr, utf8_encode($row));
+	echo $row;
+	echo $row['answer'];
+    array_push($arr, $row);
   }
   echo json_encode($arr);
 }else{ // TODO: look up what hits are available
