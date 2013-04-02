@@ -19,7 +19,7 @@ if($id != 'null'){
 
   $arr = array();
   while($row = mysql_fetch_array($results, MYSQL_ASSOC)) {
-	echo utf8_encode($row['answer']);
+	$row['answer'] = utf8_encode($row['answer']);
     array_push($arr, $row);
   }
   echo json_encode($arr);
