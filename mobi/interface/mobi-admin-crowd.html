@@ -58,7 +58,7 @@
                 }
                 
 				beginTime = beginTime - slotMinutes;
-				endTime = endTime + slotMinutes;
+				//endTime = endTime + slotMinutes;
 				
                 // Find start and end times pre-shift
                 var start = beginTime/60 - shift;
@@ -146,13 +146,14 @@
 				
 				// Set start and end banners
 				$(".fc-slot0 .fc-widget-content").css("background-color", "green");
+				$(".fc-slot0").css("background-color", "green");
                 $(".fc-slot0 .fc-widget-content").css("text-align", "center");
                 $(".fc-slot0 .fc-widget-content div").text("Start");
 				
-				$(".fc-slot"+(slotNum-1)+" .fc-widget-content").css("background-color", "red");
-                $(".fc-slot"+(slotNum-1)+" .fc-widget-content").css("text-align", "center");
-                $(".fc-slot"+(slotNum-1)+" .fc-widget-content div").text("End");
-                
+				//$(".fc-slot"+(slotNum-1)+" .fc-widget-content").css("background-color", "red");
+                //$(".fc-slot"+(slotNum-1)+" .fc-widget-content").css("text-align", "center");
+                //$(".fc-slot"+(slotNum-1)+" .fc-widget-content div").text("End");
+				
                 // Make event times fix all the time!
                 cal.mousemove(function() {
                     shiftEventTimes();
@@ -348,7 +349,7 @@
                     timeBlocks.push(block);
                 }
 				
-				for (var i = 0; i < travelTimeEventSource.length; i++) {
+				for (var i = 0; i < travelTimeEventSource.length; i++) {	
                     var event = travelTimeEventSource[i]
                     var block = {};
                     block.start = event.start.getHours() + event.start.getMinutes()/60;
@@ -548,6 +549,7 @@
 			
 			// Draw travel times after new route calculation
 			function drawTravelTimes(legTimes) {
+				return;
 				travelTimeEventSource.length = 0;
 				var roundedTimes = []
 				for (var i = 0; i < legTimes.length; i++) {
@@ -696,7 +698,6 @@
                         
             ///////////////////////////////////////////
             // LOAD INTERMEDIATE STATE CODE
-            // TODO: Add stuff!
             ///////////////////////////////////////////
             
             // Boolean to determine if the trip is in progress, either determined by time or set in DB
@@ -868,7 +869,6 @@
                 width:350px;
                 margin-left:2%;
                 margin-right:2%;
-                margin-top:3%;
             }
             
             #brainstream tr.check {
@@ -980,18 +980,18 @@
                 left:0;
                 display:block;
                 width:100%;
-                height:30px;
+                height:35px;
                 background:#d3f1f2;
                 font-size:0.8em;
                 z-index:3;
-                text-align:right;
+                text-align:center;
                 color:rgb(157, 78, 84);
             }
             #left1 {
                 position:absolute;
                 left:0;
                 top:52px;
-                bottom:30px;
+                bottom:35px;
                 width:30%;
                 font-size:1em;
                 z-index:4;
@@ -1001,7 +1001,7 @@
                 position:absolute;
                 left:0;
                 top:52px;
-                bottom:30px;
+                bottom:35px;
                 width:40%;
                 font-size:1em;
                 z-index:4;
@@ -1011,7 +1011,7 @@
                 position:absolute;
                 left:0;
                 top:52px;
-                bottom:30px;
+                bottom:35px;
                 width:30%;
                 font-size:1em;
                 z-index:4;
@@ -1424,7 +1424,7 @@
                 </span>
                 <span style='margin-left:10px'>
                     <!--      <button class='missionbuttons'  onclick="viewHelp()">what you can do to help</button>-->
-                    <button class='missionbuttons'  onclick="viewHelp()">What you can do</button>
+                    <button class='missionbuttons'  onclick="viewHelp()" id="helpButton" >What you can do</button>
                 </span>
                 <span style='margin-left:10px'>
                     <a target='_blank' href="http://people.csail.mit.edu/hqz/mobi/Prefrosh/Mobi_Tutorial.html">confused? check out the tutorial</a>
@@ -1793,20 +1793,21 @@
         <div id="left3">
             <div class='inneritinerary'>
                 <!-- <div class="inner"> -->
-                <div class='sectiontitle'><span>Itinerary</span>&nbsp;&nbsp;&nbsp;
+                <div class='sectiontitle' style="padding-bottom:6px"><span>Itinerary</span>&nbsp;&nbsp;&nbsp;
                     <span style='text-align:left'>
                     <!--<button onclick='saveSnapshot()' id='snapshotbutton'>take a snapshot of the itinerary</button>-->
                     <button class='addwide' id='saveitbutton' style='font-size:70%'>save itinerary changes!</button>
                     </span> <br/>
 					<span style="width:20px; height:20px; background-color:rgb(3,209,92); font-size: 70%; color: rgb(0, 0, 206); position:absolute; margin-left:100px; margin-top:3px"></span>
-					<span style="margin-top:3px; font-size: 70%; color: rgb(0, 0, 206); position:absolute; margin-left: 125px"> = travel time </span>
+					<span style="margin-top:3px; font-size: 70%; color: rgb(0, 0, 206); position:relative; margin-left: 125px"> = travel time </span>
 					</div>
             </div>
             <table id="finishedTable" style="display:none">
                 <tbody id='finishedItinerary'></tbody>
             </table>
             <div style="overflow:auto; height:85%">
-                <div id="calendar"></div>
+                <div id="calendar" ></div>
+				<div style="background-color:red; text-align:center; width:300px; margin-left:2%; margin-right:3%; padding-left:12%">End</div>
             </div>
             <table id="sortable" style="display:none">
                 <tbody id='itineraryStart'></tbody>

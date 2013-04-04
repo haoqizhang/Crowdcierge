@@ -221,16 +221,83 @@ function closeAdd() {
 // Shows Mobi interface
 function readUrlParameters() {
     var params = getURLParams();
-    if (params.tid) {
-        tid = params.tid;
-    }
+	
+	if (params.isTask) {
+		configureCrowdTaskUi();
+		
+		if (params.assignmentId) {
+			if(params.workerId == "A3RLCGRXA34GC0"){
+				alert("You have reached your HIT quota. As a precaution, the requester will manually check your submissions prior to accepting your work. If you have any questions, please contact the requester.");
+				$('input[type=submit]').attr("disabled", "true")
+				//$('#submitter').val("Please read HIT instructions above. You have yet to accept the HIT, but can try out the tool!");	    
+			}
+			if (params.assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE") {
+				$('input[type=submit]').attr("disabled", "true")
+				$('#submitter').val("Please read HIT instructions above. You have yet to accept the HIT, but can try out the tool!");
+			} else {
+				   isOnGoing = true;					  
+				if ($('*[name]').length < 2) {
+					$('#submitter').attr('name', 'submit')
+				  
+				}
+				if ($('*[name]').length < 2) {
+					$('#assignmentId').after('<input type="hidden" name="default" value="default"></input>')
+				}
+			}
+			$('#assignmentId').attr('value', params.assignmentId)
+			$('form').attr('method', 'POST')
 
-    if (params.uid) {
-        uid = params.uid;
-    }
+		}
+		
+		if (params.turkSubmitTo) {
+			$('form').attr('action', params.turkSubmitTo + '/mturk/externalSubmit')
+		}
+
+		// randomly permute the locations of all elements of class "random"
+		var r = $('.random')
+		var divs = r.after('<div/>').next().get()
+		var mapping = divs.map(function (e, i) {return i})
+		shuffle(mapping)
+		foreach(mapping, function (src, dest) {
+			$(divs[dest]).after(r[src]).remove()
+		})
+		$('#randomOrder').val(mapping.join(','))
+			
+		updateSubmit();
+
+		if(params.tid){
+			tid = params.tid;
+		}
+
+		if(params.workerId){
+			uid = params.workerId;
+		}
+
+		if(params.assignmentId){
+			assignmentId = params.assignmentId;
+		}
+		
+	} else {
+		if (params.tid) {
+			tid = params.tid;
+		}
+
+		if (params.uid) {
+			uid = params.uid;
+		}
+	}
 
     jQuery('#mobi-content').css('display', 'inline');
     return;
+   
+}
+
+// Ready the UI for a crowd task instead of an admin
+function configureCrowdTaskUi() {
+	$("#helpButton").text("HIT instructions");
+	$("#footer").html('<form action="." method="GET"><input type="hidden" name="assignmentId" id="assignmentId" value="temp"></input><input style="background:#ffab07;color:white;border: black 1px solid; font-size:20px;" id="submitter" type="submit" value="Submit"></input></form>');
+	$("#editmissionbutton").hide();
+	$("#viewHelp").html("<h1 id='helpheader'>How to help</h1>     <div id='helpinstructions'>       You and other Turkers are helping to plan a trip together via many micro-contributions! <b>Please read the mission details</b>. You can submit the HIT as soon as you        make ANY CONTRIBUTION by doing any of the following:       <ul> 	<li><b>Review todo items at the top of the brainstream</b> 	  These notes tell you what needs work. Pay attention to them as you help out.</li> 	<li><b>Add an idea to the brainstream</b><br/>Add your ideas for specific activities, or general thoughts about the plan, to the brainstream.</li> 	<li><b>Add an activity to the itinerary</b><br/>See a good suggestion from someone else in the brainstream? Click it and add it to the itinerary.</li> 	<li><b>Improve the itinerary</b><br/>Review the current itinerary on the map or in list view. See a way to save time or improve the trip? You can drag activities in the itinerary list to rearrange their order.</li> 	<li><b>Edit or remove an activity from the itinerary</b><br/>See an item in the itinerary that can be replaced with something better, or takes up too much time? Click it to edit or remove it.</li> 	  <li><b>Revise an idea in the brainstream</b><br/>Have some fun details to fill in, see an incorrectly marked location, or notice a typo? Edit the idea to improve it.</li>       </ul>       Note: you just have to make a small contribution in one or more of the above ways to get paid! We hope you have fun with the HIT, and please do provide us feedback on TurkerNation. Thanks!     </div>");
 }
 
 // Async ajax call. Loads the task state into the code based on task id
@@ -2249,6 +2316,8 @@ function submitEntry(si) {
         }
     });
     //    alert('first end');
+	madeChange = true;
+    updateSubmit();
     return ret;
 
 }
@@ -2282,6 +2351,8 @@ function submitEdit(si, oldid) {
             } else {
                 ret = rtrim(msg);
                 ret = ret.replace(/(\r\n|\n|\r)/gm,"");
+				madeChange = true;
+				updateSubmit();
             }
         }
     });
@@ -2986,6 +3057,8 @@ function saveItinerary() {
                 ret = false;
                 return;
             } else {
+				madeChange = true;
+				updateSubmit();
                 disableItSave();
             }
         }
@@ -3412,6 +3485,132 @@ function updateItineraryDisplay() {
         i++;
     });
 
+}
+
+// Crowd version stuff
+var isOnGoing = false;
+var madeChange = false;
+var random_index = 0
+
+function updateSubmit() {
+    var good = false;
+    if(isOnGoing && madeChange){
+        good = true;
+	
+    }
+    if(isOnGoing){
+	enableEditting = true;
+	$('#submitter').val("Please make ANY HELPFUL EDIT to submit. See instructions for details.");
+    }
+    if (good) {
+	$('input[type=submit]').removeAttr("disabled");
+        $('#submitter').val("Submit");
+
+	$('#submitter').submit(function(){
+	    if(unsavedChanges){
+		var answer = confirm("Your itinerary changes have not been saved. Submit without saving?");
+		if (answer){
+		    return true;
+		}else{
+		    return false;
+		}
+	    }
+	});
+    } else {
+	$('input[type=submit]').attr("disabled", "true")
+
+//		$('input[value=Submit]').css("background", "gray");
+    }
+}
+
+function htmlEncode(value){
+  return $('<div/>').text(value).html();
+}
+
+function htmlDecode(value){
+  return $('<div/>').html(value).text();
+}
+
+function swap(o, i1, i2) {
+    var temp = o[i1]
+    o[i1] = o[i2]
+    o[i2] = temp
+}
+
+function shuffle(a) {
+    for (var i = 0; i < a.length; i++) {
+        swap(a, i, randomIndex(a.length))
+    }
+    return a
+}
+
+function randomIndex(n) {
+    return Math.floor(random() * n)
+}
+   
+function shuffle(){
+      var tempSlot;
+      var randomNumber;
+
+      for(var i =0; i != this.length; i++)
+      {
+            randomNumber = Math.floor(Math.random() * this.length);
+            tempSlot = this[i]; 
+            this[i] = this[randomNumber]; 
+            this[randomNumber] = tempSlot;
+      }
+}
+
+function foreach(a, test) {
+    if (typeof test == "string") {
+        var testString = test
+	    test = function (v, k) {
+            var i = k
+            var e = v
+            return eval(testString)
+        }
+    }
+    if (a instanceof Array) {
+        for (var i = 0; i < a.length; i++) {
+            if (test(a[i], i) == false) break
+					    }
+    } else {
+        for (var k in a) {
+            if (a.hasOwnProperty(k)) {
+                if (test(a[k], k) == false) break
+            }
+        }
+    }
+    return a
+	}
+
+function setCookie(name, value, days, path, domain, secure) {
+    if (days) {
+	var date = new Date();
+	date.setTime(date.getTime()+(days*24*60*60*1000));
+		var expires = date
+		    }
+    var curCookie = name + "=" + escape(value) +
+	((expires) ? "; expires=" + expires.toGMTString() : "") +
+      ((path) ? "; path=" + path : "") +
+	((domain) ? "; domain=" + domain : "") +
+      ((secure) ? "; secure" : "");
+  document.cookie = curCookie;
+}
+
+function getCookie(name) {
+  var dc = document.cookie;
+  var prefix = name + "=";
+  var begin = dc.indexOf("; " + prefix);
+  if (begin == -1) {
+    begin = dc.indexOf(prefix);
+    if (begin != 0) return null;
+  } else
+    begin += 2;
+  var end = document.cookie.indexOf(";", begin);
+  if (end == -1)
+    end = dc.length;
+  return unescape(dc.substring(begin + prefix.length, end));
 }
 
 
