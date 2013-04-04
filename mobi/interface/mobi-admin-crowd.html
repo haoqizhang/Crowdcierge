@@ -271,6 +271,12 @@
             // Update the event source with the events in the calendar and updates route order
             // Called on event drops
             function syncEventDrop(event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view) {
+				if(!enableEditting){
+					revertFunc();
+					alert("You must accept the HIT before you can save any edits.");
+					return;
+				}
+			
                 // Prevent dragging past start time
                 var si = getItem(event.itId);
                 var newStart = si.data.start + minuteDelta;
@@ -311,6 +317,12 @@
             // Update activity durations
             // Called on even drag
             function syncEventDrag(event, dayDelta, minuteDelta, revertFunc) {
+				if(!enableEditting){
+					revertFunc();
+					alert("You must accept the HIT before you can save any edits.");
+					return;
+				}
+			
                 var si = getItem(event.itId);
                 var newEnd = si.data.start + parseInt(si.data.duration) + minuteDelta;
                 if (include(keepAct, event.itId) || include(finishedAct, event.itId) || newEnd > calEnd) {
@@ -446,6 +458,12 @@
 	 
             // Save dragged and drop edit
             function saveItemEdit(oldsi) {
+				if(!enableEditting){
+					revertFunc();
+					alert("You must accept the HIT before you can save any edits.");
+					return;
+				}
+			
                 var oldid = oldsi.id;
                 newactpinMoved = false;
                 var n = new activity(oldsi.data.name, oldsi.data.description, null, oldsi.data.location, null, oldsi.data.duration, oldsi.data.categories);

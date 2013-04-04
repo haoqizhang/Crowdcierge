@@ -74,6 +74,7 @@ var numusers = null;
 var creatorName = null;
 var assignmentId = null;
 var transit = null;
+var enableEditting = false;
 
 // What actually happens at start
 $(document).ready(function (jQuery) {
@@ -278,6 +279,8 @@ function readUrlParameters() {
 		}
 		
 	} else {
+		enableEditting = true;
+		
 		if (params.tid) {
 			tid = params.tid;
 		}
@@ -2297,6 +2300,11 @@ function updatePinNumber(pin, pos) {
 
 // save stream item on server, and then return its id
 function submitEntry(si) {
+	if(!enableEditting){
+		alert("You must accept the HIT before you can save any edits.");
+		return;
+    }
+	
     var ret = null;
     jQuery.ajax({
         type: "POST",
@@ -2328,6 +2336,11 @@ function submitEdit(si, oldid) {
 
     oldid = parseInt(oldid.substring(5));
 
+	if(!enableEditting){
+		alert("You must accept the HIT before you can save any edits.");
+		return;
+    }
+	
     var ret = null;
     jQuery.ajax({
         type: "POST",
@@ -3031,6 +3044,10 @@ function saveEditMission() {
 }
 
 function saveItinerary() {
+	if(!enableEditting){
+		alert("Please accept the HIT before making any edits!");
+		return;
+    }
 
     //    state.admin.constraints[1].value = 1;
     // in backend, check to make sure itinerary is legal and consistent
@@ -3613,6 +3630,25 @@ function getCookie(name) {
   return unescape(dc.substring(begin + prefix.length, end));
 }
 
+function recordVisit(){
+  //  alert(enableEditting);
+    if(enableEditting){
+		jQuery.ajax({
+		type: "POST",
+		url: "http://people.csail.mit.edu/hqz/mobi/turkRecordVisit.php",
+		async: true,
+		data: ({
+			userId : uid,
+			taskId: tid, 
+			assignmentId: assignmentId,
+			type: "turktour"}),
+			success: function(msg){
+	//		alert(msg);
+			 }
+		 });
+		
+    }
+}
 
 // Helpers, of some sort
 function getURLParams() {
