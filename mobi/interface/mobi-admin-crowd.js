@@ -309,7 +309,7 @@ function loadTaskState() {
     jQuery.ajax({
         type: "GET",
         // dataType: "json", 
-        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourTaskState.php",
+        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourTaskState.php",
         data: ({
             type: "turktour",
             id: tid
@@ -469,12 +469,12 @@ function GetRoute(locations) {
         var driveStr;
         // do a i to i + 1 route
         if (transit) {
-            driveStr = "http://dev.virtualearth.net/REST/v1/Routes/Transit?timeType=Departure&dateTime=3:00:00PM&" + str + "&routePathOutput=Points&output=json&distanceUnit=mi&key=" + credentials + "&jsonp=?";
+            driveStr = "https://dev.virtualearth.net/REST/v1/Routes/Transit?timeType=Departure&dateTime=3:00:00PM&" + str + "&routePathOutput=Points&output=json&distanceUnit=mi&key=" + credentials + "&jsonp=?";
         } else {
             // do driving path
-            driveStr = "http://dev.virtualearth.net/REST/v1/Routes/Driving?" + str + "&routePathOutput=Points&output=json&distanceUnit=mi&key=" + credentials + "&jsonp=?";
+            driveStr = "https://dev.virtualearth.net/REST/v1/Routes/Driving?" + str + "&routePathOutput=Points&output=json&distanceUnit=mi&key=" + credentials + "&jsonp=?";
         }
-        var walkStr = "http://dev.virtualearth.net/REST/v1/Routes/Walking?" + str + "&routePathOutput=Points&output=json&distanceUnit=mi&key=" + credentials + "&jsonp=?";
+        var walkStr = "https://dev.virtualearth.net/REST/v1/Routes/Walking?" + str + "&routePathOutput=Points&output=json&distanceUnit=mi&key=" + credentials + "&jsonp=?";
 
         $.getJSON(driveStr, GenerateCB(i, 'drive'));
         $.getJSON(walkStr, GenerateCB(i, 'walking'));
@@ -2308,7 +2308,7 @@ function submitEntry(si) {
     var ret = null;
     jQuery.ajax({
         type: "POST",
-        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourEntry.php",
+        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourEntry.php",
         async: false,
         data: ({
             userId: uid,
@@ -2344,7 +2344,7 @@ function submitEdit(si, oldid) {
     var ret = null;
     jQuery.ajax({
         type: "POST",
-        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourEdit.php",
+        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourEdit.php",
         async: false,
         data: ({
             userId: uid,
@@ -2714,7 +2714,7 @@ function loadStream() {
     jQuery.ajax({
         type: "GET",
         dataType: "json",
-        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourStream.php",
+        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourStream.php",
         data: ({
             type: "turktour",
             id: tid
@@ -2756,7 +2756,7 @@ function loadUserData() {
     jQuery.ajax({
         type: "GET",
         // dataType: "json", 
-        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkAdminUserInfo.php",
+        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkAdminUserInfo.php",
         data: ({
             type: "turktour",
             userId: uid,
@@ -2984,7 +2984,7 @@ function saveEditEnds() {
     var ret = true;
     jQuery.ajax({
         type: "POST",
-        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitSubjectTourEnds.php",
+        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitSubjectTourEnds.php",
         async: false,
         data: ({
             userId: uid,
@@ -3017,7 +3017,7 @@ function saveEditMission() {
     var ret = true;
     jQuery.ajax({
         type: "POST",
-        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitSubjectMission.php",
+        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitSubjectMission.php",
         async: false,
         data: ({
             userId: uid,
@@ -3057,7 +3057,7 @@ function saveItinerary() {
 
     jQuery.ajax({
         type: "POST",
-        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourItinerary.php",
+        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourItinerary.php",
         async: false,
         data: ({
             userId: uid,
@@ -3105,7 +3105,7 @@ function saveSnapshot() {
 
     jQuery.ajax({
         type: "POST",
-        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourSnapshot.php",
+        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourSnapshot.php",
         async: false,
         data: ({
             userId: uid,
@@ -3320,7 +3320,7 @@ function sendLink() {
 
     jQuery.ajax({
         type: "POST",
-        url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/sendSubjectFriendLink.php",
+        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/sendSubjectFriendLink.php",
         async: false,
         data: ({
             name: signupname,
@@ -3635,7 +3635,7 @@ function recordVisit(){
     if(enableEditting){
 		jQuery.ajax({
 		type: "POST",
-		url: "http://people.csail.mit.edu/hqz/mobi/turkRecordVisit.php",
+		url: "https://people.csail.mit.edu/hqz/mobi/turkRecordVisit.php",
 		async: true,
 		data: ({
 			userId : uid,
