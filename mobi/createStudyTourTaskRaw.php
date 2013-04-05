@@ -23,6 +23,7 @@ $creator = mysql_real_escape_string($_POST["creator"]);
 $id = md5($name . rand());
 $email = mysql_real_escape_string($_POST["email"]);
 $date = intval($_POST["date"]);
+$city = mysql_real_escape_string($_POST["city"]);
 
 
 if(strcmp("both", $type) == 0){
@@ -82,6 +83,7 @@ if(strcmp("both", $type) == 0){
   $state['admin']['zoom'] = $zoom;
   $state['admin']['creator'] = $creator; //$uid;//_POST["creator"];
   $state['admin']['date'] = $date;
+  $state['admin']['city'] = $city;
   $stateAct =  mysql_real_escape_string(json_encode($state));
   echo $stateAct;
 

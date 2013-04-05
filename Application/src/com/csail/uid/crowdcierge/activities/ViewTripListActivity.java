@@ -112,7 +112,8 @@ public class ViewTripListActivity extends Activity {
 			@Override
 			public void onHttpExecute(String JSON) {
 				if (JSON.contains("no task")) {
-					// TODO: display nothing view
+					(findViewById(R.id.tripListNone))
+							.setVisibility(View.VISIBLE);
 					return;
 				}
 
@@ -184,7 +185,8 @@ public class ViewTripListActivity extends Activity {
 
 				// Only remove progress bar when all trips are loaded
 				if (tid.equals(taskIds.get(taskIds.size() - 1))) {
-					// If looking at current trip and only one available, jump to that trip
+					// If looking at current trip and only one available, jump
+					// to that trip
 					if (type == TripTimeType.PRESENT && taskIds.size() == 1) {
 						Intent in = new Intent(ViewTripListActivity.this,
 								ViewTripActivity.class);
@@ -196,8 +198,15 @@ public class ViewTripListActivity extends Activity {
 						return;
 					}
 
+					// Remove progress spinner and only show list if any trips
+					// are available
 					prog.setVisibility(View.GONE);
-					tripList.setVisibility(View.VISIBLE);
+					if (timelyTaskIds.size() == 0) {
+						(findViewById(R.id.tripListNone))
+								.setVisibility(View.VISIBLE);
+					} else {
+						tripList.setVisibility(View.VISIBLE);
+					}
 				}
 			}
 		})).execute();
@@ -227,7 +236,11 @@ public class ViewTripListActivity extends Activity {
 			location.setText(trip.getCity());
 
 			TextView times = (TextView) convertView.findViewById(R.id.tripDate);
-			times.setText(trip.getDate());
+			if (trip.getDate() == -1) {
+				times.setText("No Date");
+			} else {
+				times.setText(trip.getDate() + "");
+			}
 
 			return convertView;
 		}
