@@ -187,12 +187,12 @@ public class ViewTripListActivity extends Activity {
 				if (tid.equals(taskIds.get(taskIds.size() - 1))) {
 					// If looking at current trip and only one available, jump
 					// to that trip
-					if (type == TripTimeType.PRESENT && taskIds.size() == 1) {
+					if (type == TripTimeType.PRESENT && timelyTaskIds.size() == 1) {
 						Intent in = new Intent(ViewTripListActivity.this,
 								ViewTripActivity.class);
 						in.putExtra("tripType", type);
 						in.putExtra("isSingle", true);
-						in.putExtra("trip", t);
+						in.putExtra("trip", mAdapter.getItem(0));
 						ViewTripListActivity.this.startActivity(in);
 						ViewTripListActivity.this.finish();
 						return;
@@ -239,7 +239,9 @@ public class ViewTripListActivity extends Activity {
 			if (trip.getDate() == -1) {
 				times.setText("No Date");
 			} else {
-				times.setText(trip.getDate() + "");
+				int date = trip.getDate();
+				times.setText(((int) Math.floor((date % 10000) / 100)) + "/"
+						+ date % 100 + "/" + ((int) Math.floor(date / 10000)));
 			}
 
 			return convertView;
