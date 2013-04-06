@@ -826,7 +826,7 @@
 					}
 					
                     if ($("#stream_sys_overlap_items").length != 0) {
-                        alert("Some items in the plan are overlapping.  You can only submit the task when there is no overlap.");
+                        alert("Some items in the plan are overlapping.  You can only submit the task when no two events are scheduled during the same time.");
                         return;
                     }
                     
@@ -841,7 +841,7 @@
                     closeAdd();
 					
 					if (isTask) {
-						$("#subForm").submit();
+						$("#submitter").click();
 					} else {
 						alert("Hurray, you finished!  Thanks for helping me debug this.  Please don't change anything else about the plan now.");
 					}
