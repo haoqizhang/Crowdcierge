@@ -177,10 +177,10 @@ $(document).ready(function (jQuery) {
     }
     initializeCalendar();
     
+	console.log(isTask);
     if (inProgress) {
         processRequest();
 		if (isTask) {
-			alert("here");
 			configureReplanTaskUi();
 		}
     }
@@ -328,6 +328,8 @@ function configureReplanTaskUi() {
 		});
 		$("#stream_sys_request_check").click();
 	});
+	$('#submitter').val("Submit");
+	$('input[type=submit]').removeAttr("disabled");
 }
 
 // Async ajax call. Loads the task state into the code based on task id
@@ -3543,8 +3545,8 @@ function updateSubmit() {
 	
     }
     if(isOnGoing){
-	enableEditting = true;
-	$('#submitter').val("Please make ANY HELPFUL EDIT to submit. See instructions for details.");
+		enableEditting = true;
+		$('#submitter').val("Please make ANY HELPFUL EDIT to submit. See instructions for details.");
     }
     if (good) {
 	$('input[type=submit]').removeAttr("disabled");
