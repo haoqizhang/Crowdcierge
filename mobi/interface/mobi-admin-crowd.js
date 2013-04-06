@@ -180,6 +180,7 @@ $(document).ready(function (jQuery) {
     if (inProgress) {
         processRequest();
 		if (isTask) {
+			alert("here");
 			configureReplanTaskUi();
 		}
     }
