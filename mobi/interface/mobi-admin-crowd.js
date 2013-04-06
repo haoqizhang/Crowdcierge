@@ -176,13 +176,14 @@ $(document).ready(function (jQuery) {
         loadIntermediateState();
     }
     initializeCalendar();
-configureReplanTaskUi();
+	
     if (inProgress) {
         processRequest();
 		if (isTask) {
 			configureReplanTaskUi();
 		}
     }
+	
     showExplanationBox();
 });
 
