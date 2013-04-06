@@ -176,8 +176,7 @@ $(document).ready(function (jQuery) {
         loadIntermediateState();
     }
     initializeCalendar();
-    
-	console.log(isTask);
+    alert(isTask);
     if (inProgress) {
         processRequest();
 		if (isTask) {
