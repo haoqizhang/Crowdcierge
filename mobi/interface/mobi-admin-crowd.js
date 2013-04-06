@@ -176,7 +176,7 @@ $(document).ready(function (jQuery) {
         loadIntermediateState();
     }
     initializeCalendar();
-    alert(isTask);
+configureReplanTaskUi();
     if (inProgress) {
         processRequest();
 		if (isTask) {
