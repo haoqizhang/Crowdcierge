@@ -75,6 +75,7 @@ var creatorName = null;
 var assignmentId = null;
 var transit = null;
 var enableEditting = false;
+var isTask = false;
 
 // What actually happens at start
 $(document).ready(function (jQuery) {
@@ -178,6 +179,9 @@ $(document).ready(function (jQuery) {
     
     if (inProgress) {
         processRequest();
+		if (isTask) {
+			configureReplanTaskUi();
+		}
     }
     showExplanationBox();
 });
@@ -224,6 +228,7 @@ function readUrlParameters() {
     var params = getURLParams();
 	
 	if (params.isTask) {
+		isTask = true;
 		configureCrowdTaskUi();
 		
 		if (params.assignmentId) {
@@ -298,9 +303,30 @@ function readUrlParameters() {
 // Ready the UI for a crowd task instead of an admin
 function configureCrowdTaskUi() {
 	$("#helpButton").text("HIT instructions");
-	$("#footer").html('<form action="." method="GET"><input type="hidden" name="assignmentId" id="assignmentId" value="temp"></input><input style="background:#ffab07;color:white;border: black 1px solid; font-size:20px;" id="submitter" type="submit" value="Submit"></input></form>');
+	$("#footer").html('<form id="subForm" action="." method="GET"><input type="hidden" name="assignmentId" id="assignmentId" value="temp"></input><input style="background:#ffab07;color:white;border: black 1px solid; font-size:20px;" id="submitter" type="submit" value="Submit"></input></form><button style="background:#ffab07;color:white;border: black 1px solid; font-size:20px;" id="viewReplanTask">Submit</button>');
 	$("#editmissionbutton").hide();
+	$("#viewReplanTask").hide();
 	$("#viewHelp").html("<h1 id='helpheader'>How to help</h1>     <div id='helpinstructions'>       You and other Turkers are helping to plan a trip together via many micro-contributions! <b>Please read the mission details</b>. You can submit the HIT as soon as you        make ANY CONTRIBUTION by doing any of the following:       <ul> 	<li><b>Review todo items at the top of the brainstream</b> 	  These notes tell you what needs work. Pay attention to them as you help out.</li> 	<li><b>Add an idea to the brainstream</b><br/>Add your ideas for specific activities, or general thoughts about the plan, to the brainstream.</li> 	<li><b>Add an activity to the itinerary</b><br/>See a good suggestion from someone else in the brainstream? Click it and add it to the itinerary.</li> 	<li><b>Improve the itinerary</b><br/>Review the current itinerary on the map or in list view. See a way to save time or improve the trip? You can drag activities in the itinerary list to rearrange their order.</li> 	<li><b>Edit or remove an activity from the itinerary</b><br/>See an item in the itinerary that can be replaced with something better, or takes up too much time? Click it to edit or remove it.</li> 	  <li><b>Revise an idea in the brainstream</b><br/>Have some fun details to fill in, see an incorrectly marked location, or notice a typo? Edit the idea to improve it.</li>       </ul>       Note: you just have to make a small contribution in one or more of the above ways to get paid! We hope you have fun with the HIT, and please do provide us feedback on TurkerNation. Thanks!     </div>");
+}
+
+// Update the task UI for replanning instead of planning
+function configureReplanTaskUi() {
+	$("#submitter").hide();
+	$("#viewReplanTask").show();
+	$("#viewReplanTask").click(function() {
+		$("#stream_sys_request_check").click();
+	});
+	$("#helpButton").removeAttr("onclick");
+	$("#helpButton").click(function() {
+		$(".resolveSelect").hide();
+		$("#gotit").show();
+		$("#gotit").click(function() {
+			$(".resolveSelect").show();
+			closeAdd();
+			$("#gotit").hide();
+		});
+		$("#stream_sys_request_check").click();
+	});
 }
 
 // Async ajax call. Loads the task state into the code based on task id

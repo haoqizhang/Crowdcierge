@@ -736,20 +736,36 @@
             
             var requestCheckItem;
             
-            var requestText =   {
-                                "replace"       : "A traveler needs your help.  He is in the middle of a trip and wants something to do instead of {0}.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Find something for him to do instead.",
+			var requestTitle = 	{
+								"replace"       : "Replace Activity \"{0}\" in Itinerary",
             
-                                "stuck"         : "A traveler needs your help.  He is in the middle of a trip and can't get to his next activity.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Find activities closer to his location that he can do and put them in the plan.",
+                                "stuck"         : "Add Activities close to Traveler to Itinerary",
                                 
-                                "delayed"       : "A traveler needs your help.  He is in the middle of a trip and is delayed.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Move his trip plan around so that he can finish his trip, either by changing the activities or removing items.",
+                                "delayed"       : "Traveler is delayed",
                                 
-                                "addMoreLike"   : "A traveler needs your help.  He is in the middle of a trip and wants more activities like {0}, which is tagged as {1}.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Add more related activities, and you can change or remove parts of the current plan to make time.",
+                                "addMoreLike"   : "Add more Activities like \"{0}\" to Itinerary",
                                 
-                                "addNow"        : "A traveler needs your help.  He is in the middle of a trip and wants something else to do right now.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Add something for him to do right now.",
+                                "addNow"        : "Add something for the Traveler to do now to Itinerary",
                                 
-                                "cantGo"        : "A traveler needs your help.  He is in the middle of a trip and his next planned activity, {0}, is not available.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Find him something else to do instead.",
+                                "cantGo"        : "Traveler can't get to \"{0}\", add something else to Itinerary",
                                 
-                                "custom"        : "A traveler needs your help.  He is located at the orange pin on the map, and the current time is marked on the calendar.  He wants you to follow these instructions: <br/><br/>{2}"
+                                "custom"        : "A Traveler needs your help! Click to read."
+                                }
+			
+            var requestText =   {
+                                "replace"       : "A traveler needs your help.  He is in the middle of a trip and wants something to do instead of \"{0}\".  He is located at the orange pin on the map, and the current time is marked on the calendar.  Remove \"{0}\" from the itinerary.  Next, suggest a new activity and add it to the itinerary in its place, or add an existing activity suggestion from the Brainstream.",
+            
+                                "stuck"         : "A traveler needs your help.  He is in the middle of a trip and can't get to his next activity.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Remove the next activity on his Itinerary after the \"Current Time\", along with any others that seem very far away.  Next, suggest activities close to his location and add them to the itinerary, or add closeby suggestions from the Brainstream to the plan.",
+                                
+                                "delayed"       : "A traveler needs your help.  He is in the middle of a trip and is delayed.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Move his trip plan around so that he can finish his trip on time, either by changing the activities or removing items.",
+                                
+                                "addMoreLike"   : "A traveler needs your help.  He is in the middle of a trip and wants more activities like \"{0}\".  He is located at the orange pin on the map, and the current time is marked on the calendar.  Add more similar activities to the Itinerary, and you can change or remove parts of the current plan to make time.  You can find similar activities in the Brainstream by looking at the hashtag (#) categories, or you can just add a new suggestion.",
+                                
+                                "addNow"        : "A traveler needs your help.  He is in the middle of a trip and wants something else to do right now.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Add something for him to do right now, and you can change or remove parts of the current plan to make time.",
+                                
+                                "cantGo"        : "A traveler needs your help.  He is in the middle of a trip and his next planned activity, \"{0}\", is not available.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Remove activity \"{0}\" from the Itinerary.  Next, suggest an activity close to his location and add it to the itinerary, or add a closeby suggestion from the Brainstream to the plan.",
+                                
+                                "custom"        : "A traveler needs your help.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Try your best to add, change, or remove activities from the Itinerary to satisfy his request.  He wants you to follow these instructions: <br/><br/>{2}"
                                 }
             
             var submissionInstructions = '<br/><br/> When you are finished, click the Submit button to see this again and confirm you solved the problem.';
@@ -789,18 +805,26 @@
             // Create the check item related to the request
             function processRequest() {
                 var problem;
+				var title;
                 if (fixRequest.data.activity) {
                     var item = getItem(fixRequest.data.activity);
                     problem = jQuery.validator.format(requestText[fixRequest.type], item.value, "", fixRequest.data.message);
+					title = jQuery.validator.format(requestTitle[fixRequest.type], item.value, "", fixRequest.data.message);
                 } else {
+					title = jQuery.validator.format(requestTitle[fixRequest.type], "", "", fixRequest.data.message);
                     problem = jQuery.validator.format(requestText[fixRequest.type], "", "", fixRequest.data.message);
                 }
                 problem = problem + submissionInstructions;
                 
-                var n = new note("Fix the Trip Plan", problem, ['check', 'request']);
+                var n = new note(title, problem, ['check', 'request']);
                 var si = new streamitem('check', n, null);
                 si.id = 'sys_request_check';
                 si.onResolve = function() {
+					if (!enableEditting) {
+						alert("You need to accept the HIT and fix the problem before you can submit.");
+						return;
+					}
+					
                     if ($("#stream_sys_overlap_items").length != 0) {
                         alert("Some items in the plan are overlapping.  You can only submit the task when there is no overlap.");
                         return;
@@ -815,7 +839,12 @@
                     delete checkItems[si.id];
                     saveResolution();
                     closeAdd();
-                    alert("Hurray, you finished!  Thanks for helping me debug this.  Please don't change anything else about the plan now.");
+					
+					if (isTask) {
+						$("#subForm").submit();
+					} else {
+						alert("Hurray, you finished!  Thanks for helping me debug this.  Please don't change anything else about the plan now.");
+					}
                 };
                 
                 requestCheckItem = si;
