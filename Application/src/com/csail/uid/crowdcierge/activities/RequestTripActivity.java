@@ -1,6 +1,8 @@
 package com.csail.uid.crowdcierge.activities;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +66,7 @@ public class RequestTripActivity extends Activity {
 	private String uid;
 	private String name;
 	private String email;
-	
+
 	private String title;
 	private String city;
 	private String request;
@@ -689,7 +691,10 @@ public class RequestTripActivity extends Activity {
 		params.put("uid", uid);
 		params.put("creator", name);
 		params.put("email", email);
+		params.put("id", (new TripIdGenerator()).nextTripId());
 
+		System.out.println(params.get("id"));
+		
 		// Execute the post
 		(new PostHelper(url, params, new HttpCallback() {
 			@Override
@@ -702,5 +707,15 @@ public class RequestTripActivity extends Activity {
 				RequestTripActivity.this.startActivity(in);
 			}
 		})).execute();
+	}
+
+	public final class TripIdGenerator {
+
+		private SecureRandom random = new SecureRandom();
+
+		public String nextTripId() {
+			return new BigInteger(130, random).toString(32);
+		}
+
 	}
 }
