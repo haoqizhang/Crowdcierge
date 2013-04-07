@@ -1,8 +1,8 @@
 package com.csail.uid.crowdcierge.activities;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -108,6 +108,9 @@ public class RequestTripActivity extends Activity {
 
 	private GoogleMap map;
 	private ProgressDialog progress;
+	
+	private int id;
+	private ArrayList<Integer> taggingWorkIds = new ArrayList<Integer>();
 
 	// Handler for when reverse geocoding task returns
 	private Handler addressHandler = new Handler(new Callback() {
@@ -157,8 +160,11 @@ public class RequestTripActivity extends Activity {
 		configureWhenWhere();
 		configureStart();
 		configureEnd();
+		
+		id = (new TripIdGenerator()).nextTripId();
+		startPostingTagging();
 	}
-
+	
 	/**
 	 * Move to next step of request process.
 	 */
@@ -673,7 +679,7 @@ public class RequestTripActivity extends Activity {
 		}
 
 		// Fill the post params
-		String url = Constants.PHP_URL + "createStudyTourTaskRaw.php";
+		String url = Constants.PHP_URL + "createStudyTourTaskWithTagging.php";
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("type", "both");
 		params.put("city", city);
@@ -691,7 +697,7 @@ public class RequestTripActivity extends Activity {
 		params.put("uid", uid);
 		params.put("creator", name);
 		params.put("email", email);
-		params.put("id", (new TripIdGenerator()).nextTripId());
+		params.put("id", ""+id);
 
 		// Execute the post
 		(new PostHelper(url, params, new HttpCallback() {
@@ -706,13 +712,40 @@ public class RequestTripActivity extends Activity {
 		})).execute();
 	}
 
+	/**
+	 * Class to generate randomized trip IDs
+	 */
 	public final class TripIdGenerator {
 
 		private SecureRandom random = new SecureRandom();
 
-		public String nextTripId() {
-			return new BigInteger(130, random).toString(32);
+		public int nextTripId() {
+			return Math.abs(random.nextInt());
 		}
 
+	}
+	
+	/**
+	 * Get retainer server to start posting tagging hits
+	 */
+	private void startPostingTagging() {
+		for (int i = 0; i < Constants.TAG_TASK_IDS.length; i++) {
+			// Fill the post params
+			String url = Constants.RETAINER_URL + "make";
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("apiKey", Constants.RETAINER_KEY);
+			params.put("id", Constants.TAG_TASK_IDS[i]+"");
+			params.put("foreignID", "" + id);
+			params.put("delay", 0+"");
+			params.put("numAssignments", 1+"");
+			
+			// Execute the post
+			(new PostHelper(url, params, new HttpCallback() {
+				@Override
+				public void onHttpExecute(String JSON) {
+					taggingWorkIds.add(Integer.parseInt(JSON));
+				}
+			})).execute();
+		}
 	}
 }

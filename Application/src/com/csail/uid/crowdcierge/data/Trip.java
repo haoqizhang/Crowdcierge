@@ -36,6 +36,7 @@ public class Trip implements Parcelable {
 
 	public Trip(String JSON) {
 		try {
+			System.out.println(JSON);
 			originalObj = new JSONObject(JSON);
 			JSONObject state = new JSONObject(originalObj.getString("state"));
 			JSONObject admin = state.getJSONObject("admin");
