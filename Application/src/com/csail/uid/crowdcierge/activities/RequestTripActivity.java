@@ -108,7 +108,7 @@ public class RequestTripActivity extends Activity {
 
 	private GoogleMap map;
 	private ProgressDialog progress;
-	
+
 	private int id;
 	private ArrayList<Integer> taggingWorkIds = new ArrayList<Integer>();
 
@@ -160,11 +160,11 @@ public class RequestTripActivity extends Activity {
 		configureWhenWhere();
 		configureStart();
 		configureEnd();
-		
+
 		id = (new TripIdGenerator()).nextTripId();
 		startPostingTagging();
 	}
-	
+
 	/**
 	 * Move to next step of request process.
 	 */
@@ -697,12 +697,20 @@ public class RequestTripActivity extends Activity {
 		params.put("uid", uid);
 		params.put("creator", name);
 		params.put("email", email);
-		params.put("id", ""+id);
+		params.put("id", "" + id);
+
+		String tagIds = "";
+		for (int id : taggingWorkIds) {
+			tagIds += id + ",";
+		}
+
+		params.put("tagIds", tagIds);
 
 		// Execute the post
 		(new PostHelper(url, params, new HttpCallback() {
 			@Override
 			public void onHttpExecute(String JSON) {
+				invokeTagging();
 				Toast.makeText(RequestTripActivity.this,
 						"Trip request submitted!", Toast.LENGTH_LONG).show();
 				Intent in = new Intent(RequestTripActivity.this,
@@ -724,7 +732,7 @@ public class RequestTripActivity extends Activity {
 		}
 
 	}
-	
+
 	/**
 	 * Get retainer server to start posting tagging hits
 	 */
@@ -734,16 +742,36 @@ public class RequestTripActivity extends Activity {
 			String url = Constants.RETAINER_URL + "make";
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("apiKey", Constants.RETAINER_KEY);
-			params.put("id", Constants.TAG_TASK_IDS[i]+"");
+			params.put("id", Constants.TAG_TASK_IDS[i] + "");
 			params.put("foreignID", "" + id);
-			params.put("delay", 0+"");
-			params.put("numAssignments", 1+"");
-			
+			params.put("delay", 0 + "");
+			params.put("numAssignments", 1 + "");
+
 			// Execute the post
 			(new PostHelper(url, params, new HttpCallback() {
 				@Override
 				public void onHttpExecute(String JSON) {
 					taggingWorkIds.add(Integer.parseInt(JSON));
+				}
+			})).execute();
+		}
+	}
+	
+	/**
+	 * Invoke tagging tasks
+	 */
+	private void invokeTagging() {
+		for (int i : taggingWorkIds) {
+			String url = Constants.RETAINER_URL + "invoke";
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("apiKey", Constants.RETAINER_KEY);
+			params.put("id", i + "");
+
+			// Execute the post
+			(new PostHelper(url, params, new HttpCallback() {
+				@Override
+				public void onHttpExecute(String JSON) {
+					// left empty
 				}
 			})).execute();
 		}
