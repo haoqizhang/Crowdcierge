@@ -228,7 +228,7 @@ function closeAdd() {
 function readUrlParameters() {
     var params = getURLParams();
 	
-	if (params.isTask) {
+	if (params.assignmentId) {
 		isTask = true;
 		configureCrowdTaskUi();
 		
