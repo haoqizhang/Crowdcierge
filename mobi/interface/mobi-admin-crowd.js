@@ -1008,7 +1008,7 @@ function streamitem(type, data, time) {
     }
     this.value = data.name;
     this.label = [data.name, data.description, data.categories.join(' ')].join(' ');
-    this.data.start = beginTime; // for calendar
+    this.data.start = calBegin; // for calendar
 }
 
 function readMinutes(time) {
@@ -2294,7 +2294,7 @@ function saveAddActivity(streamonly) {
     var id = submitEntry(si);
     //    alert(id);
     si.id = 'user_' + id;
-    si.data.start = beginTime; // for calendar
+    si.data.start = calBegin; // for calendar
 
     // add it to local stream
     userStream.unshift(si);

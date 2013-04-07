@@ -176,7 +176,7 @@
             
             // Modify calendar to show trip progress
             function setCalendarInProgress() {
-                var slotNum = (interTime - beginTime - slotMinutes)/slotMinutes;
+                var slotNum = Math.round((interTime - beginTime - slotMinutes)/slotMinutes);
                 for (var i = 0; i < slotNum; i++) {
                     $(".fc-slot"+i+" .fc-widget-content").css("background-color", "#BBBBBB");
                 }
@@ -216,7 +216,7 @@
                 var event = {};
                 var item = getItem(itineraryId);
 				var saveNew = false;
-				
+
                 // Get event start and end times
                 event.title = item.data.name;
                 if (!item.data.start) {
