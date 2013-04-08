@@ -3190,6 +3190,9 @@ function enableItSave() {
             if (checkTimeOut()) {
                 return;
             }
+			if(!enableEditting){
+				return;
+			}
             var saved = saveItinerary();
             if (saved) {
                 alert("Changes to the itinerary have been saved.");
