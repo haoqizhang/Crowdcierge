@@ -642,6 +642,7 @@ public class RequestTripActivity extends Activity {
 	 */
 	public void onBackPressed() {
 		if (step == 1) {
+			cancelTagging();
 			super.onBackPressed();
 		} else {
 			showPreviousStep(null);
@@ -652,7 +653,7 @@ public class RequestTripActivity extends Activity {
 	 * Called when cancel pressed. Same as onBackPressed().
 	 */
 	public void cancel(View v) {
-		super.onBackPressed();
+		onBackPressed();
 	}
 
 	/**
@@ -767,6 +768,27 @@ public class RequestTripActivity extends Activity {
 			params.put("apiKey", Constants.RETAINER_KEY);
 			params.put("id", i + "");
 
+			// Execute the post
+			(new PostHelper(url, params, new HttpCallback() {
+				@Override
+				public void onHttpExecute(String JSON) {
+					// left empty
+				}
+			})).execute();
+		}
+	}
+	
+	/**
+	 * Cancels the tagging hits created
+	 */
+	private void cancelTagging() {
+		for (int i : taggingWorkIds) {
+			String url = Constants.RETAINER_URL + "cancel";
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("apiKey", Constants.RETAINER_KEY);
+			params.put("id", i + "");
+
+			System.out.println("HERE");
 			// Execute the post
 			(new PostHelper(url, params, new HttpCallback() {
 				@Override

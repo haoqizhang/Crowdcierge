@@ -272,8 +272,11 @@
             // Called on event drops
             function syncEventDrop(event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view) {
 				if(!enableEditting){
-					revertFunc();
 					alert("You must accept the HIT before you can save any edits.");
+					revertFunc();
+					colorHeaders();
+					updateCalendarPins();
+					shiftEventTimes();
 					return;
 				}
 			
