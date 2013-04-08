@@ -274,9 +274,10 @@
 				if(!enableEditting){
 					revertFunc();
 					alert("You must accept the HIT before you can save any edits. Blarg2.");
+					
+					shiftEventTimes();
 					colorHeaders();
 					updateCalendarPins();
-					shiftEventTimes();
 					return;
 				}
 			
