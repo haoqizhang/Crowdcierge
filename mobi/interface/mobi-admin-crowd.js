@@ -2301,7 +2301,7 @@ function saveAddActivity(streamonly) {
     var id = submitEntry(si);
     //    alert(id);
     si.id = 'user_' + id;
-    si.data.start = calBegin; // for calendar
+    //si.data.start = calBegin; // for calendar
 
     // add it to local stream
     userStream.unshift(si);
