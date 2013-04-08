@@ -51,6 +51,6 @@ var Retainer = {
 	},
 	
 	hasWork: function(data){
-        window.location.replace("http://people.csail.mit.edu:1111/main_ret_test.html?assignmentId="+aid+"&hitId="+hid+"&workerId="+wid+"&turkSubmitTo="+sid+"&tid="+data.taskID);
+        window.location.replace("http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/interface/mobi-retainer.html?assignmentId="+aid+"&hitId="+hid+"&workerId="+wid+"&turkSubmitTo="+sid+"&tid="+data.taskID);
 	}
 }
