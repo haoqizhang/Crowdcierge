@@ -1260,6 +1260,13 @@ function viewActivity(si) {
             closeAdd();
         });
     }
+	
+	if (!enableEditting) {
+		$('#addacttoitbutton').unbind();
+        $('#addacttoitbutton').click(function () {
+            alert("Please accept the HIT before making any changes!");
+        });
+	}
 
 
     // edit button

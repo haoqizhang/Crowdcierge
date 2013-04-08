@@ -46,6 +46,8 @@
             
 			var slotMinutes = 15;
 			
+			var refresh =self.setInterval(function(){refreshCalendar()},100);
+			
             // Called from document ready to initialize the calendar
             // TODO get the actual date of the trip here
             function initializeCalendar() {
@@ -155,11 +157,9 @@
                 //$(".fc-slot"+(slotNum-1)+" .fc-widget-content div").text("End");
 				
                 // Make event times fix all the time!
-                cal.mousemove(function() {
-                    shiftEventTimes();
-					colorHeaders();
-					updateCalendarPins();
-                });
+                //cal.mousemove(function() {
+                //    refreshCalendar()
+                //});
                 
                 // Add items from the itinerary array
                 fetchEvents();
@@ -174,6 +174,12 @@
 				updateCalendarPins();
             }
             
+			function refreshCalendar() {
+				shiftEventTimes();
+				colorHeaders();
+				updateCalendarPins();
+			}
+			
             // Modify calendar to show trip progress
             function setCalendarInProgress() {
                 var slotNum = Math.round((interTime - beginTime - slotMinutes)/slotMinutes);
@@ -274,8 +280,6 @@
 				if(!enableEditting){
 					revertFunc();
 					alert("You must accept the HIT before you can save any edits.");
-					
-					cal.mousemove();
 					return;
 				}
 			
@@ -322,8 +326,6 @@
 				if(!enableEditting){
 					revertFunc();
 					alert("You must accept the HIT before you can save any edits.");
-					
-					cal.mousemove();
 					return;
 				}
 			
