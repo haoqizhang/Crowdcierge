@@ -5,7 +5,7 @@
     android:layout_margin="10dp" >
 
     <LinearLayout
-        android:id="@+id/requestBottom"
+        android:id="@+id/editBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -17,293 +17,88 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="cancel"
+            android:onClick="cancelEdit"
             android:text="Cancel" />
-
-        <Button
-            android:id="@+id/requestTripBackBtn"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="showPreviousStep"
-            android:text="Back"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/requestTripNextBtn"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="showNextStep"
-            android:text="Next" />
 
         <Button
             android:id="@+id/requestTripSubmitBtn"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="submitRequest"
-            android:text="Submit!"
-            android:visibility="gone" />
+            android:onClick="submitEdit"
+            android:text="Submit!" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/requestTripWhenWhere"
+        android:id="@+id/editInfo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/requestBottom"
+        android:layout_above="@id/editBottom"
         android:layout_alignParentTop="true"
         android:orientation="vertical" >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="6"
-                android:text="Title: "
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
-
-            <EditText
-                android:id="@+id/requestTripTitle"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:hint="Trip Title" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="6"
-                android:text="City: "
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
-
-            <EditText
-                android:id="@+id/requestTripCity"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:hint="City, State" />
-        </LinearLayout>
-
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Trip Times:"
+            android:text="What kind of change would you like?"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
-        <CheckBox
-            android:id="@+id/requestTripNow"
+        <Spinner
+            android:id="@+id/editTypeSpinner"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="I&apos;m starting my trip right now" />
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Trip Date: "
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/requestTripDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="3/25/13"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/requestTripDateBtn"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:text="Set Date: 3/25/13" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/requestTripStartTimeBtn"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:text="Start Time: 10:00am" />
-
-        <Button
-            android:id="@+id/requestTripEndTimeBtn"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:text="End Time: 6:00pm" />
+            android:layout_marginRight="5dp" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Trips are at most 24 hours long and can rollover into the next day.  We interpret your choices to make the shortest possible trip starting on the date specified."
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/mapControlBlock"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" >
-
-        <LinearLayout
-            android:id="@+id/requestTripStart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:orientation="vertical"
-            android:visibility="gone" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <com.csail.uid.crowdcierge.views.SearchText
-                    android:id="@+id/requestStartSearchQuery"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    android:ems="10"
-                    android:hint="Start address or intersection" />
-
-                <ImageButton
-                    android:id="@+id/requestStartSearchButton"
-                    android:layout_width="80dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@android:drawable/ic_menu_search" />
-            </LinearLayout>
-
-            <CheckBox
-                android:id="@+id/requestTripStartMyLoc"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Use my location as the start" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:gravity="center"
-                android:text="If you don&apos;t know yet, just leave it blank and we&apos;ll start you in the city" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/requestTripEnd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/requestTripStart"
-            android:layout_alignParentTop="true"
-            android:orientation="vertical"
-            android:visibility="gone" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <com.csail.uid.crowdcierge.views.SearchText
-                    android:id="@+id/requestEndSearchQuery"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    android:ems="10"
-                    android:hint="End address or intersection" />
-
-                <ImageButton
-                    android:id="@+id/requestEndSearchButton"
-                    android:layout_width="80dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@android:drawable/ic_menu_search" />
-            </LinearLayout>
-
-            <CheckBox
-                android:id="@+id/requestTripEndMyLoc"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Use my location as the end" />
-
-            <CheckBox
-                android:id="@+id/requestTripEndIsStart"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                android:text="End location same as start" />
-        </LinearLayout>
-    </RelativeLayout>
-
-    <fragment
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/requestTripMap"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/requestBottom"
-        android:layout_below="@id/mapControlBlock"
-        class="com.google.android.gms.maps.MapFragment"
-        map:cameraTargetLat="42.360161"
-        map:cameraTargetLng="-71.094975"
-        map:cameraZoom="12" />
-
-    <LinearLayout
-        android:id="@+id/requestTripDescription"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/requestBottom"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical"
-        android:visibility="gone" >
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="What you want to do:"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="Please change my trip so that..."
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:visibility="gone" />
 
         <EditText
-            android:id="@+id/requestTripDescriptionInput"
-            android:layout_width="match_parent"
+            android:id="@+id/requestTripTitle"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="What do you want to do?  What kind of trip do you want?"
-            android:maxLines="15"
-            android:minLines="7" />
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:hint="...(finish your custom message)"
+            android:visibility="gone" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="You can write as little or as much as you want.  If you know you want to do something specific, make sure to point it out." />
+            android:layout_marginTop="15dp"
+            android:text="What should we change?"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+        <Button
+            android:id="@+id/editTripRelatedActivity"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="Select related activity" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="What shouldn&apos;t we change? (optional)"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+        <Button
+            android:id="@+id/editTripKeepActivity"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="Select activites to keep" />
     </LinearLayout>
 
 </RelativeLayout>

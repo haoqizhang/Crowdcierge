@@ -64,6 +64,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.csail.uid.crowdcierge.activities.EditTripActivity"
+            android:label="@string/app_name">
+        </activity>
+        <activity
             android:name="com.csail.uid.crowdcierge.activities.ViewTripListActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >

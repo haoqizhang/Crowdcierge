@@ -102,6 +102,17 @@ public class ViewTripActivity extends Activity {
 		in.putExtra("trip", trip);
 		this.startActivity(in);
 	}
+	
+	public void openEditActivity(View v) {
+		Intent in = new Intent(ViewTripActivity.this, EditTripActivity.class);
+		ArrayList<TripActivity> activities = new ArrayList<TripActivity>();
+		for (int i = 0; i < mAdapter.getCount(); i++) {
+			activities.add(mAdapter.getItem(i));
+		}
+		in.putExtra("activities", activities);
+		in.putExtra("trip", trip);
+		this.startActivity(in);
+	}
 
 	/**
 	 * Load the user stream for the trip

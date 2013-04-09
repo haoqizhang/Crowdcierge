@@ -23,6 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:drawableLeft="@android:drawable/ic_menu_agenda"
+                android:onClick="openEditActivity"
                 android:enabled="false"
                 android:text="Edit Trip" />
 
