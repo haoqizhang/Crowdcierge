@@ -1997,6 +1997,7 @@ function addActivityToItinerary(si) {
 
     updateItineraryDisplay();
 
+	si.data.start = calBegin;
     addNewItemFromId(si.id); // for calendar
 }
 
