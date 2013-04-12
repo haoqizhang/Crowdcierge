@@ -630,8 +630,9 @@
                 msg.append('<b>' + si.data.name + '</b>');
                 msg.append('<br/>');
                 
-                var desc = takeTill(si.data.description, 100);
-                var descntag = $(document.createElement('div'));
+                //var desc = takeTill(si.data.description, 150);
+                var desc = si.data.description.split('<ul')[0];
+				var descntag = $(document.createElement('div'));
                 descntag.addClass('sidesc');
                 descntag.append(desc);
                 descntag.append('<br/>');
@@ -743,7 +744,7 @@
             var requestCheckItem;
             
 			var requestTitle = 	{
-								"replace"       : "Replace Activity \"{0}\" in Itinerary",
+								"replace"       : "Replace Activity <b>{0}</b> in Itinerary",
             
                                 "stuck"         : "Add Activities close to Traveler to Itinerary",
                                 
@@ -759,7 +760,7 @@
                                 }
 			
             var requestText =   {
-                                "replace"       : "A traveler needs your help.  He is in the middle of a trip and wants something to do instead of \"{0}\".  He is located at the orange pin on the map, and the current time is marked on the calendar.  Remove \"{0}\" from the itinerary.  Next, suggest a new activity and add it to the itinerary in its place, or add an existing activity suggestion from the Brainstream.",
+                                "replace"       : "A traveler wants something to do instead of <b>{0}</b>. <ul><li>He is located at the orange pin <img style='vertical-align:text-bottom' src='pin-user-2.png'/> on the map, and the <span style='background-color: rgba(255, 165, 0, 0.6)'>Current Time</span> is marked on the calendar.</li><li>First, remove <b>{0}</b> from the itinerary. </li><li>Next, suggest a new activity and add it to the itinerary in its place, or add an existing activity suggestion from the Brainstream.</li><li>Keep in mind that the traveler likes the following things: <b>{3}</b>.  Consult the mission details by clicking the <b>reveal mission details</b> button at the top. </li><li>Any reasonable effort at solving the problem earns payment for this task.</li></ul>",
             
                                 "stuck"         : "A traveler needs your help.  He is in the middle of a trip and can't get to his next activity.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Remove the next activity on his Itinerary after the \"Current Time\", along with any others that seem very far away.  Next, suggest activities close to his location and add them to the itinerary, or add closeby suggestions from the Brainstream to the plan.",
                                 
@@ -774,7 +775,7 @@
                                 "custom"        : "A traveler needs your help.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Try your best to add, change, or remove activities from the Itinerary to satisfy his request.  He wants you to follow these instructions: <br/><br/>{2}"
                                 }
             
-            var submissionInstructions = '<br/><br/> When you are finished, click the Submit button to see this again and confirm you solved the problem.';
+            var submissionInstructions = 'When you are finished, click the Submit button to see this again and confirm you solved the problem.';
             var oldItinerary;
             
             // Load intermediate state
@@ -800,6 +801,8 @@
 				$("img[src$='pin-user-2.png']").parent().parent().css("z-index", 10000);
                 map.SetCenter(locLL);
 				
+				AddPushpin(newactmap, locLL, "Traveler's Location", "Where the traveler is right now", false, "pin-user-2.png");
+				
 				$("html").mouseover(function() {
 					$("img[src$='pin-user-2.png']").parent().parent().css("z-index", 10000);
 				});
@@ -812,10 +815,10 @@
             function processRequest() {
                 var problem;
 				var title;
-                if (fixRequest.data.activity) {
-                    var item = getItem(fixRequest.data.activity);
-                    problem = jQuery.validator.format(requestText[fixRequest.type], item.value, "", fixRequest.data.message);
-					title = jQuery.validator.format(requestTitle[fixRequest.type], item.value, "", fixRequest.data.message);
+                if (fixRequest.data.activity.id) {
+					var pinString = "<span><span class='sspinpos' style='display:inline-block'>" + (fixRequest.data.activity.position+1) + "</span>" + fixRequest.data.activity.name + '</span>';
+                    problem = jQuery.validator.format(requestText[fixRequest.type], pinString, fixRequest.data.activity.position, fixRequest.data.message, categories.join(", "));
+					title = jQuery.validator.format(requestTitle[fixRequest.type], pinString, fixRequest.data.activity.position, fixRequest.data.message, categories.join(", "));
                 } else {
 					title = jQuery.validator.format(requestTitle[fixRequest.type], "", "", fixRequest.data.message);
                     problem = jQuery.validator.format(requestText[fixRequest.type], "", "", fixRequest.data.message);
