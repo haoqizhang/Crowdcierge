@@ -119,17 +119,8 @@ $(document).ready(function (jQuery) {
     loadStateIntoInterface(); // now load it all into interface.
     disableItSave();
 
-    $('#box').css('left', '15%');
-    $('#box').css('right', '15%');
-
     GetNewActMap();
     readySearchBox();
-
-    if (user == null) {
-        //	$("#thanksloc").html(" to " + eventName.substring(9));
-        //	showSignup();
-        //	alert("User isn't recognized");
-    }
 
     $(window).resize(function () {
         /// HACK TO FIX MAP RESIZE PROBLEMS
@@ -192,6 +183,9 @@ function readyAdd() {
     $('#boxclose').click(function () {
         closeAdd();
     });
+
+    $('#box').css('left', '15%');
+    $('#box').css('right', '15%');
 }
 
 // Hides popup box and everything inside
@@ -892,8 +886,8 @@ function AddWaypointPin(si) {
 	} else {
 		addRemoveItineraryLink = "<br/><br/><a href='#' onclick='addActivityToItineraryById(\"" + si.id + "\")' style='color:#0000CE; font-size:1.5em'>Add to Itinerary</a>";
 	}
-	
-	if (include(keepAct, si.id) || include(finishedAct, si.id)) {
+
+	if (state.inter && si.data.start && si.data.start < state.inter.time) {
         addRemoveItineraryLink = "";
     }
 	
