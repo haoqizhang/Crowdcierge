@@ -886,8 +886,15 @@ function AddWaypointPin(si) {
 
     var shape = new VEShape(VEShapeType.Pushpin, ll);
 	var desc = takeTill(si.data.description, 100);
+	var addRemoveItineraryLink;
+	if (itinerary.indexOf(si.id) != -1) {
+		addRemoveItineraryLink = "<br/><br/><a href='#' onclick='removeActivityFromItineraryById(\"" + si.id + "\")' style='color:#0000CE; font-size:1.5em'>Remove from Itinerary</a>";
+	} else {
+		addRemoveItineraryLink = "<br/><br/><a href='#' onclick='addActivityToItineraryById(\"" + si.id + "\")' style='color:#0000CE; font-size:1.5em'>Add to Itinerary</a>";
+	}
+	
     shape.SetTitle(si.data.name);
-    shape.SetDescription("<font color='black'>" + desc + "</font><br/>@" + si.data.location.name + "<br/><br/><a href='#' onclick='viewActivityById(\"" + si.id + "\")' style='color:#0000CE; font-size:1.5em'>Click to view or edit</a>");
+    shape.SetDescription("<font color='black'>" + desc + "</font><br/>@" + si.data.location.name + "<br/><br/><a href='#' onclick='viewActivityById(\"" + si.id + "\")' style='color:#0000CE; font-size:1.5em'>Click to view or edit</a>" + addRemoveItineraryLink);
     //	      var str = "<div style='position: relative; background: url(" + custom + "); width:25px;height:29px'><div style='position: absolute; bottom: 0.5em; left: 0.5em; font-weight: bold; color: #fff;'>" + pos + '</div></div>'
     //	      var str2 = "<img src='" + custom + "'/><div style='color:#ffffff;position:absolute;left:5px; top:0px'>" + pos  + "</div>";
     //    var str3 = "<table width='30px' height='32px'><tr><td style='background: url(" + custom + ") no-repeat; vertical-align: top; text-align: center'><span style='font-weight: bold; color: #fff;'>" + pos + "</span></td></tr></table>";
@@ -898,6 +905,42 @@ function AddWaypointPin(si) {
     wayhash[si.id] = new waypointPin(shape, ll, null, parseInt(si.data.duration));
 
 	return shape;
+}
+
+function addActivityToItineraryById(id) {
+	if (!enableEditting) {
+		alert("Please accept the HIT before making any changes!");
+		return;
+	}
+	addActivityToItinerary(getItem(id));
+}
+
+function removeActivityFromItineraryById(id) {
+	if (!enableEditting) {
+		alert("Please accept the HIT before making any changes!");
+		return;
+	}
+	// remove it
+	$('#' + id).remove();
+
+	// remove it from itinerary
+	itinerary = $("#itinerary").sortable('toArray');
+
+	// remove shape
+	waylayer.DeleteShape(wayhash[id].pin);
+	// remove it from waypoint hash
+	delete(wayhash[id]);
+	
+	removeItemFromId(id); // for calendar
+
+	// get rid of the itinerary badge
+	$('#ss_' + id).remove();
+
+	// update display
+	updateItineraryDisplay();
+
+	//enableItSave();
+	saveItinerary();
 }
 
 function viewActivityById(id) {

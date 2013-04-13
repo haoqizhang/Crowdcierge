@@ -760,7 +760,7 @@
                                 }
 			
             var requestText =   {
-                                "replace"       : "A traveler wants something to do instead of <b>{0}</b>. <ul><li>He is located at the orange pin <img style='vertical-align:text-bottom' src='pin-user-2.png'/> on the map, and the <span style='background-color: rgba(255, 165, 0, 0.6)'>Current Time</span> is marked on the calendar.</li><li>First, remove <b>{0}</b> from the itinerary. </li><li>Next, suggest a new activity and add it to the itinerary in its place, or add an existing activity suggestion from the Brainstream.</li><li>Keep in mind that the traveler likes the following things: <b>{3}</b>.  Consult the mission details by clicking the <b>reveal mission details</b> button at the top. </li><li>Any reasonable effort at solving the problem earns payment for this task.</li></ul>",
+                                "replace"       : "A traveler wants something to do instead of <b>{0}</b>. <ul><li><b>First, remove \"{0}\" from the itinerary.</b>  This is the activity the traveler doesn't want to do anymore. </li><li><b>Next, add a different activity in its place.</b> You can suggest a new activity to add or add an existing activity suggestion from the Brainstream.</li></ul>",
             
                                 "stuck"         : "A traveler needs your help.  He is in the middle of a trip and can't get to his next activity.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Remove the next activity on his Itinerary after the \"Current Time\", along with any others that seem very far away.  Next, suggest activities close to his location and add them to the itinerary, or add closeby suggestions from the Brainstream to the plan.",
                                 
@@ -775,6 +775,8 @@
                                 "custom"        : "A traveler needs your help.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Try your best to add, change, or remove activities from the Itinerary to satisfy his request.  He wants you to follow these instructions: <br/><br/>{2}"
                                 }
             
+			var keepInMind = "Keep the following in mind while you do the task:<ul><li><b>He is located at the orange pin <img style='vertical-align:text-bottom' src='pin-user-2.png'/> on the map, and the <span style='background-color: rgba(255, 165, 0, 0.6)'>Current Time</span> is marked on the calendar.</b></li><li><b>The traveler likes the following things: {0}.  Click \"reveal mission details\" at the top to see more.</b>  The missions details explain what the traveler originally wanted on their trip. </li><li> Any reasonable effort to resolve the conflict will result in payment for this task.  </ul>"
+			
             var submissionInstructions = 'When you are finished, click the Submit button to see this again and confirm you solved the problem.';
             var oldItinerary;
             
@@ -823,7 +825,7 @@
 					title = jQuery.validator.format(requestTitle[fixRequest.type], "", "", fixRequest.data.message);
                     problem = jQuery.validator.format(requestText[fixRequest.type], "", "", fixRequest.data.message);
                 }
-                problem = problem + submissionInstructions;
+                problem = problem + jQuery.validator.format(keepInMind, categories.join(", ")) + submissionInstructions;
                 
                 var n = new note(title, problem, ['check', 'request']);
                 var si = new streamitem('check', n, null);
