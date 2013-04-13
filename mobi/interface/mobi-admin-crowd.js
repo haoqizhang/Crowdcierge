@@ -893,6 +893,10 @@ function AddWaypointPin(si) {
 		addRemoveItineraryLink = "<br/><br/><a href='#' onclick='addActivityToItineraryById(\"" + si.id + "\")' style='color:#0000CE; font-size:1.5em'>Add to Itinerary</a>";
 	}
 	
+	if (include(keepAct, si.id) || include(finishedAct, si.id)) {
+        addRemoveItineraryLink = "";
+    }
+	
     shape.SetTitle(si.data.name);
     shape.SetDescription("<font color='black'>" + desc + "</font><br/>@" + si.data.location.name + "<br/><br/><a href='#' onclick='viewActivityById(\"" + si.id + "\")' style='color:#0000CE; font-size:1.5em'>Click to view or edit</a>" + addRemoveItineraryLink);
     //	      var str = "<div style='position: relative; background: url(" + custom + "); width:25px;height:29px'><div style='position: absolute; bottom: 0.5em; left: 0.5em; font-weight: bold; color: #fff;'>" + pos + '</div></div>'
