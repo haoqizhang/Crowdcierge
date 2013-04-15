@@ -887,7 +887,7 @@ function AddWaypointPin(si) {
 		addRemoveItineraryLink = "<br/><br/><a href='#' onclick='addActivityToItineraryById(\"" + si.id + "\")' style='color:#0000CE; font-size:1.5em'>Add to Itinerary</a>";
 	}
 
-	if (state.inter && si.data.start && si.data.start < state.inter.time) {
+	if (state.inProgress && state.inter && ((si.data.start && si.data.start < state.inter.time) || (include(state.inter.keepActivities, si.id)))) {
         addRemoveItineraryLink = "";
     }
 	

@@ -236,8 +236,10 @@
             request.data = {};
 			request.data.activity = {};
             request.data.activity.id = $('input:radio[name=group1]:checked').val();
-			request.data.activity.name = userStream[request.data.activity.id].value;
-			request.data.activity.position = state.itinerary.indexOf(request.data.activity.id);
+			if (userStream[request.data.activity.id]) {
+				request.data.activity.name = userStream[request.data.activity.id].value;
+				request.data.activity.position = state.itinerary.indexOf(request.data.activity.id);
+			}
             request.data.message = $("#requestText").val();
             inter.request = request;
             
