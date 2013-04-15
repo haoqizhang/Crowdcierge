@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+</head>
+<body style="font-family: helvetica, arial, sans-serif;">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript">
+    
+        // Task and post data
+		var hitId = null;
+		var turkSubmitTo = null;
+		var workerId = null;
+        var assignmentId = 'ASSIGNMENT_ID_NOT_AVAILABLE';
+        
+        // Ready form with test data and load state
+        $(document).ready(function (jQuery) {
+            var params = getURLParams();
+			
+			var hitId = params.hitId;
+			var turkSubmitTo = params.turkSubmitTo;
+			var workerId = params.workerId;
+			var assignmentId = params.assignmentId;
+			var tidBase = params.tidBase;
+			
+			for (var i = 1; i < 11; i++) {
+				progressCheck(tidBase+"_"+i);
+			}
+			
+			$('body').empty().append('<h2>If you are not redirected in 20 seconds, please return this HIT.</h2><p>You have done nothing wrong. However, for some reason, our system is not connecting properly to your computer, and as a result, you cannot do this task properly. You may still be able to participate in future HITs in this process.</p><p><small>NOTE: This message is a temporary fix; we hope that Mechanical Turk itself will allow us to block specific workers from particular HITs, so that they do not show up under "HITs Available To You". Given this and other factors, Mechanical Turk requesters generally do not care how many HITs you return.</small></p><p><b>Sorry for the inconvenience.</b></p>')
+        });
+		
+        // Refreshes to check if the task has been completed
+        function progressCheck(tid) {           
+            jQuery.ajax({
+                type: "GET",
+                url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourTaskState.php",
+                data: ({
+                    type: "turktour",
+                    id: tid
+                }),
+                async: false,
+                success: function (obj) {
+                    if (obj == "") {} else {
+                        var newState = eval('(' + obj + ')');
+                        newState = eval('(' + newState.state + ')');
+            
+                        if (newState.inProgress) {
+                            // redirect here
+							window.location.replace("http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/interface/mobi-admin-crowd.html?assignmentId="+assignmentId+"&hitId="+hitId+"&workerId="+workerId+"&turkSubmitTo="+turkSubmitTo+"&tid="+tid);
+                        }
+                    }
+                }
+            });
+        }
+		
+		function getURLParams() {
+			var params = {}
+			var m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g)
+			if (m) {
+				for (var i = 0; i < m.length; i++) {
+					var a = m[i].match(/.([^=]+)=(.*)/)
+					params[unescapeURL(a[1])] = unescapeURL(a[2])
+				}
+			}
+			return params
+		}
+
+		function unescapeURL(s) {
+			return decodeURIComponent(s.replace(/\+/g, "%20"))
+		}
+   
+	</script>
+	<div style="margin-left:auto; margin-right:auto; float:left; width:200px"> 
+        
+    </div>
+    
+</body>
+</html>
