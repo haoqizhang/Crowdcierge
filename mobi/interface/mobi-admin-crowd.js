@@ -910,6 +910,9 @@ function addActivityToItineraryById(id) {
 		alert("Please accept the HIT before making any changes!");
 		return;
 	}
+	if (oldShape) {
+		waylayer.DeleteShape(oldShape);
+	}
 	addActivityToItinerary(getItem(id));
 }
 
@@ -2021,10 +2024,11 @@ function editNote(si) {
 }
 
 function addActivityToItinerary(si) {
+	// update itinerary ordering in actual data
+    itinerary.unshift(si.id);
     // add the waypoint
     AddWaypointPin(si);
-    // update itinerary ordering in actual data
-    itinerary.unshift(si.id);
+    
     // update sortable
     displayItineraryItem('#itinerary', si.id, true, 1, si.data.name, si.data.location.name, '' + si.data.duration + ' min + travel', true);
 

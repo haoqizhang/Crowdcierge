@@ -750,32 +750,44 @@
                                 
                                 "delayed"       : "Traveler is delayed",
                                 
-                                "addMoreLike"   : "Add more Activities like \"{0}\" to Itinerary",
+                                "addMoreLike"   : "Add more Activities like {0} to Itinerary",
                                 
                                 "addNow"        : "Add something to the Itinerary for the Traveler to do now",
                                 
-                                "cantGo"        : "Traveler can't get to \"{0}\", add something else to Itinerary",
+                                "cantGo"        : "Traveler can't get to {0}, add something else to Itinerary",
                                 
                                 "custom"        : "A Traveler needs your help! Click to read."
                                 }
 			
             var requestText =   {
-                                "replace"       : "A traveler wants something to do instead of <b>{0}</b>. <ul><li><b>First, remove \"{0}\" from the itinerary.</b>  This is the activity the traveler doesn't want to do anymore. </li><li><b>Next, add a different activity in its place.</b> You can suggest a new activity to add or add an existing activity suggestion from the Brainstream.</li></ul>",
+                                "replace"       : "A traveler wants something to do instead of <b>{0}</b>. <ul><li><b>First, remove {0} from the itinerary.</b>  This is the activity the traveler doesn't want to do anymore. </li><li><b>Next, add a different activity in its place.</b> You can suggest a new activity to add or add an existing activity suggestion from the Brainstream.</li></ul>",
+								
+								"stuck"       : "A traveler is stuck and can't get to his next activity, <b>{0}</b>. <ul><li><b>First, remove {0} from the itinerary.</b>  This is the activity the traveler can't get to. </li><li><b>Next, add a different activity in its place.</b> You can suggest a new activity to add or add an existing activity suggestion from the Brainstream.</li></ul>",
             
-                                "stuck"         : "A traveler needs your help.  He is in the middle of a trip and can't get to his next activity.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Remove the next activity on his Itinerary after the \"Current Time\", along with any others that seem very far away.  Next, suggest activities close to his location and add them to the itinerary, or add closeby suggestions from the Brainstream to the plan.",
+                                //"stuck"         : "A traveler needs your help.  He is in the middle of a trip and can't get to his next activity.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Remove the next activity on his Itinerary after the \"Current Time\", along with any others that seem very far away.  Next, suggest activities close to his location and add them to the itinerary, or add closeby suggestions from the Brainstream to the plan.",
                                 
-                                "delayed"       : "A traveler needs your help.  He is in the middle of a trip and is delayed.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Move his trip plan around so that he can finish his trip on time, either by changing the activities or removing items.  You should give them some time to finish with the activity they are at right now (maybe 30 minutes).",
+								"delayed"       : "A traveler is delayed and can't get to his next activity on time. <ul><li><b>Make his upcoming activities start at least 30 minutes later in the day, either by changing them or removing them.</b></li></ul>",
+								
+                                //"delayed"       : "A traveler needs your help.  He is in the middle of a trip and is delayed.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Move his trip plan around so that he can finish his trip on time, either by changing the activities or removing items.  You should give them some time to finish with the activity they are at right now (maybe 30 minutes).",
                                 
-                                "addMoreLike"   : "A traveler needs your help.  He is in the middle of a trip and wants more activities like \"{0}\".  He is located at the orange pin on the map, and the current time is marked on the calendar.  Add more similar activities to the Itinerary, and you can change or remove parts of the current plan to make time.  You can find similar activities in the Brainstream by looking at the hashtag (#) categories, or you can just add a new suggestion.",
+								"addMoreLike"       : "A traveler wants his plan changed to add more activities like <b>{0}</b>. <ul><li><b>Add activities like {0} to the itinerary.</b> You can suggest a new activity to add or add an existing activity suggestion from the Brainstream.</li><li><b>If needed, move or remove some activities from the itinerary to make space.</b>. </li></ul>",
+								
+                                //"addMoreLike"   : "A traveler needs your help.  He is in the middle of a trip and wants more activities like {0}.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Add more similar activities to the Itinerary, and you can change or remove parts of the current plan to make time.  You can find similar activities in the Brainstream by looking at the hashtag (#) categories, or you can just add a new suggestion.",
                                 
-                                "addNow"        : "A traveler needs your help.  He is in the middle of a trip and wants something else to do right now.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Add something for him to do right now, and you can change or remove parts of the current plan to make time.",
+								"addNow"       : "A traveler wants something to do right now. <ul><li><b>Add an activity near the traveler on the map that starts very soon to the Current Time on the calendar.</b> You can suggest a new activity to add or add an existing activity suggestion from the Brainstream.</li><li><b>If needed, move or remove activities to make room.</b></li></ul>",
+								
+                                //"addNow"        : "A traveler needs your help.  He is in the middle of a trip and wants something else to do right now.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Add something for him to do right now, and you can change or remove parts of the current plan to make time.",
                                 
-                                "cantGo"        : "A traveler needs your help.  He is in the middle of a trip and his next planned activity, \"{0}\", is not available (it could be closed, out of order, etc).  He is located at the orange pin on the map, and the current time is marked on the calendar.  Remove activity \"{0}\" from the Itinerary.  Next, suggest an activity close to his location and add it to the itinerary, or add a closeby suggestion from the Brainstream to the plan.",
+								"cantGo"       : "A traveler can't do their next planned activity, <b>{0}</b>. <ul><li><b>First, remove {0} from the itinerary.</b>  This is the activity the traveler says is closed or unavailable.</li><li><b>Next, add a different activity in its place.</b> You can suggest a new activity to add or add an existing activity suggestion from the Brainstream.</li></ul>",
+								
+                                //"cantGo"        : "A traveler needs your help.  He is in the middle of a trip and his next planned activity, {0}, is not available (it could be closed, out of order, etc).  He is located at the orange pin on the map, and the current time is marked on the calendar.  Remove activity {0} from the Itinerary.  Next, suggest an activity close to his location and add it to the itinerary, or add a closeby suggestion from the Brainstream to the plan.",
+								
+								"custom"       : "A traveler needs your help to fix his trip plan.  Follow his instructions below: <ul><li><b> {2} </b></li></ul>",
                                 
-                                "custom"        : "A traveler needs your help.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Try your best to add, change, or remove activities from the Itinerary to satisfy his request.  He wants you to follow these instructions: <br/><br/>{2}"
+                                //"custom"        : "A traveler needs your help.  He is located at the orange pin on the map, and the current time is marked on the calendar.  Try your best to add, change, or remove activities from the Itinerary to satisfy his request.  He wants you to follow these instructions: <br/><br/>{2}"
                                 }
             
-			var keepInMind = "Keep the following in mind while you do the task:<ul><li><b>He is located at the orange pin <img style='vertical-align:text-bottom' src='pin-user-2.png'/> on the map, and the <span style='background-color: rgba(255, 165, 0, 0.6)'>Current Time</span> is marked on the calendar.</b></li><li><b>The traveler likes the following things: {0}.  Click \"reveal mission details\" at the top to see more.</b>  The missions details explain what the traveler originally wanted on their trip. </li><li> Any reasonable effort to resolve the conflict will result in payment for this task.  </ul>"
+			var keepInMind = "Keep the following in mind while you do the task:<ul><li><b>The traveler is located at the orange pin <img style='vertical-align:text-bottom' src='pin-user-2.png'/> on the map, and the <span style='background-color: rgba(255, 165, 0, 0.6)'>Current Time</span> is marked on the calendar.</b></li><li><b>He likes the following things: {0}.  Click \"reveal mission details\" at the top to learn more.</b>  The mission details explain what the traveler originally wanted on their trip. </li><li> Any reasonable effort to resolve the conflict will result in payment for this task.  </ul>"
 			
             var submissionInstructions = 'When you are finished, click the Submit button to see this again and confirm you solved the problem.';
             var oldItinerary;
@@ -818,7 +830,7 @@
                 var problem;
 				var title;
                 if (fixRequest.data.activity.id) {
-					var pinString = "<span><span class='sspinpos' style='display:inline-block'>" + (fixRequest.data.activity.position+1) + "</span>" + fixRequest.data.activity.name + '</span>';
+					var pinString = "<span><span class='sspinpos' style='display:inline-block'>" + (fixRequest.data.activity.position+1) + "</span><span style='font-style:italic; font-weight:bold'>" + fixRequest.data.activity.name + '</span></span>';
                     problem = jQuery.validator.format(requestText[fixRequest.type], pinString, fixRequest.data.activity.position, fixRequest.data.message, categories.join(", "));
 					title = jQuery.validator.format(requestTitle[fixRequest.type], pinString, fixRequest.data.activity.position, fixRequest.data.message, categories.join(", "));
                 } else {
@@ -829,6 +841,7 @@
                 
                 var n = new note(title, problem, ['check', 'request']);
                 var si = new streamitem('check', n, null);
+				si.requestType = fixRequest.type;
                 si.id = 'sys_request_check';
                 si.onResolve = function() {
 					if (!enableEditting) {
@@ -1159,7 +1172,7 @@
             }
             .missionbuttons {
                 vertical-align:baseline;
-                font-size:90%;
+                font-size:150%;
                 border:1px outset black;
                 padding:3px;
                 background-color:#0000CE;
