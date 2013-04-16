@@ -24,6 +24,8 @@
 			var assignmentId = params.assignmentId;
 			var tidBase = params.tidBase;
 			
+			console.log(params);
+			
 			for (var i = 1; i < 11; i++) {
 				progressCheck(tidBase+"_"+i);
 			}
@@ -48,7 +50,6 @@
             
                         if (newState.inProgress) {
                             // redirect here
-							console.log(assignmentId);
 							window.location.replace("https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/interface/mobi-admin-crowd.html?assignmentId="+assignmentId+"&hitId="+hitId+"&workerId="+workerId+"&turkSubmitTo="+turkSubmitTo+"&tid="+tid);
                         }
                     }
