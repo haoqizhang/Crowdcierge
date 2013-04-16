@@ -218,10 +218,10 @@
             }
             
             // Adds a new item to the calendar based on itinerary id
-            function addNewItemFromId(itineraryId) {
+            function addNewItemFromId(itineraryId, addNew) {
                 var event = {};
                 var item = getItem(itineraryId);
-				var saveNew = false;
+				var saveNew = addNew;
 
                 // Get event start and end times
                 event.title = item.data.name;

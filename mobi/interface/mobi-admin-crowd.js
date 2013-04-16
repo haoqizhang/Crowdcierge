@@ -65,9 +65,9 @@ var lasteditSearch = null;
 
 // Test task variables.
 var tid = "72f2a275c14c3af09e6c2f2b73f03241";
-var uid = "57187fd22e931d8b2145d920967e559d";
+//var uid = "57187fd22e931d8b2145d920967e559d";
 //var tid = null;
-//var uid = null; // TODO: get user id from parameters
+var uid = null;
 var calculatedEnd = null;
 var user = null;
 var numusers = null;
@@ -2038,7 +2038,7 @@ function addActivityToItinerary(si) {
     updateItineraryDisplay();
 
 	si.data.start = calBegin;
-    addNewItemFromId(si.id); // for calendar
+    addNewItemFromId(si.id, true); // for calendar
 }
 
 function addSelect() {
@@ -2827,8 +2827,7 @@ function locateCategoryIndex(c) {
 function loadUserData() {
 
     // check not null
-    //    if(uid == null) return;
-
+    if(uid == null) return;
 
     jQuery.ajax({
         type: "GET",
