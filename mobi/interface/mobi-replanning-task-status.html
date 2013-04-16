@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+</head>
+<body style="font-family: helvetica, arial, sans-serif;">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript">
+    
+        // Task and post data
+		var taskIds = ["07b00cdb35f7d7b6f78b143435be4233", "1ad763711678e776436bd16678d27dc5", "a31b5015bac8dce3a4e417b5d7fdcb31", "08cb0514714ab393ee85f4a81688d3da", "2507f771e649290105c5180852db4d01"];
+        
+        // Ready form with test data and load state
+        $(document).ready(function (jQuery) {
+			
+			for (var k = 0; k < taskIds.length; k++) {
+				var tidBase = taskIds[k];
+				console.log("\nCHECKING TASK " + tidBase);
+				for (var j = 1; j < 5; j++) {
+					console.log("Checking " + tidBase+"_"+j);
+					for (var i = 1; i < 11; i++) {
+						progressCheck(tidBase+"_"+j+"_"+i);
+					}
+				}
+			}
+        });
+		
+        // Refreshes to check if the task has been completed
+        function progressCheck(tid) {           
+            jQuery.ajax({
+                type: "GET",
+                url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourTaskState.php",
+                data: ({
+                    type: "turktour",
+                    id: tid
+                }),
+                async: false,
+                success: function (obj) {
+                    if (obj == "") {} else {
+                        var newState = eval('(' + obj + ')');
+                        newState = eval('(' + newState.state + ')');
+            
+                        if (!newState.inProgress) {
+							console.log(tid + " is finished!");
+                        }
+                    }
+                }
+            });
+        }
+		
+		function getURLParams() {
+			var params = {}
+			var m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g)
+			if (m) {
+				for (var i = 0; i < m.length; i++) {
+					var a = m[i].match(/.([^=]+)=(.*)/)
+					params[unescapeURL(a[1])] = unescapeURL(a[2])
+				}
+			}
+			return params
+		}
+
+		function unescapeURL(s) {
+			return decodeURIComponent(s.replace(/\+/g, "%20"))
+		}
+   
+	</script>
+	<div style="margin-left:auto; margin-right:auto; float:left; width:200px"> 
+        
+    </div>
+    
+</body>
+</html>
