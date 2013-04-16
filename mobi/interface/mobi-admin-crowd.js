@@ -227,11 +227,6 @@ function readUrlParameters() {
 		configureCrowdTaskUi();
 		
 		if (params.assignmentId) {
-			if(params.workerId == "A3RLCGRXA34GC0"){
-				alert("You have reached your HIT quota. As a precaution, the requester will manually check your submissions prior to accepting your work. If you have any questions, please contact the requester.");
-				$('input[type=submit]').attr("disabled", "true")
-				//$('#submitter').val("Please read HIT instructions above. You have yet to accept the HIT, but can try out the tool!");	    
-			}
 			if (params.assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE") {
 				$('input[type=submit]').attr("disabled", "true")
 				$('#submitter').val("Please read HIT instructions above. You have yet to accept the HIT, but can try out the tool!");
