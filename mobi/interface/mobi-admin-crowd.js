@@ -2798,6 +2798,7 @@ function loadStream() {
         }),
         async: false,
         success: function (obj) {
+			console.log(obj);
             if (obj == "") {} else {
                 var count = 0;
                 for (var i = 0; i < obj.length; i++) {
