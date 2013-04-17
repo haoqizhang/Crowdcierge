@@ -176,6 +176,13 @@ $(document).ready(function (jQuery) {
     }
 	
     showExplanationBox();
+	
+	$('#searchBox').bind('keypress', function(e) {
+		var code = (e.keyCode ? e.keyCode : e.which);
+		if(code == 13) {
+			addSelect();
+		}
+	});
 });
 
 // Called first in document ready to set up popup box
