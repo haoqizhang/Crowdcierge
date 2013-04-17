@@ -343,7 +343,7 @@
 		}
    
 	</script>
-	<div style="height:350px">
+	<div>
 		<div style="margin-left:auto; margin-right:auto; float:left; width:200px"> 
 			REQUEST CONTROL: <br/>
 			click things, magic <br/> <br/>
@@ -372,32 +372,32 @@
 			STUFF A USER WOULD DO THEMSELVES: <br/> 
 			make something up, feel inspired <br/><br/>
 			Request Type: <br/><select id="requestTypes"></select> <br/><br/>
-			<div style="float:left; width:250px">
+			<div style="float:left; width:240px; height:160px; overflow:auto;overflow-x:hidden">
+				<div id="customMessage" style="display:none">
+					Request Text:<br/>
+					<textarea id="requestText"></textarea><br/> 
+				</div>
 				<div id="radioTop">
 					Relevant Activity: <br/>
 					<div id="requestRadio" style="margin-left:20px">
 					</div> <br/> 
 				</div>
-				<div id="customMessage" style="display:none">
-					Request Text:<br/>
-					<textarea id="requestText"></textarea><br/> 
-				</div>
 			</div>
-			<div style="float:left; width:250px">
+			<div style="float:left; width:240px; height:160px; overflow:auto;overflow-x:hidden">
 				Activities to NOT change: <br/>
 				<div id="keepCheck" style="margin-left:20px">
 				</div> 
 			</div><br/>
 		</div>
 	</div>
-	<div style="margin-top:10px; margin-bottom:20px">
-		<div id="description" style="margin-left:auto; margin-right:auto; float:left; width:200px">
+	<div style=" margin-bottom:20px; clear:both">
+		<div id="description" style="margin-top:40px;margin-left:auto; margin-right:auto; float:left; width:200px">
 		</div>
 
-		<div id="currentplan" style="float:left; margin-left:50px; width:350px">
+		<div id="currentplan" style="margin-top:40px;float:left; margin-left:50px; width:350px">
 		</div>
 		
-		<div id="changedplan" style="float:left; margin-left:50px; width: 350px">
+		<div id="changedplan" style="margin-top:40px;float:left; margin-left:50px; width: 350px">
 		</div>
 	</div>
 	
