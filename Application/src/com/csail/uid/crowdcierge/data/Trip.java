@@ -40,7 +40,7 @@ public class Trip implements Parcelable {
 			JSONObject state = new JSONObject(originalObj.getString("state"));
 			JSONObject admin = state.getJSONObject("admin");
 			JSONArray itinerary = state.getJSONArray("itinerary");
-
+			
 			tid = admin.getString("id");
 			title = admin.getString("name");
 			for (int i = 0; i < itinerary.length(); i++) {
