@@ -278,7 +278,7 @@
 			var ret = "<ol>"
 			for (var i=0;i<state.itinerary.length;i++) {
 				var item = userStream[state.itinerary[i]];
-				ret = ret + "<li>" + item.value + " (" + minToTime(item.data.start) + " - " + minToTime(item.data.start+parseInt(item.data.duration)) + ") </li>"
+				ret = ret + "<li>" + item.value + "<br/> (" + minToTime(item.data.start) + " - " + minToTime(item.data.start+parseInt(item.data.duration)) + ") </li>"
 			}
 			ret = ret + "</ol>"
 			return ret;
@@ -378,12 +378,12 @@
 					<textarea id="requestText"></textarea><br/> 
 				</div>
 				<div id="radioTop">
-					Relevant Activity: <br/>
+					Related Activity: <br/>
 					<div id="requestRadio" style="margin-left:20px">
 					</div> <br/> 
 				</div>
 			</div>
-			<div style="float:left; width:240px; height:160px; overflow:auto;overflow-x:hidden">
+			<div style="float:left; width:240px; height:160px; overflow:auto;overflow-x:hidden; margin-left:10px">
 				Activities to NOT change: <br/>
 				<div id="keepCheck" style="margin-left:20px">
 				</div> 
