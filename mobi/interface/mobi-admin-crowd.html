@@ -792,6 +792,8 @@
             var submissionInstructions = 'When you are finished, click the Submit button to see this again and confirm you solved the problem.';
             var oldItinerary;
             
+			var startTaskTime = (new Date()).getTime();
+			
             // Load intermediate state
             function loadIntermediateState() {
                 // Show the replanning stream, not the full sys stream
@@ -879,6 +881,8 @@
             // Currently just sets inProgress to false
             function saveResolution() {
                 state.inProgress = false;
+				var d = new Date();
+				state.inter.taskCompleteTime = d.getTime() - startTaskTime;
                 
                 var ret = true;
 

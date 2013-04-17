@@ -17,3 +17,5 @@ obf/
 local.properties
 
 lint.xml
+
+*.xlsx

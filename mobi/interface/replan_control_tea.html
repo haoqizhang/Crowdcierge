@@ -20,12 +20,7 @@
                         "08cb0514714ab393ee85f4a81688d3da",
                         "2507f771e649290105c5180852db4d01",
                         "453ad2e6eeda9e3ccd9d2739c0f1025d",
-                        "6d33280aa09b19776b7721c98c784223",
-                        "083bae9b539973499cf654cd97928b97",
-                        "71928f85675acec8da164b317c0acb08",
-                        "4b4ef627007a24382602411ca491d1e1",
-                        "72f2a275c14c3af09e6c2f2b73f03241",
-						"346520258"]
+                        "6d33280aa09b19776b7721c98c784223",]
 
         // State variables
         var userStream = {};
@@ -373,22 +368,26 @@
 			Long: <input type="text" id="long"></input> <br/>
 		</div>
 		
-		<div style="float:left; margin-left:50px; width: 600px">
+		<div style="float:left; margin-left:50px; width: 500px">
 			STUFF A USER WOULD DO THEMSELVES: <br/> 
 			make something up, feel inspired <br/><br/>
-			Request Type: <select id="requestTypes"></select> <br/>
-			<div id="radioTop">
-				Relevant Activity: <br/>
-				<div id="requestRadio" style="margin-left:20px">
-				</div> <br/> 
+			Request Type: <br/><select id="requestTypes"></select> <br/><br/>
+			<div style="float:left; width:250px">
+				<div id="radioTop">
+					Relevant Activity: <br/>
+					<div id="requestRadio" style="margin-left:20px">
+					</div> <br/> 
+				</div>
+				<div id="customMessage" style="display:none">
+					Request Text:<br/>
+					<textarea id="requestText"></textarea><br/> 
+				</div>
 			</div>
-			<div id="customMessage" style="display:none">
-				Request Text:<br/>
-				<textarea id="requestText"></textarea><br/> 
-			</div>
-			Activities to keep: <br/>
-			<div id="keepCheck" style="margin-left:20px">
-			</div> <br/>
+			<div style="float:left; width:250px">
+				Activities to keep: <br/>
+				<div id="keepCheck" style="margin-left:20px">
+				</div> 
+			</div><br/>
 		</div>
 	</div>
 	<div style="margin-top:10px; margin-bottom:20px">
@@ -398,7 +397,7 @@
 		<div id="currentplan" style="float:left; margin-left:50px; width:350px">
 		</div>
 		
-		<div id="changedplan" style="float:left; margin-left:50px; width: 600px">
+		<div id="changedplan" style="float:left; margin-left:50px; width: 350px">
 		</div>
 	</div>
 	
