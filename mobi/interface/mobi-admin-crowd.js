@@ -2046,6 +2046,7 @@ function addActivityToItinerary(si) {
 
 	si.data.start = calBegin;
     addNewItemFromId(si.id, true); // for calendar
+	updateItineraryOnCalendar();
 }
 
 function addSelect() {

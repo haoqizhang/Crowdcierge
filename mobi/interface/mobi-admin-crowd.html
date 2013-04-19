@@ -258,6 +258,29 @@
 				}
             }
             
+			function updateItineraryOnCalendar() {
+				// Sort event source list based on client events
+                eventSource.length = 0;
+                var newEvents = $("#calendar").fullCalendar( 'clientEvents' );
+                for (var i  = 0; i < newEvents.length; i++) {
+                    eventSource.push(newEvents[i]);
+                }
+                eventSource.sort(function(a,b) {
+                    return (a.start.getHours() + a.start.getMinutes()/60) - (b.start.getHours() + b.start.getMinutes()/60);
+                });
+                
+                // Update itinerary order and save route if necessary
+                var newItinerary = [];
+                for (var i = 0; i < eventSource.length; i++) {
+                    newItinerary.push(eventSource[i].itId);
+                }
+
+                // Save new itinerary order
+                itinerary = newItinerary;
+                saveItinerary();
+                refreshCalendar();
+			}
+			
             // Removes an item from the calendar based on itinerary id
             function removeItemFromId(itineraryId) {
                 for (var i = 0; i < eventSource.length; i++) {
