@@ -50,23 +50,30 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp" />
 
-        <TextView
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:id="@+id/editCustom"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:text="Please change my trip so that..."
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:visibility="gone" />
+            android:orientation="vertical" >
 
-        <EditText
-            android:id="@+id/requestTripTitle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:hint="...(finish your custom message)"
-            android:visibility="gone" />
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="Please change my trip so that..."
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/editCustomMessage"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:hint="...(finish your custom message)"
+                android:visibility="gone" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="fill_parent"
