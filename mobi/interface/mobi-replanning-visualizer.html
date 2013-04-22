@@ -1,0 +1,164 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
+    <head>
+        <title>Mobi: admin page of our people planning for you</title>
+        <meta http-equiv="Content-Type"
+        content="application/xhtml+xml; charset=utf-8" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script type="text/javascript">
+			var taskIds = ["07b00cdb35f7d7b6f78b143435be4233", "1ad763711678e776436bd16678d27dc5", "a31b5015bac8dce3a4e417b5d7fdcb31", "08cb0514714ab393ee85f4a81688d3da", "2507f771e649290105c5180852db4d01"];
+			var problemIds = [];
+			var problemsToAnswers = {};
+			var currentProblem = 0;
+			var currentAnswer = 0;
+			
+			var urlHead = "file:///C:/Users/Joey%20Rafidi/Documents/GitHub/Crowdcierge/mobi/interface/mobi-admin-crowd.html?assignmentId=ASSIGNMENT_ID_NOT_AVAILABLE&tid=";
+			
+			// Ready form with test data and load state
+			$(document).ready(function (jQuery) {
+				$("#loading").show();
+				for (var k = 0; k < taskIds.length; k++) {
+					var tidBase = taskIds[k];
+					for (var j = 1; j < 5; j++) {
+						problemIds.push(tidBase+"_"+j);
+						problemsToAnswers[tidBase+"_"+j] = [];
+						for (var i = 1; i < 11; i++) {
+							progressCheck(tidBase+"_"+j+"_"+i, tidBase+"_"+j);
+						}
+					}
+				}
+				$("#loading").hide();
+				
+				switchProblem(0);
+			});
+			
+			function switchProblem(inc) {
+				currentProblem = (Math.abs(currentProblem + inc)) % problemIds.length;
+			
+				$("#problemId").text(problemIds[currentProblem]);
+				$("#problemFrame").attr("src", urlHead + problemIds[currentProblem]);
+				currentAnswer = 0;
+				loadCurrentAnswer();
+			}
+			
+			function switchAnswer(inc) {
+				var answers = problemsToAnswers[problemIds[currentProblem]];
+				if (answers.length == 0) {
+					return
+				}
+				
+				currentAnswer = (Math.abs(currentAnswer + inc)) % answers.length;
+				loadCurrentAnswer();
+			}
+			
+			function loadCurrentAnswer() {
+				var answers = problemsToAnswers[problemIds[currentProblem]];
+				if (answers.length == 0) {
+					$("#answerFrame").hide();
+					$("#showAnswer").hide();
+					$("#hideAnswer").hide();
+					$("#answerId").text("No answers");
+					$("#workerId").text("N/A");
+					$("#time").text("N/A");
+					return;
+				}
+				
+				var answer = answers[currentAnswer];
+				
+				$("#answerFrame").show();
+				$("#showAnswer").show();
+				$("#hideAnswer").show();
+				
+				$("#answerId").text(answer.tid);
+				
+				var edit = answer.userStream[0].edited;
+				var wid = null;
+				var count = 1
+				while (wid == null && count <= answer.userStream[0].edited.length) {
+					wid = edit[edit.length - count]
+					count+=1;
+				}
+				
+				if (count == answer.userStream[0].edited+1) {
+					wid = "Possible Corruption";
+				}
+
+				$("#workerId").text(wid);
+				$("#time").text(answer.time);
+				
+				$("#answerFrame").attr("src", urlHead + answer.tid);
+			}
+			
+			// Refreshes to check if the task has been completed
+			function progressCheck(tid, problem) {           
+				jQuery.ajax({
+					type: "GET",
+					url: "http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourTaskState.php",
+					data: ({
+						type: "turktour",
+						id: tid
+					}),
+					async: false,
+					success: function (obj) {
+						if (obj == "") {} else {
+							var newState = eval('(' + obj + ')');
+							newState = eval('(' + newState.state + ')');
+				
+							if (!newState.inProgress) {
+								var answer = {};
+								answer.tid = tid;
+								answer.time = newState.inter.taskCompleteTime;
+								loadTaskStream(tid, answer);
+								problemsToAnswers[problem].push(answer);
+							}
+						}
+					}
+				});
+			}
+			
+			function loadTaskStream(tid, answer) {
+				answer.userStream = [];
+				jQuery.ajax({
+					type: "GET",
+					dataType: "json",
+					url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourStream.php",
+					data: ({
+						type: "turktour",
+						id: tid
+					}),
+					async: false,
+					success: function (obj) {
+						if (obj == "") {} else {
+							for (var i = 0; i < obj.length; i++) {
+								answer.userStream.unshift(eval('(' + obj[i].answer + ')'));
+							}
+						}
+					}
+				});
+			}
+			
+		</script>
+	</head>
+	
+    <body style="font-family: helvetica, arial, sans-serif;">
+	
+		<div style="text-align:center; font-size:1.2em"> Crowdcierge Replanning Task Visualizer
+			<br/>
+			<span id="loading">LOADING TASKS</span>
+			<br/>
+			<button onclick="switchProblem(-1);">Previous Problem</button> Replanning Task ID: <span id="problemId"></span> <button onclick="switchProblem(1);">Next Problem</button>
+			<br/>
+			<button onclick="switchAnswer(-1);">Previous Answer</button> Replanning Task Answer ID: <span id="answerId"></span> <button onclick="switchAnswer(1);">Next Answer</button>
+ 			<br/>
+			Worker ID: <span id="workerId"></span>
+			<br/>
+			Time Spent: <span id="time"></span>
+			<br/>
+			<button id="showProblem" onclick="$('#problemFrame').show();">Show Original Task</button><button id="hideProblem" onclick="$('#problemFrame').hide();">Hide Original Task</button>
+			<iframe id="problemFrame" style="width:90%; height:80%" src="file:///C:/Users/Joey%20Rafidi/Documents/GitHub/Crowdcierge/mobi/interface/mobi-admin-crowd.html?tid=a31b5015bac8dce3a4e417b5d7fdcb31&assignmentId=ASSIGNMENT_ID_NOT_AVAILABLE"></iframe>
+			<br/>
+			<button id="showAnswer" onclick="$('#answerFrame').show();">Show Answer</button><button id="hideAnswer" onclick="$('#answerFrame').hide();">Hide Answer</button>
+			<iframe id="answerFrame" style="width:90%; height:80%" src="file:///C:/Users/Joey%20Rafidi/Documents/GitHub/Crowdcierge/mobi/interface/mobi-admin-crowd.html?tid=a31b5015bac8dce3a4e417b5d7fdcb31&assignmentId=ASSIGNMENT_ID_NOT_AVAILABLE"></iframe>
+		</div>
+	
+	</body>
+</html>	
