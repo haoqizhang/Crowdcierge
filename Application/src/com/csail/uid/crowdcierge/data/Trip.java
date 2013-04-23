@@ -97,6 +97,12 @@ public class Trip implements Parcelable {
 		city = b.getString("city");
 		date = b.getInt("date");
 
+		try {
+			originalObj = new JSONObject(b.getString("json"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
 		directionsMode = b.getString("directionsMode");
 	}
 
@@ -191,6 +197,8 @@ public class Trip implements Parcelable {
 		b.putString("city", city);
 		b.putInt("date", date);
 
+		b.putString("json", originalObj.toString());
+		
 		dest.writeBundle(b);
 	}
 

@@ -156,8 +156,8 @@ public class TripMapActivity extends Activity {
 		double startLong = activities.get(index).getLongitude();
 		double endLat = activities.get(index + 1).getLatitude();
 		double endLong = activities.get(index + 1).getLongitude();
-
-		String url = "http://dev.virtualearth.net/REST/v1/Routes/Transit";
+		
+		String url = "http://dev.virtualearth.net/REST/v1/Routes/Walking";
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("waypoint.1", startLat + "," + startLong);
 		params.put("waypoint.2", endLat + "," + endLong);
@@ -174,6 +174,7 @@ public class TripMapActivity extends Activity {
 			public void onHttpExecute(String JSON) {
 				try {
 					JSONObject result = new JSONObject(JSON);
+					System.out.println(result.toString());
 					JSONObject resourceSet = result
 							.getJSONArray("resourceSets").getJSONObject(0);
 					JSONArray coordinates = resourceSet

@@ -1,5 +1,7 @@
 package com.csail.uid.crowdcierge.util;
 
+import java.util.Calendar;
+
 public class TimeUtils {
 
 	/**
@@ -44,4 +46,8 @@ public class TimeUtils {
 		return hour + ":" + min + AMPM;
 	}
 
+	public static int getTime() {
+		Calendar today = Calendar.getInstance();
+		return today.get(Calendar.HOUR_OF_DAY)*60 + today.get(Calendar.MINUTE);
+	}
 }
