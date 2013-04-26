@@ -312,6 +312,9 @@ function configureReplanTaskUi() {
 	$("#viewReplanTask").show();
 	$("#viewReplanTask").click(function() {
 		$("#stream_sys_request_check").click();
+		$("#gotit").hide();
+		$('#viewchecklist').show();
+		$('#viewcheckdesc').hide();
 	});
 	$("#helpButton").removeAttr("onclick");
 	$("#helpButton").click(function() {
