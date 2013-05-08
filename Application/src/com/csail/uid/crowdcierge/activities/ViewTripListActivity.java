@@ -138,11 +138,17 @@ public class ViewTripListActivity extends Activity {
 		switch (type) {
 		case FUTURE:
 			taskIds.add("453ad2e6eeda9e3ccd9d2739c0f1025d");
+			taskIds.add("a31b5015bac8dce3a4e417b5d7fdcb31");
+			taskIds.add("083bae9b539973499cf654cd97928b97");
+			taskIds.add("2507f771e649290105c5180852db4d01");
+			taskIds.add("1ad763711678e776436bd16678d27dc5");
+			taskIds.add("72f2a275c14c3af09e6c2f2b73f03241");
 			break;
 		case PRESENT:
 			taskIds.add("a31b5015bac8dce3a4e417b5d7fdcb31");
 			break;
 		case PAST:
+			taskIds.add("a31b5015bac8dce3a4e417b5d7fdcb31");
 			taskIds.add("083bae9b539973499cf654cd97928b97");
 			taskIds.add("2507f771e649290105c5180852db4d01");
 			taskIds.add("1ad763711678e776436bd16678d27dc5");

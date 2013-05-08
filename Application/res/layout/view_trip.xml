@@ -23,8 +23,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:drawableLeft="@android:drawable/ic_menu_agenda"
-                android:onClick="openEditActivity"
                 android:enabled="false"
+                android:onClick="openEditActivity"
                 android:text="Edit Trip" />
 
             <Button
@@ -42,16 +42,26 @@
             android:id="@+id/viewTripCancel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="Cancel Planning" />
+            android:text="Cancel Planning"
+            android:visibility="gone" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tripInProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text=""
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@android:color/holo_red_dark"/>
 
     <ListView
         android:id="@+id/activityList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/viewTripButtons"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/tripInProgress"
         android:visibility="gone" >
     </ListView>
 
@@ -60,7 +70,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/viewTripButtons"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/tripInProgress"
         android:layout_margin="10dp" >
 
         <ProgressBar

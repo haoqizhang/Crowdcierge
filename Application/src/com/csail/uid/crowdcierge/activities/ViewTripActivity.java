@@ -45,6 +45,8 @@ public class ViewTripActivity extends Activity {
 	private Button mapBtn;
 	private Button cancelBtn;
 	private ActivityListAdapter mAdapter;
+	
+	private TextView inProgText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,8 @@ public class ViewTripActivity extends Activity {
 		editBtn = (Button) findViewById(R.id.viewTripEdit);
 		mapBtn = (Button) findViewById(R.id.viewTripMap);
 		cancelBtn = (Button) findViewById(R.id.viewTripCancel);
+		
+		inProgText = (TextView) findViewById(R.id.tripInProgress);
 		
 		ActionBar bar = getActionBar();
 		bar.setTitle(trip.getTitle());
@@ -111,7 +115,10 @@ public class ViewTripActivity extends Activity {
 		}
 		in.putExtra("activities", activities);
 		in.putExtra("trip", trip);
+		in.putExtra("tripType", type);
+		in.putExtra("isSingle", isSinglePresent);
 		this.startActivity(in);
+		this.finish();
 	}
 
 	/**
@@ -178,15 +185,23 @@ public class ViewTripActivity extends Activity {
 	private void setTripType() {
 		switch (type) {
 		case FUTURE:
-			cancelBtn.setVisibility(View.VISIBLE);
+			//cancelBtn.setVisibility(View.VISIBLE);
 			break;
 		case PRESENT:
 			break;
 		case PAST:
 			editBtn.setEnabled(false);
 		}
+		
+		if (trip.isInProgress()) {
+			inProgText.setText("Your trip is currently being fixed. Check back for the changes later.");
+		} else {
+			inProgText.setText("");
+			inProgText.setTextSize(0);
+			inProgText.setHeight(0);
+		}
 	}
-
+	
 	/**
 	 * Adapter for activity list view.
 	 */

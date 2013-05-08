@@ -16,6 +16,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
@@ -30,13 +31,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.csail.uid.crowdcierge.R;
+import com.csail.uid.crowdcierge.activities.ViewTripListActivity.TripTimeType;
 import com.csail.uid.crowdcierge.data.Trip;
 import com.csail.uid.crowdcierge.data.TripActivity;
 import com.csail.uid.crowdcierge.util.Constants;
 import com.csail.uid.crowdcierge.util.GetHelper.HttpCallback;
 import com.csail.uid.crowdcierge.util.PostHelper;
+import com.csail.uid.crowdcierge.util.TimeUtils;
 
 public class EditTripActivity extends Activity {
 
@@ -49,22 +53,27 @@ public class EditTripActivity extends Activity {
 
 	private String uid;
 	private Trip trip;
+	private TripTimeType type;
+	private boolean isSinglePresent = false;
 	private List<TripActivity> activities;
 	private ArrayList<String> activityNames = new ArrayList<String>();
 
 	private String requestType;
 	private TripActivity relatedActivity;
-	private ArrayList<TripActivity> keepActivities;
+	private ArrayList<TripActivity> keepActivities = new ArrayList<TripActivity>();
+	private ArrayList<Integer> selectedShit = new ArrayList<Integer>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.edit_trip);
-		
+
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		uid = prefs.getString("uid", null);
 		trip = getIntent().getParcelableExtra("trip");
+		type = (TripTimeType) getIntent().getSerializableExtra("tripType");
+		isSinglePresent = getIntent().getBooleanExtra("isSingle", false);
 		activities = getIntent().getParcelableArrayListExtra("activities");
 		activities = activities.subList(1, activities.size() - 1);
 
@@ -154,6 +163,15 @@ public class EditTripActivity extends Activity {
 		}
 	}
 
+	public void onBackPressed() {
+		Intent in = new Intent(this, ViewTripActivity.class);
+		in.putExtra("trip", trip);
+		in.putExtra("tripType", type);
+		in.putExtra("isSingle", isSinglePresent);
+		this.startActivity(in);
+		this.finish();
+	}
+
 	/**
 	 * Cancel requesting an edit
 	 */
@@ -173,31 +191,34 @@ public class EditTripActivity extends Activity {
 			stateId = orig.getString("stateId");
 			state = new JSONObject(orig.getString("state"));
 			state.put("inProgress", true);
-			
+
 			JSONObject inter = new JSONObject();
-			inter.put("time", 900); // TEMP
-			// inter.put("time", TimeUtils.getTime());
-			
+			inter.put("time", TimeUtils.getRoundedTime() - 120);
+
 			Location l = getBestLocation();
 			inter.put("lat", l.getLatitude());
 			inter.put("long", l.getLongitude());
-			
+
 			JSONObject request = new JSONObject();
 			request.put("type", requestType);
-			
-			JSONObject data= new JSONObject();
-			String message = "Please change my trip so that " + customMessage.getText().toString();
+
+			JSONObject data = new JSONObject();
+			String message = "Please change my trip so that "
+					+ customMessage.getText().toString();
 			data.put("message", message);
-			
+
 			JSONObject activity = new JSONObject();
 			if (relatedActivity != null) {
 				activity.put("id", relatedActivity.getMapId());
 				activity.put("name", relatedActivity.getLabel());
 				activity.put("position", activities.indexOf(relatedActivity));
 			}
-			
+
 			JSONArray keep = new JSONArray();
-			
+			for (TripActivity act : keepActivities) {
+				keep.put(act.getMapId());
+			}
+
 			data.put("activity", activity);
 			request.put("data", data);
 			inter.put("request", request);
@@ -207,22 +228,25 @@ public class EditTripActivity extends Activity {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		// Fill the post params
 		String url = Constants.PHP_URL + "submitTurkTourItinerary.php";
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("userId", uid);
 		params.put("answer", state.toString());
 		params.put("taskId", trip.getTid());
-		params.put("startState",  stateId);
+		params.put("startState", stateId);
 		params.put("assignmentId", "USER_REPLAN");
 		params.put("type", "turktour");
-		
+
 		// Execute the post
 		(new PostHelper(url, params, new HttpCallback() {
 			@Override
 			public void onHttpExecute(String JSON) {
-				// TODO edit trip and exit activity
+				trip.setInProgress(true);
+				Toast.makeText(EditTripActivity.this, "Request sent!",
+						Toast.LENGTH_LONG).show();
+				onBackPressed();
 			}
 		})).execute();
 	}
@@ -276,7 +300,8 @@ public class EditTripActivity extends Activity {
 								public void onClick(DialogInterface dialog,
 										int which) {
 									relatedActivity = activities.get(which);
-									relatedBtn.setText("Selected: " + relatedActivity.getLabel());
+									relatedBtn.setText("Selected: "
+											+ relatedActivity.getLabel());
 								}
 							});
 
@@ -289,6 +314,10 @@ public class EditTripActivity extends Activity {
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			// Set the dialog title
+			boolean[] fuckingPieceOfShit = new boolean[activities.size()];
+			for (int i : selectedShit) {
+				fuckingPieceOfShit[i] = true;
+			}
 			builder.setTitle("Activities to Keep")
 					// Specify the list array, the items to be selected by
 					// default (null for none),
@@ -296,12 +325,20 @@ public class EditTripActivity extends Activity {
 					// items are selected
 					.setMultiChoiceItems(
 							activityNames.toArray(new CharSequence[activityNames
-									.size()]), null,
+									.size()]), fuckingPieceOfShit,
 							new DialogInterface.OnMultiChoiceClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which, boolean isChecked) {
 									if (isChecked) {
+										keepActivities.add(activities
+												.get(which));
+										selectedShit.add(which);
+									} else {
+										keepActivities.remove(activities
+												.get(which));
+										int ind = selectedShit.indexOf(which);
+										selectedShit.remove(ind);
 									}
 								}
 							})

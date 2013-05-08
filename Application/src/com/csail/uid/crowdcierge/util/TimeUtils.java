@@ -50,4 +50,10 @@ public class TimeUtils {
 		Calendar today = Calendar.getInstance();
 		return today.get(Calendar.HOUR_OF_DAY)*60 + today.get(Calendar.MINUTE);
 	}
+	
+	public static int getRoundedTime() {
+		double shit = getTime() / 15.0;
+		int bigshit = (int) Math.ceil(shit);
+		return bigshit * 15;
+	}
 }

@@ -32,6 +32,8 @@ public class Trip implements Parcelable {
 	// TODO: actually get directions mode
 	private String directionsMode = "driving";
 
+	private boolean inProgress = false;
+
 	private JSONObject originalObj;
 
 	public Trip(String JSON) {
@@ -40,7 +42,7 @@ public class Trip implements Parcelable {
 			JSONObject state = new JSONObject(originalObj.getString("state"));
 			JSONObject admin = state.getJSONObject("admin");
 			JSONArray itinerary = state.getJSONArray("itinerary");
-			
+
 			tid = admin.getString("id");
 			title = admin.getString("name");
 			for (int i = 0; i < itinerary.length(); i++) {
@@ -63,16 +65,19 @@ public class Trip implements Parcelable {
 
 			if (!admin.has("city")) {
 				city = title.substring(9);
-			} else {				
+			} else {
 				city = admin.getString("city");
 			}
 
 			if (!admin.has("date")) {
 				date = -1;
 			} else {
-				date = admin.getInt("date");				
+				date = admin.getInt("date");
 			}
 
+			if (state.has("inProgress")) {
+				inProgress = state.getBoolean("inProgress");
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -96,13 +101,14 @@ public class Trip implements Parcelable {
 
 		city = b.getString("city");
 		date = b.getInt("date");
+		inProgress = b.getBoolean("inProgress");
 
 		try {
 			originalObj = new JSONObject(b.getString("json"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+
 		directionsMode = b.getString("directionsMode");
 	}
 
@@ -153,13 +159,21 @@ public class Trip implements Parcelable {
 	public String getDirectionsMode() {
 		return directionsMode;
 	}
-	
+
 	public String getCity() {
 		return city;
 	}
-	
+
 	public int getDate() {
 		return date;
+	}
+
+	public void setInProgress(boolean fuck) {
+		inProgress = fuck;
+	}
+	
+	public boolean isInProgress() {
+		return inProgress;
 	}
 
 	/**
@@ -196,9 +210,10 @@ public class Trip implements Parcelable {
 
 		b.putString("city", city);
 		b.putInt("date", date);
+		b.putBoolean("inProgress", inProgress);
 
 		b.putString("json", originalObj.toString());
-		
+
 		dest.writeBundle(b);
 	}
 
