@@ -43,7 +43,6 @@ public class ViewTripActivity extends Activity {
 	private View prog;
 	private Button editBtn;
 	private Button mapBtn;
-	private Button cancelBtn;
 	private ActivityListAdapter mAdapter;
 	
 	private TextView inProgText;
@@ -65,7 +64,6 @@ public class ViewTripActivity extends Activity {
 
 		editBtn = (Button) findViewById(R.id.viewTripEdit);
 		mapBtn = (Button) findViewById(R.id.viewTripMap);
-		cancelBtn = (Button) findViewById(R.id.viewTripCancel);
 		
 		inProgText = (TextView) findViewById(R.id.tripInProgress);
 		
@@ -185,7 +183,6 @@ public class ViewTripActivity extends Activity {
 	private void setTripType() {
 		switch (type) {
 		case FUTURE:
-			//cancelBtn.setVisibility(View.VISIBLE);
 			break;
 		case PRESENT:
 			break;

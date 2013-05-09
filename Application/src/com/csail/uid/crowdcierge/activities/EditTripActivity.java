@@ -319,10 +319,6 @@ public class EditTripActivity extends Activity {
 				fuckingPieceOfShit[i] = true;
 			}
 			builder.setTitle("Activities to Keep")
-					// Specify the list array, the items to be selected by
-					// default (null for none),
-					// and the listener through which to receive callbacks when
-					// items are selected
 					.setMultiChoiceItems(
 							activityNames.toArray(new CharSequence[activityNames
 									.size()]), fuckingPieceOfShit,
@@ -348,6 +344,8 @@ public class EditTripActivity extends Activity {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int id) {
+									keepBtn.setText(selectedShit.size()
+											+ " activities selected");
 								}
 							});
 
