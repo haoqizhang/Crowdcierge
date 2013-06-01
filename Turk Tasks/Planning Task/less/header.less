@@ -1,0 +1,40 @@
+@import "common.less";
+
+@header-color: @Hue-01;
+@top-button-color: @Hue-02;
+
+.header {
+	white-space: nowrap;
+	padding-left:10px;
+	background:@header-color;
+	padding-top:10px;
+
+	#eventName {
+	    font-size:260%;
+	    text-transform: lowercase;
+	    font-family: Arial, times, Times New Roman,
+	    	times-roman, georgia, serif;
+	    line-height: 40px;
+	    font-weight: 100;
+	    margin-right:5%;
+	    vertical-align: bottom;
+		color:white;
+	}
+
+	.missionbuttons {
+		.cc-button(white, @top-button-color, black);
+		margin-left:10px;
+		margin-bottom:3px;
+	    font-size:150%;
+	    vertical-align: bottom;
+	}
+
+	a {
+		float: right;
+		vertical-align: bottom;
+		font-size: 130%;
+		margin-right: 40px;
+		margin-top: 10px;
+	}
+}
+

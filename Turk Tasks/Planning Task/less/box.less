@@ -1,0 +1,60 @@
+@import "common.less";
+
+@box-header-color: @Hue-03;
+@box-header-background: @Hue-04;
+@box-body-color: @Hue-05;
+@box-border-color: @Hue-06;
+@box-background-color: @Hue-07;
+
+#overlay {
+    background:transparent url(../img/overlay.png) repeat top left;
+    position:fixed;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    z-index:100;
+    display:none;
+}
+
+.box {
+	position:fixed;
+    padding:20px;
+    top:-700px;
+    left:30%;
+    right:30%;
+    background-color: @box-background-color;
+    color:@box-body-color;
+    border:2px solid;
+    border-color:@box-border-color;
+    -moz-border-radius: 20px;
+    -webkit-border-radius:20px;
+    -khtml-border-radius:20px;
+    -moz-box-shadow: 0 1px 5px #333;
+    -webkit-box-shadow: 0 1px 5px #333;
+    z-index:101;
+
+	#boxclose {
+		float:right;
+	    width:26px;
+	    height:26px;
+	    background:transparent url(../img/cancel.png) repeat top left;
+	    margin-top:-30px;
+	    margin-right:-30px;
+	    cursor:pointer;
+	}
+
+	h1 {
+	    border-bottom: 1px dashed; 
+	    border-color: @box-body-color;
+	    margin:-20px -20px 0px -20px;
+	    padding: 15px 10px 10px 10px;
+	    background-color: @box-header-background;
+	    color: @box-header-color;
+	    -moz-border-radius:20px 20px 0px 0px;
+	    -webkit-border-top-left-radius: 20px;
+	    -webkit-border-top-right-radius: 20px;
+	    -khtml-border-top-left-radius: 20px;
+	    -khtml-border-top-right-radius: 20px;
+	}
+}

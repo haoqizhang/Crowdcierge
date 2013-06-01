@@ -14,6 +14,10 @@
         <link rel='stylesheet' type='text/css' href='../css/crowdcierge-checkitem.css' />
         <link rel='stylesheet' type='text/css' href='../css/crowdcierge-calendar.css' />
 
+        <link rel='stylesheet' type='text/css' href='../less/header.css' />
+        <link rel='stylesheet' type='text/css' href='../less/common.css' />
+        <link rel='stylesheet' type='text/css' href='../less/box.css' />
+
         <!-- LIBRARY JS FILES -->
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
@@ -36,53 +40,19 @@
     </head>
     
     <body>
-        <div class="header" style ='white-space:nowrap;vertical-align:baseline;padding-top:10px;padding-left:10px;background:#FFAB07;color:white;'>
-            <div> <span class='headname' id='eventName'></span>
-                <span style='margin-left:10px'>
-                  <button class='missionbuttons'  onclick="viewMission()">reveal mission details</button>
-                </span>
-                <span style='margin-left:10px'>
-                    <!--      <button class='missionbuttons'  onclick="viewHelp()">what you can do to help</button>-->
-                    <button class='missionbuttons'  onclick="viewHelp()" id="helpButton" >What you can do</button>
-                </span>
-                <span style='margin-left:10px'>
-                    <a target='_blank' href="http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/Mobi/Mobi_Turk_Tutorial.html">confused? check out the tutorial</a>
-                </span>
+        <div class="header">
+            <div> 
+                <span id='eventName'></span>
+                <button class='missionbuttons'  onclick="viewMission()">reveal mission details</button>
+                <button class='missionbuttons'  onclick="viewHelp()" id="helpButton" >What you can do</button>
+                <a target='_blank' href="http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/Mobi/Mobi_Turk_Tutorial.html">confused? check out the tutorial</a>
             </div>
         </div>
-        <!--<div class="header" style='padding-left:12px;padding-bottom:12px;background:#fbf7d4'
-        id='tagrow'></div>-->
+        
         <!-- The overlay and the box -->
-        <div class="overlay" id="overlay" style="display:none;"></div>
+        <div id="overlay"></div>
         <div class="box" id="box">
-            <a class="boxclose" id="boxclose"></a>
-            <div id='signup' style='display:none'>
-                <h1 id='signupheader'>Welcome to Mobi!<span style='float:right;'></span></h1>
-
-                <div>
-                    <br/>Thanks for coming to help me plan a day of my trip<span id="thanksloc"></span>!
-                    Let me know who you are so I can thank you later (and see which suggestions
-                    are from you):
-                    <br/>
-                    <br/>
-                    <div class="row"><span class="label">Your name:</span><span class="formw"><input id='signupName' type='text' size='40'/></span>
-                    </div>
-                    <div class="row"><span class="label">Your email:</span><span class="formw"><input id='signupEmail' type='text' size='40'/></span>
-                    </div>
-                    <br/>
-                    <br/>
-                    <div class="spacer"></div>Note: I am participating in a Harvard University research study
-                    so the data you enter here may be seen by researchers. Just thought you
-                    should know that.
-                    <br/>
-                    <br/>
-                    <div class="row"><span class="label"></span>
-                        <span class="formw">
-                            <button class='signupit' onClick='signmeup()'>Let me help!</button>
-                        </span>
-                    </div>
-                </div>
-            </div>
+            <a id="boxclose"></a>
             <div id='viewMission' style='display:none'>
                  <h1 id='missionheader'>Mission<span style='float:right;'><button onclick="editMission()" id='editmissionbutton' class='addit'>edit mission</button></span></h1>
 
@@ -97,7 +67,7 @@
                 </div>
             </div>
             <div id='viewHelp' style='display:none'>
-                 <h1 id='helpheader'>What you can do</h1>
+                <h1 id='helpheader'>What you can do</h1>
 
                 <div id='helpinstructions'>Others are helping to plan this trip for you. In the meanwhile, you can:
                     <ul>
@@ -114,7 +84,6 @@
                             edit screen.
                             <br/>
                         </li>
-                        <!-- <li><b>Locking down activities</b><br/>See something in the itinerary that you absolutely want to keep there? Click the lock button next to the itinerary item to lock it down! If you change your mind, just unlock it and that will allow the folks planning for you to remove it from the itinerary if they wished to do so.</li>-->
                         <li><b>Participate yourself!</b>
                             <br/>If you so wish, you can add ideas to the brainstream and/or itinerary
                             yourself! It's your itinerary... make whatever edits you wish.
@@ -127,8 +96,8 @@
                  <h1 id='selectheader'>Is your idea...</h1>
 
                 <div style='font-size:120%;padding-top:12px;'>
-                    <button class='addbig' onclick="$('#viewSelect').hide();addActivity();">something to do or see</button>&nbsp;or
-                    <button class='addbig' onclick="$('#viewSelect').hide(); addNote();">a thought about the plan</button>&nbsp;?</div>
+                    <button class='addit big' onclick="$('#viewSelect').hide();addActivity();">something to do or see</button>&nbsp;or
+                    <button class='addit big' onclick="$('#viewSelect').hide(); addNote();">a thought about the plan</button>&nbsp;?</div>
             </div>
             <div id='viewNote' style='display:none'>
                 <h1 id='viewheader'>Note
@@ -415,7 +384,7 @@
                 <div class='sectiontitle' style="padding-bottom:6px"><span>Itinerary</span>&nbsp;&nbsp;&nbsp;
                     <span style='text-align:left'>
                     <!--<button onclick='saveSnapshot()' id='snapshotbutton'>take a snapshot of the itinerary</button>-->
-                    <button class='addwide' id='saveitbutton' style='font-size:70%'>save itinerary changes!</button>
+                    <button class='addit wide' id='saveitbutton' style='font-size:70%'>save itinerary changes!</button>
                     </span> <br/>
 					<span style="width:20px; height:20px; background-color:rgb(3,209,92); font-size: 70%; color: rgb(0, 0, 206); position:absolute; margin-left:100px; margin-top:3px; visibility:hidden"></span>
 					<span style="margin-top:3px; font-size: 70%; color: rgb(0, 0, 206); position:relative; margin-left: 125px; visibility:hidden"> = travel time </span>

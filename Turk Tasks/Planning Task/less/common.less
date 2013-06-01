@@ -1,0 +1,33 @@
+@Hue-01: #FFAB07; 	// HEADER COLOR
+@Hue-02: #0000CE;	// TOP BUTTON COLOR
+
+@Hue-03: #EF7777;	// BOX HEADER TEXT COLOR
+@Hue-04: #FFEFEF;	// BOX HEADER BACKGROUND COLOR
+@Hue-05: #7F7F7F;	// BOX BODY COLOR
+@Hue-06: #ccc;		// BOX BORDER COLOR
+@Hue-07: #fff;		// BOX BACKGROUND COLOR
+
+.cc-button (@text-color, @background-color, @border-color) {
+	border:1px outset;
+	border-color: @border-color;
+	color:@text-color;
+	background-color:@background-color;
+	padding:3px;
+	cursor:pointer;
+	text-transform: lowercase;
+	text-align: center;
+}
+
+// STANDARD UGLY ORANGE BUTTON
+.addit {
+	.cc-button (white, @Hue-01, black);
+	font-size:50%;
+
+	&.big {
+		font-size:100%;
+	}
+
+	&.wide {
+		padding:4px;
+	}
+}

@@ -158,24 +158,13 @@ body {
     font-size:1.5em;
     font-weight:bold;
 }
-.headname {
-    vertical-align:baseline;
-    font-size:260%;
-    text-transform: lowercase;
-    font-family: Arial, times, Times New Roman, times-roman, georgia, serif;
-    /*    font-size: 40px;  */
-    line-height: 40px;
-    letter-spacing: -1px;
-    color: white;
-    font-weight: 100;
-}
 a:link {
     color: #0000CE;
     text-decoration: underline;
 }
 a:active {
     color: #0000CE;
-    text-decoration: uonderline;
+    text-decoration: underline;
 }
 a:visited {
     color: #0000CE;
@@ -208,14 +197,7 @@ a.tagrowitem:hover {
     margin: 0px;
     width: 10px;
 }
-.missionbuttons {
-    vertical-align:baseline;
-    font-size:150%;
-    border:1px outset black;
-    padding:3px;
-    background-color:#0000CE;
-    color:white;
-}
+
 #addbutton {
     border: 1px outset black;
     background:#ffab07;
@@ -426,84 +408,11 @@ a.tagrowitem:hover {
     padding-right: 20px;
 }
 /* Style for overlay and box */
-.overlay {
-    background:transparent url(../img/overlay.png) repeat top left;
-    position:fixed;
-    top:0px;
-    bottom:0px;
-    left:0px;
-    right:0px;
-    z-index:100;
-}
-.box {
-    position:fixed;
-    padding:20px;
-    top:-700px;
-    left:30%;
-    right:30%;
-    background-color:#fff;
-    color:#7F7F7F;
-    border:2px solid #ccc;
-    -moz-border-radius: 20px;
-    -webkit-border-radius:20px;
-    -khtml-border-radius:20px;
-    -moz-box-shadow: 0 1px 5px #333;
-    -webkit-box-shadow: 0 1px 5px #333;
-    z-index:101;
-}
-.box h1 {
-    border-bottom: 1px dashed #7F7F7F;
-    margin:-20px -20px 0px -20px;
-    padding: 15px 10px 10px 10px;
-    background-color:#FFEFEF;
-    color:#EF7777;
-    -moz-border-radius:20px 20px 0px 0px;
-    -webkit-border-top-left-radius: 20px;
-    -webkit-border-top-right-radius: 20px;
-    -khtml-border-top-left-radius: 20px;
-    -khtml-border-top-right-radius: 20px;
-}
-a.boxclose {
-    float:right;
-    width:26px;
-    height:26px;
-    background:transparent url(../img/cancel.png) repeat top left;
-    margin-top:-30px;
-    margin-right:-30px;
-    cursor:pointer;
-}
+
 .addactheader {
     white-space:no-wrap;
 }
-.addbig {
-    border: 1px outset black;
-    background:#ffab07;
-    color: white;
-    font-size: 100%;
-    text-align:center;
-}
-.signupit {
-    border: 1px outset black;
-    background:#ffab07;
-    color: white;
-    font-size: 100%;
-    text-align:center;
-}
-.addit {
-    border: 1px outset black;
-    background:#ffab07;
-    color: white;
-    font-size: 50%;
-    text-align:center;
-}
-.addwide {
-    border: 1px outset black;
-    background:#ffab07;
-    color: white;
-    font-size: 50%;
-    text-align:center;
-    padding:4px;
-}
+
 div.row {
     clear: both;
     padding-top: 5px;
