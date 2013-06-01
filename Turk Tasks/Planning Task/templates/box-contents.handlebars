@@ -2,7 +2,7 @@
     <h1> {{title}}
         <span style='float:right;'>
             {{#each controlButtons}}
-            <button id='{{id}}' class='addit'> 
+            <button class='addit' onclick='{{callback}}()'> 
                 {{text}}
             </button>
             {{/each}}

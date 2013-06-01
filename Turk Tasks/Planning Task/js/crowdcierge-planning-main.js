@@ -32,21 +32,14 @@ var restDrive = null;
 var restWalk = null;
 var tolerance = 0.00005;
 
-
 // itinerary/stream variables
-var itinerary = null;
-var itineraryLocs = [];
-var locIndex = 0;
 var emptyText = "search or add an idea, or click on one below"; // "search or add an activity or thought";
 var userStream = []; //user comments, whichever type
 var sysStream = []; //system todo
-var newStream = [];
-
 
 // save variables
 var unsavedChanges = false;
 var sessionStart = null;
-var timeoutin = 20;
 
 // auto complete
 var searchAutocomplete = null;
@@ -62,7 +55,6 @@ var lastSearch = null;
 var lasteditSearch = null;
 
 // task variables
-
 // Test task variables.
 var tid = "72f2a275c14c3af09e6c2f2b73f03241";
 //var uid = "57187fd22e931d8b2145d920967e559d";
@@ -137,6 +129,7 @@ $(document).ready(function (jQuery) {
     if (inProgress) {
         loadIntermediateState();
     }
+
     initializeCalendar();
 	
     if (inProgress) {
@@ -1754,7 +1747,6 @@ function saveAddNote() {
     // add it to local stream
     userStream.unshift(si);
     searchAutocomplete.autocomplete("option", "source", userStream);
-    newStream.unshift(si);
 
     var item = createStreamItem(si);
     $('#userStreamBody').prepend(item);
@@ -1810,7 +1802,6 @@ function saveEditActivity(oldsi) {
     // add it to local stream
     userStream.unshift(si);
     searchAutocomplete.autocomplete("option", "source", userStream);
-    newStream.unshift(si);
 
     // 3. what about itinerary?
     // 3a... in itinerary list, get rid of old and insert new
@@ -1898,11 +1889,9 @@ function saveEditNote(oldsi) {
         return;
     }
 
-
     // add it to local stream
     userStream.unshift(si);
     searchAutocomplete.autocomplete("option", "source", userStream);
-    newStream.unshift(si);
 
     var item = createStreamItem(si);
     $('#userStreamBody').prepend(item);
@@ -1965,7 +1954,6 @@ function saveAddActivity(streamonly) {
     // add it to local stream
     userStream.unshift(si);
     searchAutocomplete.autocomplete("option", "source", userStream);
-    newStream.unshift(si);
 
     var item = createStreamItem(si);
     $('#userStreamBody').prepend(item);
@@ -1976,7 +1964,6 @@ function saveAddActivity(streamonly) {
         // also add to itinerary
         addActivityToItinerary(si);
     }
-
 }
 
 function waypointPin(pin, ll, pos, duration) {
@@ -1987,8 +1974,6 @@ function waypointPin(pin, ll, pos, duration) {
 }
 
 function updatePinNumber(pin, pos) {
-    // var str = "<table width='25px' height='26px'><tr><td style='background: url(" +  waypointIcon + ") no-repeat; vertical-align: top; text-align: center'><span style='font-weight: bold; color: #fff'>" + pos + "</span></td></tr></table>";
-
     var str = "<table><tr><td><div class='pinpos'>" + pos + "</div></td></tr></table>";
     pin.SetCustomIcon(str);
 }
@@ -2510,9 +2495,7 @@ function updateScheduleConstraints(actualend) {
     var si;
     var freetime = endTime - actualend;
     var allowedEmpty = .05 * (endTime - beginTime);
-    //    alert(actualend);
-    //    alert(freetime);
-    //    alert(endTime);
+
     if (freetime > allowedEmpty) { // have time left
         var problem = "There is still " + readMinutes(freetime) + ' left empty in the itinerary. The trip can go till ' + minToTime(endTime) + '.';
         // but currently ends at ' + minToTime(actualend);
@@ -2686,10 +2669,6 @@ function generatePredicate(constraintDesc) {
     return func;
 }
 
-function displayNeedLink() {
-    jQuery("#needLink").css('display', 'block');
-}
-
 function campuslocation(vlabel, data) {
     this.label = vlabel;
     this.data = data;
@@ -2748,14 +2727,14 @@ function updateSubmit() {
 
 	$('#submitter').submit(function(){
 	    if(unsavedChanges){
-		var answer = confirm("Your itinerary changes have not been saved. Submit without saving?");
-		if (answer){
-		    return true;
-		}else{
-		    return false;
-		}
-	    }
-	});
+    		var answer = confirm("Your itinerary changes have not been saved. Submit without saving?");
+    		if (answer){
+    		    return true;
+    		}else{
+    		    return false;
+    		}
+    	    }
+    	});
     } else {
     	$('input[type=submit]').attr("disabled", "true")
     }
