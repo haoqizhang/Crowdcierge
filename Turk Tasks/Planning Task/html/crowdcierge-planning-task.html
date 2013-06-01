@@ -22,6 +22,7 @@
         <script type='text/javascript' src='../lib/fullcalendar/fullcalendar.js'></script>
         <script type="text/javascript" src="../lib/jquery/jquery.validate.min.js"></script>
         <script type="text/javascript" src="../lib/humane.js"></script>
+        <script type="text/javascript" src="../lib/handlebars.js"></script>
 
         <!-- CROWDCIERGE PLANNING JS FILES -->
         <script type="text/javascript" src="../js/crowdcierge-planning-main.js"></script>
@@ -51,6 +52,7 @@
         <div id="overlay"></div>
         <div class="box" id="box">
             <a id="boxclose"></a>
+            <div id='boxMain'></div>
             <div id='viewMission' style='display:none'>
                  <h1 id='missionheader'>Mission<span style='float:right;'><button onclick="editMission()" id='editmissionbutton' class='addit'>edit mission</button></span></h1>
 
@@ -204,14 +206,17 @@
                 </div>
             </div>
             <div id='editMission' style='display:none'>
-                 <h1 id='editmissionheader'>Edit mission
-      <span style='float:right;'>
-	<button id='saveeditmissionbutton' class='addit'>save changes </button>
-    </span></h1>
-
+                <h1 id='editmissionheader'>Edit mission
+                    <span style='float:right;'>
+	                   <button id='saveeditmissionbutton' class='addit'>save changes </button>
+                </span>
+                </h1>
                 <div>
-                    <div class="row"><span class="label">What you are looking for:</span>
-	<span class="formw"><textarea id='editmissiondescription' type='text' style='width:100%' rows='8'></textarea></span>
+                    <div class="row">
+                        <span class="label">What you are looking for:</span>
+	                   <span class="formw">
+                            <textarea id='editmissiondescription' type='text' style='width:100%' rows='8'></textarea>
+                        </span>
                         <br/>
                     </div>
                     <div class="row" id='tabcontainer'>
@@ -241,42 +246,8 @@
                 </div>
                 <div class="spacer"></div>
             </div>
-            <div id='editStart' style='display:none'>
-                 <h1 id='editstartheader'>Edit starting time and location<span style='float:right;'><button id='saveeditstartbutton' class='addit'>save changes</button></span></h1>
-
-                <div>
-                    <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='editEndsNearby()' id='editstartloc' type='text' maxlength='60' size='30'/></span>
-                    </div>
-                    <div class="row"><span class="label">Start time:</span><span class="formw"><select id='editstarttime'></select></span>
-                    </div>
-                </div>
-                <div class="spacer"></div>
-                <div style='color:black'>Drag the location pin
-                    <img style='vertical-align:text-bottom' src='../img/pin-end.png'
-                    />to its correct location. Suggestions (when available) are shown as
-                    <img
-                    style='vertical-align:text-bottom' src='../img/pin2.gif' />.</div>
-                <div style='height:10px'>&nbsp;</div>
-            </div>
-            <div id='editEnd' style='display:none'>
-                 <h1 id='editendheader'>Edit ending time and location<span style='float:right;'><button id='saveeditendbutton' class='addit'>save changes</button></span></h1>
-
-                <div>
-                    <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='editEndsNearby()' id='editendloc' type='text' maxlength='60' size='30'/></span>
-                    </div>
-                    <div class="row"><span class="label">End time:</span><span class="formw"><select id='editendtime'></select></span>
-                    </div>
-                </div>
-                <div class="spacer"></div>
-                <div style='color:black'>Drag the location pin
-                    <img style='vertical-align:text-bottom' src='../img/pin-end.png'
-                    />to its correct location. Suggestions (when available) are shown as
-                    <img
-                    style='vertical-align:text-bottom' src='../img/pin2.gif' />.</div>
-                <div style='height:10px'>&nbsp;</div>
-            </div>
             <div id='editActivity' style='display:none'>
-                 <h1 id='editactheader'>Edit activity<span style='float:right;'><button id='saveeditbutton' class='addit'>save changes</button></span></h1>
+                 <h1 id='editactheader'>Edit spsps<span style='float:right;'><button id='saveeditbutton' class='addit'>save changes</button></span></h1>
 
                 <div style="float:left; width:40%">
                     <div class="row"><span class="label">Activity: </span><span class="formw"><input id='editacttitle' type='text' maxlength='60' size='30'/></span>
@@ -325,7 +296,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div id="left1">
             <div class='innerstream'>
                 <div id='braintitle' class='sectiontitle'>

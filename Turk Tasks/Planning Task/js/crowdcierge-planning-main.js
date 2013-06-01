@@ -81,33 +81,7 @@ var isTask = false;
 $(document).ready(function (jQuery) {
     sessionStart = (new Date()).getTime();
 
-    readyAdd();
-
-    jQuery("#availableResourcesSpace").hide();
-
-    jQuery("#itinerary").sortable({
-        //items: "tr:not(.ends)", 
-        scroll: true,
-        start: function (e, ui) {
-            $('#' + ui.item.attr('id')).unbind('click');
-        },
-        stop: function (e, ui) {
-            setTimeout(function () {
-                $('#' + ui.item.attr('id')).click(function () {
-                    //			alert("calling from sortable stop");
-                    viewActivity(getItem(ui.item.attr('id')));
-                });
-            }, 300);
-        },
-        update: function (event, ui) {
-            itinerary = $("#itinerary").sortable('toArray');
-            //	     enableItSave();
-            saveItinerary();
-            updateItineraryDisplay();
-        },
-        //helper: fixHelper});
-    });
-    jQuery("#sortable").disableSelection();
+    readyBoxClose();
 
     readUrlParameters(); // get userId and taskId
     loadTaskState(); // Load where we are current at with task
@@ -117,7 +91,8 @@ $(document).ready(function (jQuery) {
 
     loadStream(); // load all the stream info
     loadStateIntoInterface(); // now load it all into interface.
-    disableItSave();
+
+    unsavedChanges = false;
 
     GetNewActMap();
     readySearchBox();
@@ -127,15 +102,9 @@ $(document).ready(function (jQuery) {
         if (map != null) {
             map.Resize();
         }
-        if (newactmap != null) {
-            //    newactmap.Resize();
-        }
         delay(function () {
             if (map != null) {
                 map.SetCenter(map.GetCenter());
-            }
-            if (newactmap != null) {
-                //		newactmap.SetCenter(newactmap.GetCenter());
             }
         }, 1000);
     });
@@ -209,27 +178,26 @@ function showExplanationBox() {
     }
 }
 
+
+
 // Called first in document ready to set up popup box
-function readyAdd() {
+function readyBoxClose() {
     $('#boxclose').click(function () {
         closeAdd();
     });
-
-    $('#box').css('left', '15%');
-    $('#box').css('right', '15%');
 }
 
 // Hides popup box and everything inside
 function closeAdd() {
+    newactpinMoved = false;
     $('#searchBox').val(emptyText);
     $('#searchBox').css('color', 'gray');
-    newactpinMoved = false;
     $('#box').css('top', '-700px');
-    $('#overlay').css('display', 'none');
-    $('#viewMission').css('display', 'none');
-    $('#editMission').css('display', 'none');
-    $('#viewHelp').css('display', 'none');
-    $('#signup').css('display', 'none');
+    $('#overlay').hide();
+    $('#viewMission').hide();
+    $('#editMission').hide();
+    $('#viewHelp').hide()
+    $('#signup').hide()
     $('#addActivity').hide();
     $('#addNote').hide();
     $('#viewNote').hide();
@@ -246,6 +214,14 @@ function closeAdd() {
 	shiftEventTimes();
 	colorHeaders();
 	updateCalendarPins();
+}
+
+function showBox() {
+    $('#overlay').fadeIn('fast', function () {
+        $('#box').animate({
+            'top': '20px'
+        }, 500);
+    });
 }
 
 // Called second in document ready to get user id and task id
@@ -355,7 +331,7 @@ function configureReplanTaskUi() {
 	$('input[type=submit]').removeAttr("disabled");
 }
 
-// Async ajax call. Loads the task state into the code based on task id
+// Sync ajax call. Loads the task state into the code based on task id
 // Loads requester data as well
 function loadTaskState() {
     jQuery.ajax({
@@ -394,12 +370,8 @@ function loadHostData(data) {
     var creator = data.creator;
     creatorName = data.creator;
 
-
-
-    //    if(data.transit == 1){
-    // can use transit
     transit = true;
-    //  }
+
     $("#eventName").html(data.name.replace(/\n/g, "<br/>"));
     $("#description").html(data.description.replace(/\n+$/, '').replace(/\n/g, "<br/>"));
     $('#missiontitle').html($('#eventName').text());
@@ -418,8 +390,6 @@ function loadHostData(data) {
 }
 
 function readySearchBox() {
-
-
     $('#searchBox').blur(function () {
         if ($(this).val() == '') {
             $(this).val(emptyText);
@@ -457,9 +427,9 @@ function GetNewActMap() {
     newactmap.HideScalebar();
 
     mapOptions.UseEnhancedRoadStyle = true;
-    //newactmap.SetCredentials("AmoK7LJck9Ce_JO_n_NAiDlRv88YZROwdvPzWdLi57iP3XQeGon28HJVdnHsUSkp");
     newactmap.LoadMap(mapCenter, 10, 'r', false, VEMapMode.Mode2D, true, 0, mapOptions);
     newactmap.SetZoomLevel(defaultZoom);
+
     // Layer for find
     actfindLayer = new VEShapeLayer();
     actfindLayer.SetTitle("findLayer");
@@ -471,8 +441,6 @@ function GetNewActMap() {
 
     viewactPin = AddPushpin(newactmap, null, '', '', false, "../img/pin2.gif");
     viewactPin.Hide();
-
-    // try changing css.
 }
 
 function OnTop(name) {
@@ -588,39 +556,27 @@ function composeRoute() {
         if (walkTime == null) {
             driveOnly = true;
         }
-        //	alert(walkTime);
-        //	alert(driveTime);
+
         if (!driveOnly && (walkOnly || driveTime > walkTime || walkTime < 15 * 60)) {
             mode.push('walk');
             legTimes.push(walkTime);
             routeline = restWalk[i].resourceSets[0].resources[0].routePath.line;
-            // alert("walking part " + i);
         } else {
             mode.push('drive');
             legTimes.push(driveTime);
             routeline = restDrive[i].resourceSets[0].resources[0].routePath.line;
-            //  alert("driving part " + i);
         }
 
         var routepoints = new Array();
         for (var j = 0; j < routeline.coordinates.length; j++) {
             routepoints[j] = new VELatLong(routeline.coordinates[j][0], routeline.coordinates[j][1]);
         }
+
         // Draw the route on the map
         var shape = new VEShape(VEShapeType.Polyline, routepoints);
 
-        //	shape.SetLineColor(new VEColor(3, 209, 92, 1));
-        //	shape.SetLineColor(new VEColor(40, 209,40, 1));
-        //	if(mode[i] == 'drive'){
         shape.SetLineColor(new VEColor(3, 209, 92, 1));
         shape.SetLineWidth(3);
-
-        //	    shape.SetLineColor(new VEColor(0,200,0,1));
-        //	}else{
-        //	    shape.SetLineColor(new VEColor(200,0,0,1));
-        //	}
-        //	shape.SetLineWidth(2);
-        //	shape.SetLineWidth(2);
 
         shape.HideIcon();
         shape.SetTitle("MyRoute");
@@ -645,7 +601,6 @@ function composeRoute() {
 
     if (actualend > endTime + 10) {
         $('.endtime').last().html("<font color='red'>(" + minToTime(actualend) + ')</font>');
-        //	$('#totaltriptime').html("<font color='red'>" + readMinutes(actualend - beginTime) + '</font>');
     } else {
         $('.endtime').last().html('(' + minToTime(actualend) + ')');
 
@@ -799,10 +754,7 @@ function autoNearby() {
 
     actfindLayer.DeleteAllShapes();
     try {
-        newactmap.Find(txt, null, null, actfindLayer, 0, 10, true, true, true, true, processFind);
-        //	var options = new VESearchOptions;
-        //	options.ShapeLayer = actfindLayer;
-        //	newactmap.Search(txt, processFind, options);
+        newactmap.Find(txt, null, null, actfindLayer, 0, 10, true, true, true, true, processFind);    
     } catch (e) {
         alert(e.message);
     }
@@ -969,7 +921,6 @@ function removeActivityFromItineraryById(id) {
 	// update display
 	updateItineraryDisplay();
 
-	//enableItSave();
 	saveItinerary();
 }
 
@@ -1018,12 +969,6 @@ function initMap() {
         endll = new VELatLong(parseFloat(end.lat) + dx, parseFloat(end.long) + dy);
     }
     endPin = AddPushpin(map, endll, 'End location', end.name, false, "../img/pin-end.png");
-
-
-    // GetMap();
-    // startPin = AddPushpin(map, new VELatLong(start.lat, start.long), 'Start location', start.name, false, "../img/pin-start.png");
-    // endPin = AddPushpin(map, new VELatLong(end.lat, end.long), 'End location', end.name, false, "../img/pin-end.png");    
-
 }
 
 var username = null;
@@ -1160,29 +1105,6 @@ function addActivity() {
         $('#addactduration').append(o);
     }
 
-
-    // location, autocomplete
-    // if(locationAutocomplete == null){
-    // locationAutocomplete = $("input#addactloc").autocomplete({
-    // 	minLength: 2,
-    // 	source: campuslocations,
-    // 	select: function( event, ui ) {
-    // 	    donearby = false;
-    // 	    actfindLayer.DeleteAllShapes();
-    // 	    var loc = ui.item;
-    // 	    $('#addactloc').val(loc.data.name);
-    // 	    var latlong = new VELatLong(loc.data.lat, loc.data.lng);
-    // 	    newactPin.SetPoints([latlong]);
-    // 	    newactPin.SetTitle(loc.data.name);
-    // 	    newactPin.SetCustomIcon('../img/pin-start.png');
-    // 	    newactmap.SetCenter(latlong);
-    // 	    newactpinMoved = true;
-    // 	    return false;
-    // 	}
-
-    // });
-    // }
-
     // categories
     $('#addacttags').empty();
     var s = $(document.createElement('table'));
@@ -1198,17 +1120,10 @@ function addActivity() {
     }
     $('#addacttags').append(s);
 
-
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
-
+    showBox();
 }
 
 function viewNote(si) {
-
     $('#box').css('left', '30%');
     $('#box').css('right', '30%');
 
@@ -1244,11 +1159,8 @@ function viewNote(si) {
     } else {
         $('#editnotebutton').hide();
     }
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
+
+    showBox();
 }
 
 function viewActivity(si) {
@@ -1291,13 +1203,6 @@ function viewActivity(si) {
         $('#addacttoitbutton').unbind();
         $('#addacttoitbutton').click(function () {
 
-            // var answer = confirm("Remove activity from itinerary?")
-            // if (answer){
-            // }
-            // else{
-            // 	return;
-            // }
-
             // remove it
             $('#' + si.id).remove();
 
@@ -1317,7 +1222,6 @@ function viewActivity(si) {
             // update display
             updateItineraryDisplay();
 
-            //enableItSave();
             saveItinerary();
 
             closeAdd();
@@ -1340,7 +1244,6 @@ function viewActivity(si) {
             alert("Please accept the HIT before making any changes!");
         });
 	}
-
 
     // edit button
     $('#editacttoitbutton').disabled = 'false';
@@ -1366,11 +1269,7 @@ function viewActivity(si) {
         $('#viewacttags').append('#' + c);
     }
 
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
+    showBox();
     
     $('#viewActivityMessage').hide();
     $('#addacttoitbutton').show();
@@ -1391,215 +1290,16 @@ function viewActivity(si) {
     }
 }
 
-function setTimeField(name, time, s, e) {
-    for (var i = s; i < e; i++) {
-        for (var j = 0; j <= 45; j += 30) {
-            var o = $(document.createElement('option'));
-            o.val(i * 60 + j);
-            if (time == i * 60 + j) {
-                o.attr('selected', 'selected');
-            }
-            var is = i;
-            var js = j;
-
-            if (j == 0) js = '00';
-            if (i < 12) {
-                o.text(is + ":" + js + " AM");
-            } else if (i >= 24) {
-                o.text(is % 24 + ":" + js + " AM (+1)");
-            } else {
-                if (i == 12) {
-                    o.text(is + ":" + js + " PM");
-                } else {
-                    o.text((is - 12) + ":" + js + " PM");
-                }
-            }
-
-            $(name).append(o);
-        }
-    }
-}
-
-function editStart() {
-    $('#box').css('left', '15%');
-    $('#box').css('right', '15%');
-
-    $('#addActivity').hide();
-    $('#addNote').hide();
-    $('#viewNote').hide();
-    $('#viewActivity').hide();
-    $('#editActivity').hide();
-    $('#editEnd').hide();
-    $('#editStart').show();
-
-    $('#addActivity').show();
-    $('#addmapDiv').show().parentsUntil('#addActivity').andSelf().siblings().hide();
-
-
-    actfindLayer.DeleteAllShapes();
-    // hide theirs, show mine
-    viewactPin.Hide();
-
-    var ll = new VELatLong(start.lat, start.long);
-    newactPin.SetPoints([ll]);
-    newactPin.SetTitle("Start location");
-    newactPin.SetDescription(start.name);
-    newactPin.SetCustomIcon("../img/pin-end.png");
-    newactPin.onenddrag = OnTop('#editstartloc');
-    newactPin.Show();
-    newactmap.SetCenter(ll);
-
-
-    $('#saveeditstartbutton').unbind();
-    $('#saveeditstartbutton').click(function () {
-        if (start.name != $('#editstartloc').val()) {
-            start.name = 'arrive at ' + $('#editstartloc').val();
-            $('.itname').first().html(start.name);
-        }
-
-        start.name = $('#editstartloc').val();
-        start.lat = newactPin.GetPoints()[0].Latitude;
-        start.long = newactPin.GetPoints()[0].Longitude;
-
-
-        if (beginTime != $('#editstarttime').val()) {
-
-            beginTime = parseInt($('#editstarttime').val());
-            $('.endtime').first().html('(' + minToTime(beginTime) + ')');
-        }
-
-        startPin.SetPoints(new VELatLong(0.00005 + start.lat, 0.00005 + start.long));
-        startPin.SetDescription($('#editstartloc').val());
-        saveEditEnds();
-        updateItineraryDisplay();
-    });
-
-    $('#editstartloc').val(start.name);
-
-    setTimeField('#editstarttime', beginTime, 6, 24);
-
-    // location, autocomplete
-    //    if(editlocationAutocomplete == null){
-    // editlocationAutocomplete = $("input#editstartloc").autocomplete({
-    //     minLength: 3,
-    //     source: getLocations(),
-    //     select: function( event, ui ) {
-    // 	donearby = false;
-    // 	actfindLayer.DeleteAllShapes();
-    // 	var loc = ui.item;
-    // 	$('#editstartloc').val(loc.data.location.name);
-    // 	var latlong = new VELatLong(loc.data.location.lat, loc.data.location.long);
-    // 	newactPin.SetPoints([latlong]);
-    // 	newactPin.SetDescription(loc.data.location.name);
-    // 	newactPin.SetCustomIcon('../img/pin-start.png');
-    // 	newactmap.SetCenter(latlong);
-    // 	newactpinMoved = true;
-    // 	return false;
-    //     }
-
-    // });
-    //  }
-
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
-}
-
 function getLocations() {
     // look through all the data we have to get locations of those places
     var namedlocations = userStream.filter(function (x) {
         return x.type == 'activity';
     });
+
     return namedlocations.map(function (x) {
         x.label = x.data.location.name;
         x.value = x.data.location.name;
         return x;
-    });
-}
-
-function editEnd() {
-    $('#box').css('left', '15%');
-    $('#box').css('right', '15%');
-
-    $('#addActivity').hide();
-    $('#addNote').hide();
-    $('#viewNote').hide();
-    $('#viewActivity').hide();
-    $('#editActivity').hide();
-    $('#editStart').hide();
-    $('#editEnd').show();
-    $('#addActivity').show();
-    $('#addmapDiv').show().parentsUntil('#addActivity').andSelf().siblings().hide();
-
-
-    actfindLayer.DeleteAllShapes();
-    // hide theirs, show mine
-    viewactPin.Hide();
-
-    var ll = new VELatLong(end.lat, end.long);
-    newactPin.SetPoints([ll]);
-    newactPin.SetTitle("End location");
-    newactPin.SetDescription(end.name);
-    newactPin.SetCustomIcon("../img/pin-end.png");
-    newactPin.onenddrag = OnTop('#editendloc');
-    newactPin.Show();
-    newactmap.SetCenter(ll);
-
-
-    $('#saveeditendbutton').unbind();
-    $('#saveeditendbutton').click(function () {
-        if (end.name != $('#editendloc').val()) {
-            end.name = 'arrive at ' + $('#editendloc').val();
-            $('.itname').last().html(end.name);
-        }
-        end.name = $('#editendloc').val();
-        end.lat = newactPin.GetPoints()[0].Latitude;
-        end.long = newactPin.GetPoints()[0].Longitude;
-
-
-        if (endTime != $('#editendtime').val()) {
-            endTime = parseInt($('#editendtime').val());
-            $('.endtime').last().html('(' + minToTime(endTime) + ')');
-        }
-
-        endPin.SetPoints(new VELatLong(0.00005 + end.lat, 0.00005 + end.long));
-        endPin.SetDescription($('#editendloc').val());
-        saveEditEnds();
-        updateItineraryDisplay();
-    });
-
-    $('#editendloc').val(end.name);
-
-    setTimeField('#editendtime', endTime, 6, 30);
-
-    // location, autocomplete
-    //    if(editlocationAutocomplete == null){
-    editlocationAutocomplete = $("input#editendloc").autocomplete({
-        minLength: 3,
-        source: getLocations(),
-        select: function (event, ui) {
-            donearby = false;
-            actfindLayer.DeleteAllShapes();
-            var loc = ui.item;
-            $('#editendloc').val(loc.data.location.name);
-            var latlong = new VELatLong(loc.data.location.lat, loc.data.location.long);
-            newactPin.SetPoints([latlong]);
-            newactPin.SetDescription(loc.data.location.name);
-            newactPin.SetCustomIcon('../img/pin-start.png');
-            newactmap.SetCenter(latlong);
-            newactpinMoved = true;
-            return false;
-        }
-
-    });
-    //  }
-
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
     });
 }
 
@@ -1634,7 +1334,7 @@ function editMission() {
             // do tag row
             $('#tagrow').html("");
             for (var i = 0; i < categories.length; i++) {
-                tag = "<span style='white-space:no-wrap;'><a class='tagrowitem' href='#' onclick=" + "\"filterOnTag('" + categories[i] + "')\">" + '#' + printCat(categories[i]) + "</a></span>";
+                tag = "<span style='white-space:no-wrap;'><a class='tagrowitem' href='#' onclick=" + "\"filterOnTag('" + categories[i] + "')\">" + '#' + categories[i] + "</a></span>";
                 $('#tagrow').append(tag); // + '&nbsp;&nbsp;');
             }
             // add one for system todo
@@ -1648,11 +1348,9 @@ function editMission() {
             // add one for notes
             tag = "<a class='tagrowitem' href='#' onclick=" + "\"filterOnTag('" + "note" + "')\">" + '#' + "note" + "</a>";
             $('#tagrow').append(tag);
-
         }
 
         // now let's do the constraints
-
         constraints = collectedConstraints;
         // process constraints
         constraintsFunc = [];
@@ -1684,12 +1382,8 @@ function editMission() {
     for (var i = 0; i < constraints.length; i++) {
         createConstraintField('tour_verbal', 'preferenceSet', '', 100, constraints[i]);
     }
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
 
+    showBox();
 }
 
 function getConstraints(field, name) {
@@ -1803,11 +1497,9 @@ function createField(field, name, val, size) {
     o.val("");
     o.text("");
     $('select[name="categorypreferenceSet"]').append(o);
-
 }
 
 function createConstraintField(field, name, val, size, stuff) {
-
     var container = '#' + field;
     var fname = $(document.createElement('div'));
     fname.attr('class', 'contain' + name);
@@ -1856,7 +1548,6 @@ function showTags() {
     $('#reqtab').removeClass("selected");
     $('#tagcontent').show();
     $('#requirementcontent').hide();
-
 }
 
 function getCategories() {
@@ -1922,7 +1613,6 @@ function editActivity(si) {
     newactPin.Show();
     newactmap.SetCenter(ll);
 
-
     $('#saveeditbutton').unbind();
     $('#saveeditbutton').click(function () {
         saveEditActivity(si);
@@ -1943,7 +1633,6 @@ function editActivity(si) {
         }
 
         $('#editactduration').append(o);
-
     }
 
     // location, autocomplete
@@ -2002,13 +1691,7 @@ function editActivity(si) {
     }
     $('#editacttags').append(s);
 
-
-
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
+    showBox();
 }
 
 function editNote(si) {
@@ -2021,8 +1704,6 @@ function editNote(si) {
     $('#viewActivity').hide();
     $('#viewCheck').hide();
     $('#editNote').show();
-
-
 
     $('#saveeditnotebutton').unbind();
     $('#saveeditnotebutton').click(function () {
@@ -2044,12 +1725,7 @@ function editNote(si) {
         $('#edittags').append(c);
     }
 
-
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
+    showBox();
 }
 
 function addActivityToItinerary(si) {
@@ -2065,8 +1741,6 @@ function addActivityToItinerary(si) {
 
     $('#stime_' + si.id).append(createInItineraryButton(si));
 
-    // enable the save button
-    //    enableItSave();
     saveItinerary();
 
     updateItineraryDisplay();
@@ -2077,7 +1751,6 @@ function addActivityToItinerary(si) {
 }
 
 function addSelect() {
-
     // display mission details;
     $('#addActivity').hide();
     $('#addNote').hide();
@@ -2092,11 +1765,7 @@ function addSelect() {
 
     $('#viewSelect').show();
 
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
+    showBox();
 }
 
 function addNote() {
@@ -2122,11 +1791,7 @@ function addNote() {
         $('#addtags').append(c);
     }
 
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
+    showBox();
 }
 
 function saveAddNote() {
@@ -2161,24 +1826,8 @@ function saveAddNote() {
     closeAdd();
 }
 
-function checkTimeOut() {
-    var timeNow = (new Date()).getTime();
-    var secondsDiff = (timeNow - sessionStart) / 1000;
-    if (secondsDiff > timeoutin * 60) {
-        alert("You have been logged in for over " + timeoutin + " minutes. To avoid conflicts with others' edits, please refresh the page before continuing. We apologize for the inconvenience");
-        return true;
-    } else {
-        return false;
-    }
-}
-
 function saveEditActivity(oldsi) {
     var oldid = oldsi.id;
-    if (checkTimeOut()) {
-        closeAdd();
-        return;
-    }
-
 
     // name
     var nname = $('#editacttitle').val();
@@ -2270,9 +1919,6 @@ function saveEditActivity(oldsi) {
 
         // 3c... in itinerary display, get rid of old and insert new
 
-        var item = createItineraryItem(si.id, true, pos, si.data.name, si.data.location.name, '' + si.data.duration + ' min + travel', true);
-        $(item).insertAfter('#' + oldsi.id);
-        $('#' + oldsi.id).remove();
         updateItineraryDisplay();
     
         updateEditCalendar(oldid, si.id); // for calendar
@@ -2435,17 +2081,14 @@ function submitEntry(si) {
 
         }
     });
-    //    alert('first end');
+
 	madeChange = true;
     updateSubmit();
     return ret;
-
 }
 
 // save stream item on server, and then return its id
 function submitEdit(si, oldid) {
-    //    alert('second start');
-
     oldid = parseInt(oldid.substring(5));
 
 	if(!enableEditting){
@@ -2491,45 +2134,6 @@ function locationInfo(name, lat, long) {
     this.long = long;
 }
 
-function displayTime(ms) {
-
-    //// trying pretty date
-    var d = new Date(ms);
-    //    return humane_date(d);
-
-    var weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    // convert from ms since 1970
-
-    var ampm = 'AM';
-    var hours = d.getHours()
-    var minutes = d.getMinutes()
-    var dayofweek = weekday[d.getDay()];
-
-    if (minutes < 10) {
-        minutes = "0" + minutes
-    }
-    if (hours > 11) {
-        ampm = 'PM';
-    }
-    if (hours > 12) {
-        hours -= 12;
-    }
-    return dayofweek + ",<br/>" + hours + ":" + minutes + " " + ampm;
-}
-
-function printCat(cat) {
-    if (cat == 'sights/attractions') {
-        return 'sights';
-    }
-    if (cat == 'concerts/shows') {
-        return 'concerts and shows';
-    }
-    if (cat == 'food/drink') {
-        return 'food or drink';
-    }
-    return cat;
-}
-
 function createStreamItem(si) {
     var item = $(document.createElement('tr'));
     item.addClass(si.type);
@@ -2546,23 +2150,10 @@ function createStreamItem(si) {
     descntag.append(desc);
 
     descntag.append('<br/>');
-    // for(var i = 0; i < si.data.categories.length; i++){
-    // 	descntag.append("<a class='tagstreamitem' href='#' onclick=" + "\"filterOnTag('" + si.data.categories[i] + "')\">" + '#' + printCat(si.data.categories[i]) + "</a>");
-    // }
 
     for (var i = 0; i < si.data.categories.length; i++) {
         descntag.append("<span style='float:left;white-space:no-wrap;'><a class='tagstreamitem' href='#' onclick=" + "\"filterOnTag('" + si.data.categories[i] + "')\">" + '#' + si.data.categories[i] + "</a></span>");
     }
-    // if(si.type != 'todo'){
-    //	var idea = '';
-    //	if(si.edited != undefined && si.edited[0] != "undefined"){
-
-    //	    idea = "Idea from " + firstName(userKeys[si.edited[0]]) + ".";
-
-    //	}
-    //	descntag.append("<div style='clear:both;font-size:85%'>" + idea + "</div>");
-    //+ displayTime(si.createTime) + 
-    //  }	
 
     msg.append(descntag);
 
@@ -2572,7 +2163,6 @@ function createStreamItem(si) {
     var tt = $(document.createElement('div'));
     tt.addClass('badge_' + si.type);
     time.append(tt);
-    //   time.append(displayTime(si.createTime));
 
     if (include(itinerary, si.id)) {
         time.prepend(createInItineraryButton(si));
@@ -2590,24 +2180,20 @@ function createStreamItem(si) {
 }
 
 function createInItineraryButton(si) {
-
     var sp = $(document.createElement('div'));
     sp.attr('id', 'ss_' + si.id);
     sp.addClass('sspinpos');
-    //    alert(wayhash[si.id]);
+
     if (wayhash[si.id] != undefined) {
         sp.append(wayhash[si.id].pos);
     }
-    //    sp.append("<br/><button style='border:none;color:white;background:gray'>in itinerary</b>");
     return sp;
 }
 
-/// opens up the time for viewing, or additional editting...
+// opens up the time for viewing, or additional editting
 var oldShape = undefined;
 
 function openItem(item) {
-    //    var item = getItem(id);
-
     if (item.type == 'note' || item.type == 'todo') {
         viewNote(item);
     } else if (item.type == 'activity') {
@@ -2625,7 +2211,6 @@ function openItem(item) {
 			$("a[id^=" + oldShape.GetID() + "] div").mouseover();
 		}
     }
-
 }
 
 // getter for locating an item
@@ -2651,7 +2236,6 @@ function getItem(id) {
 }
 
 function displayStreamItem(id, si) {
-
     var item = createStreamItem(si);
     $(id).prepend(item);
 }
@@ -2683,18 +2267,14 @@ function displayItineraryItem(name, id, move, pos, title, loc, time, isnew) {
 }
 
 function createItineraryItem(id, move, pos, title, loc, time, isnew) {
-
     var w1 = '2%';
     var w2 = '60%';
     var w3 = '38%';
-    //    var w4 = '10%';
 
     var item = $(document.createElement('tr'));
 
     var itemPos = $(document.createElement('td'));
     itemPos.css('width', w1);
-    //    itemPos.css('float', 'left');
-    //    itemPos.css('text-align', 'center');
     if (move) {
         itemPos.addClass('itpos');
     } else {
@@ -2712,7 +2292,6 @@ function createItineraryItem(id, move, pos, title, loc, time, isnew) {
             itemPosInner.addClass('endposinner');
         }
     }
-
 
     itemPos.append(itemPosInner);
 
@@ -2733,19 +2312,9 @@ function createItineraryItem(id, move, pos, title, loc, time, isnew) {
         itemTime.addClass('endtime');
     }
 
-    // var itemRemove = $(document.createElement('td'));
-    // itemRemove.css('width', w4);
-    // itemRemove.css('cursor', 'default');
-    // itemRemove.addClass('itremove');
-
-    // if(move){
-    // 	itemRemove.append("<img src='../img/exit.png' onclick='removeItem(this)'/>");
-    // }
-
     item.append(itemPos);
     item.append(itemName);
     item.append(itemTime);
-    //    item.append(itemRemove);
 
     if (!move) {
         $(item).addClass('ends');
@@ -2785,41 +2354,7 @@ function createItineraryItem(id, move, pos, title, loc, time, isnew) {
         });
     }
 
-
-
     return item;
-}
-
-function removeItem(e) {
-    // var answer = confirm("Remove activity from itinerary?")
-    // if (answer){
-    // }
-    // else{
-    // 	return;
-    // }
-
-
-    var tr = $(e).closest('tr');
-    var id = tr.attr('id');
-    // remove it from sortable
-    tr.remove();
-
-    // remove it from itinerary
-    itinerary = $("#itinerary").sortable('toArray');
-
-    // remove shape
-    waylayer.DeleteShape(wayhash[id].pin);
-    // remove it from waypoint hash
-    delete(wayhash[id]);
-
-    // get rid of the itinerary badge
-    $('#ss_' + id).remove();
-
-    // update display
-    updateItineraryDisplay();
-
-    //    enableItSave();
-    saveItinerary();
 }
 
 function loadStream() {
@@ -2891,16 +2426,6 @@ function loadUserData() {
     });
 
 
-}
-
-function showRequestPage() {
-    jQuery('#planningWorkspace').hide();
-    jQuery('#availableResourcesSpace').show();
-}
-
-function goBack() {
-    jQuery('#planningWorkspace').show();
-    jQuery('#availableResourcesSpace').hide();
 }
 
 function activity(name, description, commentary, location, subactivities, duration, categories) {
@@ -2986,15 +2511,9 @@ function updateSysStream() {
 }
 
 function loadStateIntoInterface() {
-
-    jQuery('#stateDisplay').empty();
-    jQuery('#availableResources').empty();
-    jQuery('#sortable tbody').empty();
-
     // load start and end location
     displayItineraryItem('#itineraryStart', 'admin_start', false, 'start', 'arrive at ' + start.name, start, minToTime(beginTime), false);
     displayItineraryItem('#itineraryEnd', 'admin_end', false, 'end', 'arrive at ' + end.name, end, minToTime(beginTime), false);
-
 
     // set up itinerary
     itinerary = state.itinerary;
@@ -3006,7 +2525,6 @@ function loadStateIntoInterface() {
         var si = getItem(itinerary[i]);
         itineraryItems.push(si);
     }
-
 
     /// display the user stream;
     for (var i = 0; i < userStream.length; i++) {
@@ -3021,10 +2539,8 @@ function loadStateIntoInterface() {
 
         // update sortable
         displayItineraryItem('#itinerary', si.id, true, 1, si.data.name, si.data.location.name, '' + si.data.duration + ' min + travel', false);
-
-        // update stream to say it's in itinerary
-        //	$('#stime_' + si.id).append(createInItineraryButton(si));
     }
+
     updateItineraryDisplay();
 
     ///////// TAGS////////////
@@ -3032,7 +2548,7 @@ function loadStateIntoInterface() {
 
     // do tag row
     for (var i = 0; i < categories.length; i++) {
-        tag = "<span style='white-space:no-wrap;'><a class='tagrowitem' href='#' onclick=" + "\"filterOnTag('" + categories[i] + "')\">" + '#' + printCat(categories[i]) + "</a></span>";
+        tag = "<span style='white-space:no-wrap;'><a class='tagrowitem' href='#' onclick=" + "\"filterOnTag('" + categories[i] + "')\">" + '#' + categories[i] + "</a></span>";
         $('#tagrow').append(tag); // + '&nbsp;&nbsp;');
     }
     // add one for system todo
@@ -3046,7 +2562,6 @@ function loadStateIntoInterface() {
     // add one for notes
     tag = "<a class='tagrowitem' href='#' onclick=" + "\"filterOnTag('" + "note" + "')\">" + '#' + "note" + "</a>";
     $('#tagrow').append(tag);
-
 }
 
 function filterOnTag(tag) {
@@ -3090,41 +2605,7 @@ function unfilterOnTag() {
     $('#showall').hide();
 }
 
-function saveEditEnds() {
-
-    var ret = true;
-    jQuery.ajax({
-        type: "POST",
-        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitSubjectTourEnds.php",
-        async: false,
-        data: ({
-            userId: uid,
-            start: JSON.stringify(start),
-            beginTime: beginTime,
-            end: JSON.stringify(end),
-            endTime: endTime,
-            taskId: tid,
-            startState: stateId,
-            type: "tour"
-        }),
-        success: function (msg) {
-            if (msg == "") {
-                // cannot save it
-                alert("It appears that someone else has recently made a change that conflicts with the changes you are trying to save. Please refresh the page before continuing. We apologize for the inconvenience");
-                ret = false;
-                return;
-            } else {
-                disableItSave();
-            }
-        }
-    });
-
-    closeAdd();
-    return ret;
-}
-
 function saveEditMission() {
-
     var ret = true;
     jQuery.ajax({
         type: "POST",
@@ -3145,7 +2626,7 @@ function saveEditMission() {
                 ret = false;
                 return;
             } else {
-                disableItSave();
+                unsavedChanges = false;
             }
         }
     });
@@ -3160,8 +2641,6 @@ function saveItinerary() {
 		return;
     }
 
-    //    state.admin.constraints[1].value = 1;
-    // in backend, check to make sure itinerary is legal and consistent
     state.itinerary = itinerary;
 
     var ret = true;
@@ -3187,87 +2666,11 @@ function saveItinerary() {
             } else {
 				madeChange = true;
 				updateSubmit();
-                disableItSave();
+                unsavedChanges = false;
             }
         }
     });
     return ret;
-}
-
-function printItinerary() {
-    var str = "";
-    var itineraryItems = [];
-    for (var i = 0; i < itinerary.length; i++) {
-        var si = getItem(itinerary[i]);
-        itineraryItems.push(si);
-    }
-
-    for (var i = 0; i < itineraryItems.length; i++) {
-        str += "<div>" + (i + 1) + ". " + itineraryItems[i].data.name + "<div/><div style='margin-left:20px'>Place: " + itineraryItems[i].data.location.name + "</div><div style='margin-left:20px'>" + itineraryItems[i].data.description + "</div>"
-    }
-    return str;
-}
-
-function saveSnapshot() {
-
-    //    state.admin.constraints[1].value = 1;
-    // in backend, check to make sure itinerary is legal and consistent
-    var ret = true;
-
-    jQuery.ajax({
-        type: "POST",
-        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourSnapshot.php",
-        async: false,
-        data: ({
-            userId: uid,
-            answer: JSON.stringify(state),
-            taskId: tid,
-            itinerary: printItinerary(),
-            requestername: user.name,
-            requesteremail: user.email,
-            startState: stateId,
-            type: "turktour"
-        }),
-        success: function (msg) {
-
-            if (msg == "") {
-
-                // cannot save it
-                alert("It appears that someone else has recently made a change to the itinerary that you are trying to take a snapshot of. Please refresh the page before continuing. We apologize for the inconvenience");
-                ret = false;
-                return;
-            } else {
-                alert("We have saved a snapshot of the current itinerary, and sent you a copy via email.");
-                //		alert(JSON.stringify(user));
-                disableItSave();
-            }
-        }
-    });
-    return ret;
-}
-
-function disableItSave() {
-    unsavedChanges = false;
-}
-
-function enableItSave() {
-    unsavedChanges = true;
-}
-
-function shortName(sn) {
-    if (sn == username) {
-        return "you";
-    }
-    sn = sn;
-    sn = sn.split(' ');
-    return sn[0]; // + " " + sn[sn.length-1][0] + ".";
-}
-
-function firstName(sn) {
-
-    sn = sn;
-    sn = sn.split(' ');
-    return sn[0]; // + " " + sn[sn.length-1][0] + ".";
 }
 
 function updateScheduleConstraints(actualend) {
@@ -3364,12 +2767,7 @@ function viewHelp() {
     $('#box').css('left', '15%');
     $('#box').css('right', '15%');
 
-
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
+    showBox();
 }
 
 function viewMission() {
@@ -3384,92 +2782,9 @@ function viewMission() {
     $('#box').css('left', '30%');
     $('#box').css('right', '30%');
 
-
-
     $('#viewMission').show();
 
-
-
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
-
-}
-
-function sendLink() {
-    var signupname = rtrim(jQuery('#signupName').val());
-    var signupemail = rtrim(jQuery('#signupEmail').val());
-
-    jQuery.ajax({
-        type: "POST",
-        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/sendSubjectFriendLink.php",
-        async: false,
-        data: ({
-            name: signupname,
-            email: signupemail,
-            requestername: creatorName,
-            location: eventName.substring(9),
-            taskId: tid,
-            type: "tour"
-        }),
-        success: function (obj) {
-            uid = obj;
-            //	    alert(obj);
-        }
-    });
-
-    return;
-
-}
-
-function signmeup() {
-    if (rtrim(jQuery('#signupName').val()) == "") {
-        alert("Please enter your name.");
-        return;
-    }
-    // check if there is a name and an email
-    var filter = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    if (filter.test(rtrim(jQuery('#signupEmail').val()))) {
-        // send email to person saying they can come back to help...
-        // should have loaded the requester's name by now
-        sendLink();
-        // now that we got an id ourselves, just load users
-        loadUserData();
-        $('#boxclose').show();
-        closeAdd();
-    } else {
-        alert("Please enter a valid email address.");
-    }
-    return;
-    // store than userid and/or names for the current session
-
-    // see how names are handled in outings and implement something similar
-    // check to make sure edits on name are handled ok.
-}
-
-function showSignup() {
-
-    $('#boxclose').hide();
-    $('#addActivity').hide();
-    $('#addNote').hide();
-    $('#viewNote').hide();
-    $('#viewHelp').hide();
-    $('#viewActivity').hide();
-    $('#viewMission').hide();
-    $('#signup').show();
-
-    $('#box').css('left', '15%');
-    $('#box').css('right', '15%');
-
-    $('#overlay').fadeIn('fast', function () {
-        $('#box').animate({
-            'top': '20px'
-        }, 500);
-    });
-
+    showBox();
 }
 
 function include(arr, obj) {
@@ -3547,17 +2862,9 @@ function campuslocation(vlabel, data) {
     this.data = data;
 }
 
-var fixHelper = function (e, ui) {
-    ui.children().each(function () {
-        $(this).width($(this).width());
-    });
-    return ui;
-};
-
 function updateItineraryDisplay() {
     // update the system generated displays in stream
     updateSysStream();
-
 
     for (var i = 0; i < itinerary.length; i++) {
         if (i + 1 != wayhash[itinerary[i]].pos) {
@@ -3618,9 +2925,7 @@ function updateSubmit() {
 	    }
 	});
     } else {
-	$('input[type=submit]').attr("disabled", "true")
-
-//		$('input[value=Submit]').css("background", "gray");
+    	$('input[type=submit]').attr("disabled", "true")
     }
 }
 
@@ -3683,55 +2988,6 @@ function foreach(a, test) {
         }
     }
     return a
-	}
-
-function setCookie(name, value, days, path, domain, secure) {
-    if (days) {
-	var date = new Date();
-	date.setTime(date.getTime()+(days*24*60*60*1000));
-		var expires = date
-		    }
-    var curCookie = name + "=" + escape(value) +
-	((expires) ? "; expires=" + expires.toGMTString() : "") +
-      ((path) ? "; path=" + path : "") +
-	((domain) ? "; domain=" + domain : "") +
-      ((secure) ? "; secure" : "");
-  document.cookie = curCookie;
-}
-
-function getCookie(name) {
-  var dc = document.cookie;
-  var prefix = name + "=";
-  var begin = dc.indexOf("; " + prefix);
-  if (begin == -1) {
-    begin = dc.indexOf(prefix);
-    if (begin != 0) return null;
-  } else
-    begin += 2;
-  var end = document.cookie.indexOf(";", begin);
-  if (end == -1)
-    end = dc.length;
-  return unescape(dc.substring(begin + prefix.length, end));
-}
-
-function recordVisit(){
-  //  alert(enableEditting);
-    if(enableEditting){
-		jQuery.ajax({
-		type: "POST",
-		url: "https://people.csail.mit.edu/hqz/mobi/turkRecordVisit.php",
-		async: true,
-		data: ({
-			userId : uid,
-			taskId: tid, 
-			assignmentId: assignmentId,
-			type: "turktour"}),
-			success: function(msg){
-	//		alert(msg);
-			 }
-		 });
-		
-    }
 }
 
 // Helpers, of some sort
