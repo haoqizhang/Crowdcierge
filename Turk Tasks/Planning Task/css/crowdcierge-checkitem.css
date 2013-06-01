@@ -1,0 +1,15 @@
+#brainstream tr.check {
+    background: yellow;
+}
+
+.badge_check {
+    background-position:top center;
+    background-repeat:no-repeat;
+    vertical-align: top;
+    text-align: center;
+    font-weight: bold;
+    color: black;
+    width:25px;
+    height:26px;
+    font-size: 2em;
+}

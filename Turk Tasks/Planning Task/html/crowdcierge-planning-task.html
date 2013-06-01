@@ -1,0 +1,444 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
+    <head>
+        <title>Crowdcierge: Planning Page</title>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+
+        <!-- LIBRARY CSS FILES -->
+        <link rel="stylesheet" type="text/css" media="all" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css"/>
+        <link rel='stylesheet' type='text/css' href='../lib/fullcalendar/fullcalendar.css' />
+        <link rel='stylesheet' type='text/css' href='../lib/fullcalendar/fullcalendar.print.css' media='print' />
+
+        <!-- CROWDCIERGE CSS FILES -->
+        <link rel='stylesheet' type='text/css' href='../css/crowdcierge-main.css' />
+        <link rel='stylesheet' type='text/css' href='../css/crowdcierge-checkitem.css' />
+        <link rel='stylesheet' type='text/css' href='../css/crowdcierge-calendar.css' />
+
+        <!-- LIBRARY JS FILES -->
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+        <script type='text/javascript' src='../lib/fullcalendar/fullcalendar.js'></script>
+        <script type="text/javascript" src="../lib/jquery/jquery.validate.min.js"></script>
+        <script type="text/javascript" src="../lib/humane.js"></script>
+
+        <!-- CROWDCIERGE PLANNING JS FILES -->
+        <script type="text/javascript" src="../js/crowdcierge-planning-main.js"></script>
+        <script type="text/javascript" src="../js/crowdcierge-checkitem.js"></script>
+        <script type="text/javascript" src="../js/crowdcierge-planning-calendar.js"></script>
+        <script type="text/javascript" src="../js/crowdcierge-planning-calendar-traveltime.js"></script>
+
+        <!-- CROWDCIERGE REPLANNING JS FILES -->
+        <script type="text/javascript" src="../js/crowdcierge-replanning-templates.js"></script>
+        <script type="text/javascript" src="../js/crowdcierge-replanning-init.js"></script>
+
+        <!-- DO NOT MOVE THE PLACEMENT OF THIS LINE RELATIVE TO OTHER SCRIPT INCLUSIONS -->
+        <script type="text/javascript" src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>
+    </head>
+    
+    <body>
+        <div class="header" style ='white-space:nowrap;vertical-align:baseline;padding-top:10px;padding-left:10px;background:#FFAB07;color:white;'>
+            <div> <span class='headname' id='eventName'></span>
+                <span style='margin-left:10px'>
+                  <button class='missionbuttons'  onclick="viewMission()">reveal mission details</button>
+                </span>
+                <span style='margin-left:10px'>
+                    <!--      <button class='missionbuttons'  onclick="viewHelp()">what you can do to help</button>-->
+                    <button class='missionbuttons'  onclick="viewHelp()" id="helpButton" >What you can do</button>
+                </span>
+                <span style='margin-left:10px'>
+                    <a target='_blank' href="http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/Mobi/Mobi_Turk_Tutorial.html">confused? check out the tutorial</a>
+                </span>
+            </div>
+        </div>
+        <!--<div class="header" style='padding-left:12px;padding-bottom:12px;background:#fbf7d4'
+        id='tagrow'></div>-->
+        <!-- The overlay and the box -->
+        <div class="overlay" id="overlay" style="display:none;"></div>
+        <div class="box" id="box">
+            <a class="boxclose" id="boxclose"></a>
+            <div id='signup' style='display:none'>
+                <h1 id='signupheader'>Welcome to Mobi!<span style='float:right;'></span></h1>
+
+                <div>
+                    <br/>Thanks for coming to help me plan a day of my trip<span id="thanksloc"></span>!
+                    Let me know who you are so I can thank you later (and see which suggestions
+                    are from you):
+                    <br/>
+                    <br/>
+                    <div class="row"><span class="label">Your name:</span><span class="formw"><input id='signupName' type='text' size='40'/></span>
+                    </div>
+                    <div class="row"><span class="label">Your email:</span><span class="formw"><input id='signupEmail' type='text' size='40'/></span>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div class="spacer"></div>Note: I am participating in a Harvard University research study
+                    so the data you enter here may be seen by researchers. Just thought you
+                    should know that.
+                    <br/>
+                    <br/>
+                    <div class="row"><span class="label"></span>
+                        <span class="formw">
+                            <button class='signupit' onClick='signmeup()'>Let me help!</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div id='viewMission' style='display:none'>
+                 <h1 id='missionheader'>Mission<span style='float:right;'><button onclick="editMission()" id='editmissionbutton' class='addit'>edit mission</button></span></h1>
+
+                <div>
+                    <br/>
+                    <div id='description'></div>
+                    <br/>
+                    <div>In planning the event, please pay attention to the wishes below:
+                        <br/>	<span id='missionwishes'></span>
+
+                    </div>
+                </div>
+            </div>
+            <div id='viewHelp' style='display:none'>
+                 <h1 id='helpheader'>What you can do</h1>
+
+                <div id='helpinstructions'>Others are helping to plan this trip for you. In the meanwhile, you can:
+                    <ul>
+                        <li><b>Recruit your friends</b>
+                            <br/>The more friends you recruit, and the more of them that know about the
+                            city you are visiting, the better! You can recruit your friends via email,
+                            on Facebook, etc. You should have the link to send them in your email!</li>
+                        <li><b>Edit mission details</b>
+                            <br/>As people give you suggestions and start to put together the itinerary,
+                            it may so happen that you want to make a change to the details you'd filled
+                            in at sign up. You can make changes by clicking the 'reveal mission details'
+                            button at the top and then edit the mission from there. For start and end
+                            locations and times, just click on them in the itinerary to bring up the
+                            edit screen.
+                            <br/>
+                        </li>
+                        <!-- <li><b>Locking down activities</b><br/>See something in the itinerary that you absolutely want to keep there? Click the lock button next to the itinerary item to lock it down! If you change your mind, just unlock it and that will allow the folks planning for you to remove it from the itinerary if they wished to do so.</li>-->
+                        <li><b>Participate yourself!</b>
+                            <br/>If you so wish, you can add ideas to the brainstream and/or itinerary
+                            yourself! It's your itinerary... make whatever edits you wish.
+                            <br/>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id='viewSelect' style='display:none'>
+                 <h1 id='selectheader'>Is your idea...</h1>
+
+                <div style='font-size:120%;padding-top:12px;'>
+                    <button class='addbig' onclick="$('#viewSelect').hide();addActivity();">something to do or see</button>&nbsp;or
+                    <button class='addbig' onclick="$('#viewSelect').hide(); addNote();">a thought about the plan</button>&nbsp;?</div>
+            </div>
+            <div id='viewNote' style='display:none'>
+                <h1 id='viewheader'>Note
+                    <span style='float:right;'>
+                        <button id='editnotebutton' class='addit'>edit note</button>
+                    </span>
+                </h1>
+                <div>
+                    <table id='viewNoteTable'>
+                        <tr>
+                            <td>Title:</td>
+                            <td id='viewtitle'></td>
+                        </tr>
+                        <tr>
+                            <td>Message:</td>
+                            <td id='viewdesc'></td>
+                        </tr>
+                        <tr>
+                            <td>Tags:</td>
+                            <td id='viewtags'></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div id='viewCheck' style='display:none'>
+                <h1 id='viewcheckheader'>Your Task: Fix a Trip Plan
+                    <span style='float:right;'>
+                    </span>
+                </h1>
+                <div>
+                    <table id='viewCheckTable' style="margin-top:10px">
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td id='viewcheckdesc'></td>
+							<td id='viewchecklist'></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style='text-align:center; font-size:2.5em'>
+                                    <button id='gotit' class='addit'>got it</button>
+									<button id='resolvebutton' class='addit resolveSelect'>Submit</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div id='viewActivity' style='display:none'>
+                 <h1 id='viewactheader'>Activity<span style='float:right;'><button id='editacttoitbutton' class='addit'>edit activity</button>&nbsp;<button id='addacttoitbutton' class='addit'>add it to the itinerary</button></span></h1>
+                <div id="viewActivityMessage" style="display:none; margin-left:auto; margin-right:auto; font-size:2em; text-align:center">
+                    The traveler has already done this activity today.
+                </div>
+                <div style="float:left; width:40%">
+                    <table id='viewActivityTable'>
+                        <tr>
+                            <td class='vlabel'>Activity:</td>
+                            <td id='viewacttitle'></td>
+                        </tr>
+                        <tr>
+                            <td class='vlabel'>Location name:</td>
+                            <td id='viewactloc'></td>
+                        </tr>
+                        <tr>
+                            <td class='vlabel'>What to do/see:</td>
+                            <td id='viewactdesc'></td>
+                        </tr>
+                        <tr>
+                            <td class='vlabel'>Takes about:</td>
+                            <td id='viewactduration'></td>
+                        </tr>
+                        <tr>
+                            <td class='vlabel'>Categories:</td>
+                            <td id='viewacttags'></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div id='addNote' style='display:none'>
+                 <h1 id='addheader'>Add a note<span style='float:right;'><button class='addit' onClick='saveAddNote()'>add note to the stream</button></span></h1>
+
+                <div>
+                    <div class="row"><span class="label">Title:</span><span class="formw"><input id='addtitle' type='text' maxlength='60' size='30'/></span>
+                    </div>
+                    <div class="row"><span class="label">Message:</span><span class="formw"><textarea  id='adddesc' type='text' cols='30', rows='6'></textarea></span>
+                    </div>
+                    <div class="row"><span class="label">Tags:</span><span id='addtags' class="formw">
+      </span>
+                    </div>
+                    <div class="spacer"></div>
+                </div>
+            </div>
+            <div id='editNote' style='display:none'>
+                 <h1 id='editheader'>Edit note<span style='float:right;'><button id='saveeditnotebutton' class='addit'>save changes</button></span></h1>
+
+                <div>
+                    <div class="row"><span class="label">Title:</span><span class="formw"><input id='edittitle' type='text' maxlength='60' size='30'/></span>
+                    </div>
+                    <div class="row"><span class="label">Message:</span><span class="formw"><textarea  id='editdesc' type='text' cols='30', rows='6'></textarea></span>
+                    </div>
+                    <div class="row"><span class="label">Tags:</span><span id='edittags' class="formw">
+      </span>
+                    </div>
+                    <div class="spacer"></div>
+                </div>
+            </div>
+            <div id='editMission' style='display:none'>
+                 <h1 id='editmissionheader'>Edit mission
+      <span style='float:right;'>
+	<button id='saveeditmissionbutton' class='addit'>save changes </button>
+    </span></h1>
+
+                <div>
+                    <div class="row"><span class="label">What you are looking for:</span>
+	<span class="formw"><textarea id='editmissiondescription' type='text' style='width:100%' rows='8'></textarea></span>
+                        <br/>
+                    </div>
+                    <div class="row" id='tabcontainer'>
+                        <ul>
+                            <li class="selected" id="tagtab">
+                                <a onclick="showTags()" href="#">Tags</a>
+                            </li>
+                            <li id="reqtab">
+                                <a href="#" onclick="showRequirements()">Requirements</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="content">
+                        <div id="tagcontent">Existing tags: <span id="editmissionexistingtags"></span>
+                            <br/>
+                            <button class="tabactbut" onClick="createField('tour_categories', 'categorySet', '', 30)">add a tag</button>
+                            <br/>
+                            <div id="tour_categories"></div>
+                        </div>
+                        <div id="requirementcontent">
+                            <button class="tabactbut" onClick="createConstraintField('tour_verbal', 'preferenceSet', '', 100, null)">add a requirement</button>
+                            <br/>
+                            <div class="row" id="tour_verbal"></div>
+                            <br/>
+                        </div>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+            </div>
+            <div id='editStart' style='display:none'>
+                 <h1 id='editstartheader'>Edit starting time and location<span style='float:right;'><button id='saveeditstartbutton' class='addit'>save changes</button></span></h1>
+
+                <div>
+                    <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='editEndsNearby()' id='editstartloc' type='text' maxlength='60' size='30'/></span>
+                    </div>
+                    <div class="row"><span class="label">Start time:</span><span class="formw"><select id='editstarttime'></select></span>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+                <div style='color:black'>Drag the location pin
+                    <img style='vertical-align:text-bottom' src='../img/pin-end.png'
+                    />to its correct location. Suggestions (when available) are shown as
+                    <img
+                    style='vertical-align:text-bottom' src='../img/pin2.gif' />.</div>
+                <div style='height:10px'>&nbsp;</div>
+            </div>
+            <div id='editEnd' style='display:none'>
+                 <h1 id='editendheader'>Edit ending time and location<span style='float:right;'><button id='saveeditendbutton' class='addit'>save changes</button></span></h1>
+
+                <div>
+                    <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='editEndsNearby()' id='editendloc' type='text' maxlength='60' size='30'/></span>
+                    </div>
+                    <div class="row"><span class="label">End time:</span><span class="formw"><select id='editendtime'></select></span>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+                <div style='color:black'>Drag the location pin
+                    <img style='vertical-align:text-bottom' src='../img/pin-end.png'
+                    />to its correct location. Suggestions (when available) are shown as
+                    <img
+                    style='vertical-align:text-bottom' src='../img/pin2.gif' />.</div>
+                <div style='height:10px'>&nbsp;</div>
+            </div>
+            <div id='editActivity' style='display:none'>
+                 <h1 id='editactheader'>Edit activity<span style='float:right;'><button id='saveeditbutton' class='addit'>save changes</button></span></h1>
+
+                <div style="float:left; width:40%">
+                    <div class="row"><span class="label">Activity: </span><span class="formw"><input id='editacttitle' type='text' maxlength='60' size='30'/></span>
+                    </div>
+                    <div class="row"><span class="label">Location name: </span><span class="formw"><input onblur='editAutoNearby()' id='editactloc' type='text' maxlength='60' size='30'/></span>
+                    </div>
+                    <div class="row"><span class="label">What to do/see:</span><span class="formw"><textarea id='editactdesc' type='text' style='width:90%' rows='6'></textarea></span>
+                    </div>
+                    <div class="row"><span class="label">Takes about:</span><span class="formw"><select id='editactduration'></select></span>
+                    </div>
+                    <div class="row"><span class="label">Category:</span><span id='editacttags' class="formw">
+      </span>
+                    </div>
+                    <!--<div class="spacer"></div>
+                    <div style='color:black'>Drag the location pin
+                        <img style='vertical-align:text-bottom' src='../img/pin-end.png'
+                        />to its correct location. Suggestions (when available) are shown as
+                        <img
+                        style='vertical-align:text-bottom' src='../img/pin2.gif' />.</div>
+                    <div style='height:10px'>&nbsp;</div>-->
+                </div>
+            </div>
+            <div id='addActivity'>
+                 <h1 id='addactheader'>Add an activity
+      <span id='addcontrols' style='float:right;'><button class='addit' onClick='saveAddActivity(true)'>add it to stream only</button>&nbsp;<button class='addit' onClick='saveAddActivity(false)'>add it to itinerary & stream</button></span></h1>
+
+                <!-- <h1 id='addactheader'>Add an activity<span style='float:right;'><button class='addit' onClick='saveAddActivity(true)'>add it to stream only</button>&nbsp;<button class='addit' onClick='saveAddActivity(false)'>add it to itinerary & stream</button></span></h1> -->
+                <div style="float:left; width:40%">
+                    <div class="row">
+						<span class="label">Activity: </span><span class="formw"><input id='addacttitle' type='text' maxlength='60' size='30'/></span>
+                    </div>
+                    <div class="row">
+						<span class="label">Location name: </span><span class="formw"><input onblur='autoNearby()' id='addactloc' type='text' maxlength='60' size='30'/></span>
+                    </div>
+                    <div class="row">
+						<span class="label">What to do/see:</span><span class="formw"><textarea id='addactdesc' type='text' style='width:90%' rows='6'></textarea></span>
+                    </div>
+                    <div class="row">
+						<span class="label">Takes about:</span><span class="formw"><select id='addactduration'></select></span>
+                    </div>
+                    <div class="row">
+						<span class="label">Category:</span><span id='addacttags' class="formw"></span>
+                    </div>
+                    <div class="spacer">
+					</div>
+				</div>
+				<div id="addmapDiv" style="float:left; width:60%">
+                    <div style='color:black' id="pinDirections" >Drag the location pin
+                        <img style='vertical-align:text-bottom' src='../img/pin-end.png'
+                        />to its correct location. Suggestions (when available) are shown as
+                        <img
+                        style='vertical-align:text-bottom' src='../img/pin2.gif' />.</div>
+                    <div style='height:10px'>&nbsp;</div>
+                    <div id='addmapDivMap' style="position:relative;width:100%;height:300px"></div>
+                </div>
+                <!-- <div style='text-align:center'><button onclick='saveAddActivity(false)'>add activity to itinerary and stream</button><button onclick='saveAddActivity(true)'>add activity to stream only</button><button onclick='closeAdd()'>cancel</button></div>--></div>
+        </div>
+        <div id="left1">
+            <div class='innerstream'>
+                <!-- <table id='braintitletable'> -->
+                <!-- <tr> -->
+                <!-- <td id='braintitle'>Our collective brainstorm</td> -->
+                <!-- <td id='showall'><a href='#' onclick='unfilterOnTag()'>view all</a></td> -->
+                <!-- </tr> -->
+                <!-- </table> -->
+                <div id='braintitle' class='sectiontitle'><span style='color:#0000CE'>Our brainstream</span><span class='sectioninstruction'>&nbsp;&nbsp;(click for details)</span>
+                </div>
+                <div id='showall' style='padding-bottom:10px;display:none'>
+                    <a style='color:#0000CE' href='#' onclick='unfilterOnTag()'>view entire stream</a>
+                </div>
+                <div id='tagrow' style='padding-left:10px;padding-bottom:10px;'></div>
+                <div style='display:inline;clear:both;padding:10px;'></div>
+                <div id='streamsearch'>
+                    <input type="text" id='searchBox' style="color:gray;width:80%" maxlength='60'
+                    value='search or add an idea, or click on one below' />&nbsp;
+                    <button style='width:16%;' id='addbutton' onclick='addSelect()'>Add</button>
+                </div>
+            </div>
+            <table class='streamclass' id="brainstream">
+                <tbody id='checkStreamBody'></tbody>
+                <tbody id='replanStreamBody' style="display:none"></tbody>
+                <tbody id='sysStreamBody'></tbody>
+                <tbody id='userStreamBody'></tbody>
+            </table>
+        </div>
+        <div id="left2">
+            <div class="inner">
+                <!-- Column two start -->
+                <div class='sectiontitle'><span>Map</span><span class='sectioninstruction'>&nbsp;&nbsp;(see the current itinerary)</span>
+                </div>
+                <div style='padding-bottom:4px; visibility:hidden'>Trip time: <span id='totaltriptime'></span>
+                </div>
+                <div id='mapDiv' style="z-index:0;position:absolute;width:96%;height:85%"></div>
+                <!-- <div id='mapDiv' style="z-index:0;position:relative;width:98%;"></div>       -->
+                <div id='stateDisplay'>
+                    <!-- Column two end -->
+                </div>
+            </div>
+        </div>
+        <div id="left3">
+            <div class='inneritinerary'>
+                <!-- <div class="inner"> -->
+                <div class='sectiontitle' style="padding-bottom:6px"><span>Itinerary</span>&nbsp;&nbsp;&nbsp;
+                    <span style='text-align:left'>
+                    <!--<button onclick='saveSnapshot()' id='snapshotbutton'>take a snapshot of the itinerary</button>-->
+                    <button class='addwide' id='saveitbutton' style='font-size:70%'>save itinerary changes!</button>
+                    </span> <br/>
+					<span style="width:20px; height:20px; background-color:rgb(3,209,92); font-size: 70%; color: rgb(0, 0, 206); position:absolute; margin-left:100px; margin-top:3px; visibility:hidden"></span>
+					<span style="margin-top:3px; font-size: 70%; color: rgb(0, 0, 206); position:relative; margin-left: 125px; visibility:hidden"> = travel time </span>
+					</div>
+            </div>
+            <table id="finishedTable" style="display:none">
+                <tbody id='finishedItinerary'></tbody>
+            </table>
+            <div style="overflow:auto; height:85%">
+                <div id="calendar" ></div>
+				<div style="background-color:red; text-align:center; width:300px; margin-left:2%; margin-right:3%; padding-left:12%">End</div>
+            </div>
+            <table id="sortable" style="display:none">
+                <tbody id='itineraryStart'></tbody>
+                <tbody id='itinerary'></tbody>
+                <tbody id='itineraryEnd'></tbody>
+            </table>
+        </div>
+        <div id="footer">
+            <p style='text-align:center'>If you are experiencing problems, please
+                <a href="mailto:hq@eecs.harvard.edu">contact us</a>.</p>
+        </div>
+        
+    </body>
+
+</html>
