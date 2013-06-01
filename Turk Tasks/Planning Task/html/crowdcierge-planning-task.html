@@ -10,13 +10,11 @@
         <link rel='stylesheet' type='text/css' href='../lib/fullcalendar/fullcalendar.print.css' media='print' />
 
         <!-- CROWDCIERGE CSS FILES -->
-        <link rel='stylesheet' type='text/css' href='../css/crowdcierge-main.css' />
-        <link rel='stylesheet' type='text/css' href='../css/crowdcierge-checkitem.css' />
-
         <link rel='stylesheet' type='text/css' href='../less/header.css' />
         <link rel='stylesheet' type='text/css' href='../less/common.css' />
         <link rel='stylesheet' type='text/css' href='../less/box.css' />
         <link rel='stylesheet' type='text/css' href='../less/itinerary.css' />
+        <link rel='stylesheet' type='text/css' href='../less/main.css' />
 
         <!-- LIBRARY JS FILES -->
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
@@ -289,21 +287,14 @@
                     </div>
                     <div class="row"><span class="label">Takes about:</span><span class="formw"><select id='editactduration'></select></span>
                     </div>
-                    <div class="row"><span class="label">Category:</span><span id='editacttags' class="formw">
-      </span>
+                    <div class="row"><span class="label">Category:</span><span id='editacttags' class="formw"></span>
                     </div>
-                    <!--<div class="spacer"></div>
-                    <div style='color:black'>Drag the location pin
-                        <img style='vertical-align:text-bottom' src='../img/pin-end.png'
-                        />to its correct location. Suggestions (when available) are shown as
-                        <img
-                        style='vertical-align:text-bottom' src='../img/pin2.gif' />.</div>
-                    <div style='height:10px'>&nbsp;</div>-->
                 </div>
             </div>
             <div id='addActivity'>
                  <h1 id='addactheader'>Add an activity
-      <span id='addcontrols' style='float:right;'><button class='addit' onClick='saveAddActivity(true)'>add it to stream only</button>&nbsp;<button class='addit' onClick='saveAddActivity(false)'>add it to itinerary & stream</button></span></h1>
+                     <span id='addcontrols' style='float:right;'><button class='addit' onClick='saveAddActivity(true)'>add it to stream only</button>&nbsp;<button class='addit' onClick='saveAddActivity(false)'>add it to itinerary & stream</button></span>
+                </h1>
                 <div style="float:left; width:40%">
                     <div class="row">
 						<span class="label">Activity: </span><span class="formw"><input id='addacttitle' type='text' maxlength='60' size='30'/></span>
@@ -334,6 +325,7 @@
                 </div>
             </div>
         </div>
+        
         <div id="left1">
             <div class='innerstream'>
                 <div id='braintitle' class='sectiontitle'>
