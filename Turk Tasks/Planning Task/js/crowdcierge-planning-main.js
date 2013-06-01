@@ -84,6 +84,8 @@ $(document).ready(function (jQuery) {
     readyBoxClose();
 
     readUrlParameters(); // get userId and taskId
+    jQuery('#mobi-content').css('display', 'inline');
+
     loadTaskState(); // Load where we are current at with task
     
     loadUserData();
@@ -153,19 +155,9 @@ $(document).ready(function (jQuery) {
 		}
 	});
 });
-                        
-///////////////////////////////////////////
-// EXPLANATION BOX CODE
-///////////////////////////////////////////
-
-var showExplanation = true;
 
 // Show either the mission or the check item for the replanning task
 function showExplanationBox() {
-    if (!showExplanation) {
-        return;
-    }
-    
     if (inProgress) {
         viewCheck(requestCheckItem);
         $("#gotit").show();
@@ -177,8 +169,6 @@ function showExplanationBox() {
         viewMission();
     }
 }
-
-
 
 // Called first in document ready to set up popup box
 function readyBoxClose() {
@@ -224,8 +214,6 @@ function showBox() {
     });
 }
 
-// Called second in document ready to get user id and task id
-// Shows Mobi interface
 function readUrlParameters() {
     var params = getURLParams();
 	
@@ -256,16 +244,6 @@ function readUrlParameters() {
 			$('form').attr('action', params.turkSubmitTo + '/mturk/externalSubmit')
 		}
 
-		// randomly permute the locations of all elements of class "random"
-		var r = $('.random')
-		var divs = r.after('<div/>').next().get()
-		var mapping = divs.map(function (e, i) {return i})
-		shuffle(mapping)
-		foreach(mapping, function (src, dest) {
-			$(divs[dest]).after(r[src]).remove()
-		})
-		$('#randomOrder').val(mapping.join(','))
-			
 		updateSubmit();
 
 		if(params.tid){
@@ -291,10 +269,7 @@ function readUrlParameters() {
 			uid = params.uid;
 		}
 	}
-
-    jQuery('#mobi-content').css('display', 'inline');
     return;
-   
 }
 
 // Ready the UI for a crowd task instead of an admin
@@ -703,10 +678,8 @@ function GetMap() {
     mapOptions.DashboardColor = 'black';
     mapOptions.UseEnhancedRoadStyle = true;
 
-    //      map.SetCredentials("AmoK7LJck9Ce_JO_n_NAiDlRv88YZROwdvPzWdLi57iP3XQeGon28HJVdnHsUSkp");
     map.LoadMap(mapCenter, defaultZoom, 'r', false, VEMapMode.Mode2D, true, 0, mapOptions);
     map.HideScalebar();
-
 
     // layer for route
     slRoute = new VEShapeLayer();
@@ -722,7 +695,6 @@ function GetMap() {
     waylayer = new VEShapeLayer();
     waylayer.SetTitle("waylayer");
     map.AddShapeLayer(waylayer);
-
 }
 
 function AddPushpin(m, ll, title, desc, canDrag, custom) {
@@ -761,7 +733,6 @@ function autoNearby() {
 }
 
 function editEndsNearby() {
-
     if (!donearby) {
         donearby = true;
         return;
@@ -779,9 +750,6 @@ function editEndsNearby() {
     actfindLayer.DeleteAllShapes();
     try {
         newactmap.Find(txt, null, null, actfindLayer, 0, 10, true, true, true, true, processFind);
-        //	var options = new VESearchOptions;
-        //	options.ShapeLayer = actfindLayer;
-        //	newactmap.Search(txt, processFind, options);
     } catch (e) {
         alert("h3");
         alert(e.message);
@@ -804,9 +772,6 @@ function editAutoNearby() {
     actfindLayer.DeleteAllShapes();
     try {
         newactmap.Find(txt, null, null, actfindLayer, 0, 10, true, true, true, true, processFind);
-        //	var options = new VESearchOptions;
-        //	options.ShapeLayer = actfindLayer;
-        //	newactmap.Search(txt, processFind, options);
     } catch (e) {
         alert(e.message);
     }
@@ -902,11 +867,12 @@ function removeActivityFromItineraryById(id) {
 		alert("Please accept the HIT before making any changes!");
 		return;
 	}
-	// remove it
-	$('#' + id).remove();
 
-	// remove it from itinerary
-	itinerary = $("#itinerary").sortable('toArray');
+    var index = itinerary.indexOf(id);
+
+    if(index!==-1) {
+        itinerary.splice(index, 1);
+    }
 
 	// remove shape
 	waylayer.DeleteShape(wayhash[id].pin);
@@ -929,17 +895,13 @@ function viewActivityById(id) {
 }
 
 function processFind(a, b, c, d, e) {
-
     if (b != null && b.length >= 1) {
         var shape;
         var numResults = a.GetShapeCount();
-        //alert("num shapes: " + numResults);
         for (var i = 0; i < a.GetShapeCount(); i++) {
             shape = a.GetShapeByIndex(i);
-            //    alert(shape.GetTitle());
-            shape.SetCustomIcon("../../img/wp.gif");
+            shape.SetCustomIcon("../img/wp.gif");
             shape.SetDescription(shape.GetDescription() + "<br/><br/><a href='#' onclick='moveact(" + i + ")' style='color:#0000CE'>Move location pin here</a>");
-            // shape.SetZIndex(1000, 1000);
         }
     }
 }
@@ -1058,7 +1020,6 @@ function readMinutes(time) {
 
 function addActivity() {
     // activity map
-
     $('#box').css('left', '15%');
     $('#box').css('right', '15%');
 
@@ -1202,28 +1163,7 @@ function viewActivity(si) {
         $('#addacttoitbutton').css('background', '#ffab07');
         $('#addacttoitbutton').unbind();
         $('#addacttoitbutton').click(function () {
-
-            // remove it
-            $('#' + si.id).remove();
-
-            // remove it from itinerary
-            itinerary = $("#itinerary").sortable('toArray');
-
-            // remove shape
-            waylayer.DeleteShape(wayhash[si.id].pin);
-            // remove it from waypoint hash
-            delete(wayhash[si.id]);
-            
-            removeItemFromId(si.id); // for calendar
-
-            // get rid of the itinerary badge
-            $('#ss_' + si.id).remove();
-
-            // update display
-            updateItineraryDisplay();
-
-            saveItinerary();
-
+            removeActivityFromItineraryById(si.id);
             closeAdd();
         });
     } else {
@@ -1731,14 +1671,11 @@ function editNote(si) {
 function addActivityToItinerary(si) {
 	// update itinerary ordering in actual data
     itinerary.unshift(si.id);
+
     // add the waypoint
     AddWaypointPin(si);
-    
-    // update sortable
-    displayItineraryItem('#itinerary', si.id, true, 1, si.data.name, si.data.location.name, '' + si.data.duration + ' min + travel', true);
 
     // update stream to say it's in itinerary
-
     $('#stime_' + si.id).append(createInItineraryButton(si));
 
     saveItinerary();
@@ -2261,102 +2198,6 @@ function takeTill(str, maxchars) {
     return rtrim(str);
 }
 
-function displayItineraryItem(name, id, move, pos, title, loc, time, isnew) {
-    var item = createItineraryItem(id, move, pos, title, loc, time, isnew);
-    $(name).prepend(item);
-}
-
-function createItineraryItem(id, move, pos, title, loc, time, isnew) {
-    var w1 = '2%';
-    var w2 = '60%';
-    var w3 = '38%';
-
-    var item = $(document.createElement('tr'));
-
-    var itemPos = $(document.createElement('td'));
-    itemPos.css('width', w1);
-    if (move) {
-        itemPos.addClass('itpos');
-    } else {
-        itemPos.addClass('endpos');
-    }
-
-    var itemPosInner = $(document.createElement('div'));
-    if (move) {
-        itemPosInner.addClass('itposinner');
-        itemPosInner.append(pos);
-    } else {
-        if (pos == 'start') {
-            itemPosInner.addClass('startposinner');
-        } else {
-            itemPosInner.addClass('endposinner');
-        }
-    }
-
-    itemPos.append(itemPosInner);
-
-    var itemName = $(document.createElement('td'));
-    itemName.css('width', w2);
-    itemName.addClass('itname');
-    itemName.append(title);
-    if (isnew) {
-        itemName.append("<font color='red'> (new!)</font>");
-    }
-
-    var itemTime = $(document.createElement('td'));
-    itemTime.css('width', w3);
-    itemTime.append('(' + time + ')');
-    if (move) {
-        itemTime.addClass('ittime');
-    } else {
-        itemTime.addClass('endtime');
-    }
-
-    item.append(itemPos);
-    item.append(itemName);
-    item.append(itemTime);
-
-    if (!move) {
-        $(item).addClass('ends');
-        $(item).css('cursor', 'default');
-        $(item).hover(function () {
-            $(this).css('background', '#FFAB07');
-            $(this).find('.itremove').css('background', 'white');
-        }, function () {
-            $(this).css('background', 'white');
-        });
-
-    } else {
-        $(item).css('cursor', 'move');
-
-        $(item).hover(function () {
-            $(this).css('background', '#FFAB07');
-            $(this).find('.itremove').css('background', 'white');
-        }, function () {
-            $(this).css('background', 'white');
-        });
-    }
-
-    $(item).attr('id', id);
-    $(item).addClass('itineraryitem')
-    $(item).unbind('click');
-    if (move) {
-        $(item).click(function () {
-            viewActivity(getItem(id));
-        });
-    } else {
-        $(item).click(function () {
-            if (id == 'admin_start') {
-                editStart();
-            } else {
-                editEnd();
-            }
-        });
-    }
-
-    return item;
-}
-
 function loadStream() {
     jQuery.ajax({
         type: "GET",
@@ -2511,13 +2352,8 @@ function updateSysStream() {
 }
 
 function loadStateIntoInterface() {
-    // load start and end location
-    displayItineraryItem('#itineraryStart', 'admin_start', false, 'start', 'arrive at ' + start.name, start, minToTime(beginTime), false);
-    displayItineraryItem('#itineraryEnd', 'admin_end', false, 'end', 'arrive at ' + end.name, end, minToTime(beginTime), false);
-
     // set up itinerary
     itinerary = state.itinerary;
-    // itinerary = [];
 	
     var itineraryItems = [];
     for (var i = 0; i < itinerary.length; i++) {
@@ -2536,9 +2372,6 @@ function loadStateIntoInterface() {
 
         // add the waypoint
         AddWaypointPin(si);
-
-        // update sortable
-        displayItineraryItem('#itinerary', si.id, true, 1, si.data.name, si.data.location.name, '' + si.data.duration + ' min + travel', false);
     }
 
     updateItineraryDisplay();
@@ -2898,7 +2731,6 @@ function updateItineraryDisplay() {
 // Crowd version stuff
 var isOnGoing = false;
 var madeChange = false;
-var random_index = 0
 
 function updateSubmit() {
     var good = false;
@@ -2937,59 +2769,6 @@ function htmlDecode(value){
   return $('<div/>').html(value).text();
 }
 
-function swap(o, i1, i2) {
-    var temp = o[i1]
-    o[i1] = o[i2]
-    o[i2] = temp
-}
-
-function shuffle(a) {
-    for (var i = 0; i < a.length; i++) {
-        swap(a, i, randomIndex(a.length))
-    }
-    return a
-}
-
-function randomIndex(n) {
-    return Math.floor(random() * n)
-}
-   
-function shuffle(){
-      var tempSlot;
-      var randomNumber;
-
-      for(var i =0; i != this.length; i++)
-      {
-            randomNumber = Math.floor(Math.random() * this.length);
-            tempSlot = this[i]; 
-            this[i] = this[randomNumber]; 
-            this[randomNumber] = tempSlot;
-      }
-}
-
-function foreach(a, test) {
-    if (typeof test == "string") {
-        var testString = test
-	    test = function (v, k) {
-            var i = k
-            var e = v
-            return eval(testString)
-        }
-    }
-    if (a instanceof Array) {
-        for (var i = 0; i < a.length; i++) {
-            if (test(a[i], i) == false) break
-					    }
-    } else {
-        for (var k in a) {
-            if (a.hasOwnProperty(k)) {
-                if (test(a[k], k) == false) break
-            }
-        }
-    }
-    return a
-}
-
 // Helpers, of some sort
 function getURLParams() {
     var params = {}
@@ -3014,53 +2793,3 @@ var delay = (function () {
         timer = setTimeout(callback, ms);
     };
 })();
-
-
-// Things I don't understand
-function g(a){var b=typeof a;if(b=="object")if(a){if(a instanceof Array||!(a instanceof Object)&&Object.prototype.toString.call(a)=="[object Array]"||typeof a.length=="number"&&typeof a.splice!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("splice"))return"array";if(!(a instanceof Object)&&(Object.prototype.toString.call(a)=="[object Function]"||typeof a.call!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("call")))return"function"}else return"null";
-else if(b=="function"&&typeof a.call=="undefined")return"object";return b};function h(a){a=String(a);var b;b=/^\s*$/.test(a)?false:/^[\],:{}\s\u2028\u2029]*$/.test(a.replace(/\\["\\\/bfnrtu]/g,"@").replace(/"[^"\\\n\r\u2028\u2029\x00-\x08\x10-\x1f\x80-\x9f]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:[\s\u2028\u2029]*\[)+/g,""));if(b)try{return eval("("+a+")")}catch(c){}throw Error("Invalid JSON string: "+a);}function i(a){var b=[];j(new k,a,b);return b.join("")}function k(){}
-function j(a,b,c){switch(typeof b){case "string":l(a,b,c);break;case "number":c.push(isFinite(b)&&!isNaN(b)?b:"null");break;case "boolean":c.push(b);break;case "undefined":c.push("null");break;case "object":if(b==null){c.push("null");break}if(g(b)=="array"){var f=b.length;c.push("[");for(var d="",e=0;e<f;e++){c.push(d);j(a,b[e],c);d=","}c.push("]");break}c.push("{");f="";for(d in b)if(b.hasOwnProperty(d)){e=b[d];if(typeof e!="function"){c.push(f);l(a,d,c);c.push(":");j(a,e,c);f=","}}c.push("}");break;
-case "function":break;default:throw Error("Unknown type: "+typeof b);}}var m={'"':'\\"',"\\":"\\\\","/":"\\/","\u0008":"\\b","\u000c":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\u000b"},n=/\uffff/.test("\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g;function l(a,b,c){c.push('"',b.replace(n,function(f){if(f in m)return m[f];var d=f.charCodeAt(0),e="\\u";if(d<16)e+="000";else if(d<256)e+="00";else if(d<4096)e+="0";return m[f]=e+d.toString(16)}),'"')};window.JSON||(window.JSON={});if(typeof window.JSON.serialize!=="function")window.JSON.serialize=i;if(typeof window.JSON.parse!=="function")window.JSON.parse=h;
-
-if (!Array.indexOf) {
-    Array.prototype.indexOf = function (obj, start) {
-        for (var i = (start || 0); i < this.length; i++) {
-            if (this[i] == obj) {
-                return i;
-            }
-        }
-        return -1;
-    }
-}
-
-if (!Array.prototype.filter) {
-    Array.prototype.filter = function (fun /*, thisp*/ ) {
-        var len = this.length;
-        if (typeof fun != "function") throw new TypeError();
-
-        var res = new Array();
-        var thisp = arguments[1];
-        for (var i = 0; i < len; i++) {
-            if (i in this) {
-                var val = this[i]; // in case fun mutates this
-                if (fun.call(thisp, val, i, this)) res.push(val);
-            }
-        }
-
-        return res;
-    };
-}
-
-if (!Array.prototype.map) {
-    Array.prototype.map = function (fun /*, thisp*/ ) {
-        var len = this.length;
-        if (typeof fun != "function") throw new TypeError();
-
-        var res = new Array(len);
-        var thisp = arguments[1];
-        for (var i = 0; i < len; i++) {
-            if (i in this) res[i] = fun.call(thisp, this[i], i, this);
-        }
-        return res;
-    };
-}
