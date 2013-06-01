@@ -3247,41 +3247,11 @@ function saveSnapshot() {
 }
 
 function disableItSave() {
-
     unsavedChanges = false;
-    $('#saveitbutton').disabled = 'true';
-
-    $('#saveitbutton').text('drag activities to reorder or change length');
-    $('#saveitbutton').css('background', '#d3f1f2');
-    $('#saveitbutton').css('color', '#0000CE');
-    $('#saveitbutton').css('border', '1px solid #d3f1f2');
-    $('#saveitbutton').unbind();
 }
 
 function enableItSave() {
-
-    if (!unsavedChanges) {
-        unsavedChanges = true;
-        $('#saveitbutton').disabled = 'false';
-        $('#saveitbutton').text('save itinerary changes!');
-        $('#saveitbutton').css('background', '#0000CE');
-        $('#saveitbutton').css('color', 'white');
-        $('#saveitbutton').css('border', '1px outset black');
-        $('#saveitbutton').unbind();
-        $('#saveitbutton').click(function () {
-            if (checkTimeOut()) {
-                return;
-            }
-			if(!enableEditting){
-				return;
-			}
-            var saved = saveItinerary();
-            if (saved) {
-                alert("Changes to the itinerary have been saved.");
-            }
-        });
-    }
-
+    unsavedChanges = true;
 }
 
 function shortName(sn) {

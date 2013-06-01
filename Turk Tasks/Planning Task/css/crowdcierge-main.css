@@ -67,21 +67,6 @@ body {
     font: 14px Lucida Grande, Arial, sans-serif;
     background-color:white;
 }
-/* background-color:#fbf7d4;}*/
-#header {
-    position:absolute;
-    margin:0;
-    top:0;
-    left:0;
-    display:block;
-    width:100%;
-    overflow:auto;
-    height:52px;
-    background-color:#ffab07;
-    font-size:4em;
-    z-index:5;
-    color:#fff;
-}
 #footer {
     position:absolute;
     margin:0;
@@ -116,23 +101,13 @@ body {
     z-index:4;
     overflow:hidden;
 }
-#left3 {
-    position:absolute;
-    left:0;
-    top:52px;
-    bottom:35px;
-    width:30%;
-    font-size:1em;
-    z-index:4;
-    overflow:hidden;
-}
 * html #left1 {
     height:100%;
     top:0;
     bottom:0;
 }
 /*border-top:100px solid #fff; border-bottom:0px solid #fff;}*/
-* html #left2, * html #left3 {
+* html #left2 {
     height:100%;
     top:0;
     bottom:0;
@@ -144,10 +119,6 @@ body {
 }
 #left2 {
     left:30%;
-    background:#ffffff;
-}
-#left3 {
-    left:70%;
     background:#ffffff;
 }
 .inner {
@@ -222,13 +193,6 @@ a.tagrowitem:hover {
     margin-right:2%;
     display:block;
 }
-.inneritinerary {
-    position:relative;
-    width:96%;
-    margin-left:2%;
-    margin-right:2%;
-    display:block;
-}
 #brainstream {
     border-collapse: collapse;
     position:relative;
@@ -238,39 +202,6 @@ a.tagrowitem:hover {
     margin-right:2%;
     display:block;
     height:80%;
-}
-#itinerary tr {
-    background: white;
-}
-#sortable {
-    padding: 0;
-    border-collapse: collapse;
-    position:relative;
-    width: 96%;
-    overflow:auto;
-    margin-left:2%;
-    margin-right:2%;
-    display:block;
-    height:87%;
-    list-style-type: none;
-    margin-bottom: 0;
-    padding: 0;
-}
-#sortable td {
-    vertical-align: top;
-    padding-bottom:3px;
-    padding-top:3px;
-    /* border-spacing: 5px; */
-}
-#sortable td.endpos {
-    padding-right:12px;
-}
-#sortable td.itpos {
-    padding-right:12px;
-    text-align:center;
-}
-#sortable td.ittime, .endtime {
-    color: gray;
 }
 .pinpos {
     background: url('../img/wp.gif');
@@ -308,45 +239,6 @@ a.tagrowitem:hover {
     height:26px;
     font-size: 85%;
 }
-#sortable .itposinner {
-    background: url('../img/wp.gif');
-    background-position:top center;
-    background-repeat:no-repeat;
-    vertical-align: top;
-    text-align: center;
-    font-weight: bold;
-    color: #fff;
-    width:25px;
-    height:26px;
-}
-#sortable .startposinner {
-    background: url('../img/pin-start-it.png');
-    background-position:top center;
-    background-repeat:no-repeat;
-    vertical-align: top;
-    text-align: center;
-    font-weight: bold;
-    color: #fff;
-    width:25px;
-    height:26px;
-}
-#sortable .endposinner {
-    background: url('../img/pin-end-it.png');
-    background-position:top center;
-    background-repeat:no-repeat;
-    vertical-align: top;
-    text-align: center;
-    font-weight: bold;
-    color: #fff;
-    width:25px;
-    height:26px;
-}
-#sortable td.itremove {
-    padding-left:5px;
-}
-#itinerary td.itremove:hover {
-    background: white;
-}
 #brainstream td {
     padding-left:6px;
     padding-right:6px;
@@ -370,25 +262,6 @@ a.tagrowitem:hover {
 }
 #viewActivityTable td.vlabel {
     width:120px;
-}
-#braintitle {
-    color: #0000CE;
-    padding-bottom:0px;
-}
-.sectiontitle {
-    font-size:135%;
-    color: #ffab07;
-    font-weight:bold;
-    padding-top: 10px;
-    padding-bottom:16px;
-}
-.sectioninstruction {
-    color:#ffab07;
-    font-size:76%;
-    display:none;
-}
-#showall {
-    /*   text-align:right; */
 }
 #brainstream tr.todo:hover {
     background-color: #eae6c3;

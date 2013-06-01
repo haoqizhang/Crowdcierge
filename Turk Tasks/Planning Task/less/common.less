@@ -7,6 +7,8 @@
 @Hue-06: #ccc;		// BOX BORDER COLOR
 @Hue-07: #fff;		// BOX BACKGROUND COLOR
 
+@Hue-08: #D3F1F2;	// BRAINSTREAM BACKGROUND COLOR
+
 .cc-button (@text-color, @background-color, @border-color) {
 	border:1px outset;
 	border-color: @border-color;
@@ -30,4 +32,17 @@
 	&.wide {
 		padding:4px;
 	}
+}
+
+.sectiontitle {
+    font-size:135%;
+    color: @Hue-01;
+    font-weight:bold;
+    padding-top: 10px;
+    padding-bottom:16px;
+
+    &#braintitle {
+    	color: @Hue-02;
+    	padding-bottom:0px;
+    }
 }

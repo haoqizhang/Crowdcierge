@@ -12,11 +12,11 @@
         <!-- CROWDCIERGE CSS FILES -->
         <link rel='stylesheet' type='text/css' href='../css/crowdcierge-main.css' />
         <link rel='stylesheet' type='text/css' href='../css/crowdcierge-checkitem.css' />
-        <link rel='stylesheet' type='text/css' href='../css/crowdcierge-calendar.css' />
 
         <link rel='stylesheet' type='text/css' href='../less/header.css' />
         <link rel='stylesheet' type='text/css' href='../less/common.css' />
         <link rel='stylesheet' type='text/css' href='../less/box.css' />
+        <link rel='stylesheet' type='text/css' href='../less/itinerary.css' />
 
         <!-- LIBRARY JS FILES -->
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
@@ -48,7 +48,7 @@
                 <a target='_blank' href="http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/Mobi/Mobi_Turk_Tutorial.html">confused? check out the tutorial</a>
             </div>
         </div>
-        
+
         <!-- The overlay and the box -->
         <div id="overlay"></div>
         <div class="box" id="box">
@@ -304,8 +304,6 @@
             <div id='addActivity'>
                  <h1 id='addactheader'>Add an activity
       <span id='addcontrols' style='float:right;'><button class='addit' onClick='saveAddActivity(true)'>add it to stream only</button>&nbsp;<button class='addit' onClick='saveAddActivity(false)'>add it to itinerary & stream</button></span></h1>
-
-                <!-- <h1 id='addactheader'>Add an activity<span style='float:right;'><button class='addit' onClick='saveAddActivity(true)'>add it to stream only</button>&nbsp;<button class='addit' onClick='saveAddActivity(false)'>add it to itinerary & stream</button></span></h1> -->
                 <div style="float:left; width:40%">
                     <div class="row">
 						<span class="label">Activity: </span><span class="formw"><input id='addacttitle' type='text' maxlength='60' size='30'/></span>
@@ -334,17 +332,12 @@
                     <div style='height:10px'>&nbsp;</div>
                     <div id='addmapDivMap' style="position:relative;width:100%;height:300px"></div>
                 </div>
-                <!-- <div style='text-align:center'><button onclick='saveAddActivity(false)'>add activity to itinerary and stream</button><button onclick='saveAddActivity(true)'>add activity to stream only</button><button onclick='closeAdd()'>cancel</button></div>--></div>
+            </div>
         </div>
         <div id="left1">
             <div class='innerstream'>
-                <!-- <table id='braintitletable'> -->
-                <!-- <tr> -->
-                <!-- <td id='braintitle'>Our collective brainstorm</td> -->
-                <!-- <td id='showall'><a href='#' onclick='unfilterOnTag()'>view all</a></td> -->
-                <!-- </tr> -->
-                <!-- </table> -->
-                <div id='braintitle' class='sectiontitle'><span style='color:#0000CE'>Our brainstream</span><span class='sectioninstruction'>&nbsp;&nbsp;(click for details)</span>
+                <div id='braintitle' class='sectiontitle'>
+                    <span style='color:#0000CE'>Our brainstream</span>
                 </div>
                 <div id='showall' style='padding-bottom:10px;display:none'>
                     <a style='color:#0000CE' href='#' onclick='unfilterOnTag()'>view entire stream</a>
@@ -364,50 +357,38 @@
                 <tbody id='userStreamBody'></tbody>
             </table>
         </div>
+
         <div id="left2">
             <div class="inner">
                 <!-- Column two start -->
-                <div class='sectiontitle'><span>Map</span><span class='sectioninstruction'>&nbsp;&nbsp;(see the current itinerary)</span>
+                <div class='sectiontitle'>
+                    Map&nbsp;&nbsp;(see the current itinerary)
                 </div>
                 <div style='padding-bottom:4px; visibility:hidden'>Trip time: <span id='totaltriptime'></span>
                 </div>
                 <div id='mapDiv' style="z-index:0;position:absolute;width:96%;height:85%"></div>
-                <!-- <div id='mapDiv' style="z-index:0;position:relative;width:98%;"></div>       -->
-                <div id='stateDisplay'>
-                    <!-- Column two end -->
-                </div>
             </div>
         </div>
-        <div id="left3">
+
+        <div id='itineraryColumn'>
             <div class='inneritinerary'>
                 <!-- <div class="inner"> -->
-                <div class='sectiontitle' style="padding-bottom:6px"><span>Itinerary</span>&nbsp;&nbsp;&nbsp;
-                    <span style='text-align:left'>
-                    <!--<button onclick='saveSnapshot()' id='snapshotbutton'>take a snapshot of the itinerary</button>-->
-                    <button class='addit wide' id='saveitbutton' style='font-size:70%'>save itinerary changes!</button>
-                    </span> <br/>
-					<span style="width:20px; height:20px; background-color:rgb(3,209,92); font-size: 70%; color: rgb(0, 0, 206); position:absolute; margin-left:100px; margin-top:3px; visibility:hidden"></span>
-					<span style="margin-top:3px; font-size: 70%; color: rgb(0, 0, 206); position:relative; margin-left: 125px; visibility:hidden"> = travel time </span>
-					</div>
+                <div class='sectiontitle'>
+                    Itinerary&nbsp;&nbsp;(drag and drop to reorder)
+                    <br/>
+					<span id="travelTimeBox"></span>
+					<span id="travelTimeText"> = travel time </span>
+				</div>
             </div>
-            <table id="finishedTable" style="display:none">
-                <tbody id='finishedItinerary'></tbody>
-            </table>
-            <div style="overflow:auto; height:85%">
-                <div id="calendar" ></div>
-				<div style="background-color:red; text-align:center; width:300px; margin-left:2%; margin-right:3%; padding-left:12%">End</div>
+            <div id="calendarWrapper">
+                <div id="calendar"></div>
+				<div id="calendarEnd">End</div>
             </div>
-            <table id="sortable" style="display:none">
-                <tbody id='itineraryStart'></tbody>
-                <tbody id='itinerary'></tbody>
-                <tbody id='itineraryEnd'></tbody>
-            </table>
         </div>
-        <div id="footer">
-            <p style='text-align:center'>If you are experiencing problems, please
-                <a href="mailto:hq@eecs.harvard.edu">contact us</a>.</p>
-        </div>
-        
-    </body>
 
+        <div id="footer">
+            <p style='text-align:center'>If you are experiencing problems, please <a href="mailto:jrafidi@mit.edu">contact us</a>.
+            </p>
+        </div>
+    </body>
 </html>
