@@ -25,10 +25,16 @@
         <script type="text/javascript" src="../lib/handlebars.js"></script>
 
         <!-- CROWDCIERGE PLANNING JS FILES -->
+        <script type="text/javascript" src="../js/objects.js"></script>
+        <script type="text/javascript" src="../js/webutils.js"></script>
+        <script type="text/javascript" src="../js/timeutils.js"></script>
+        <script type="text/javascript" src="../js/stringutils.js"></script>
+
         <script type="text/javascript" src="../js/crowdcierge-planning-main.js"></script>
         <script type="text/javascript" src="../js/crowdcierge-checkitem.js"></script>
         <script type="text/javascript" src="../js/crowdcierge-planning-calendar.js"></script>
         <script type="text/javascript" src="../js/crowdcierge-planning-calendar-traveltime.js"></script>
+        <script type="text/javascript" src="../js/init.js"></script>
 
         <!-- CROWDCIERGE REPLANNING JS FILES -->
         <script type="text/javascript" src="../js/crowdcierge-replanning-templates.js"></script>
@@ -51,7 +57,7 @@
         <!-- The overlay and the box -->
         <div id="overlay"></div>
         <div class="box" id="box">
-            <a id="boxclose"></a>
+            <a id="boxclose" onclick="closeAdd()"></a>
             <div id='boxMain'></div>
             <div id='viewMission' style='display:none'>
                  <h1 id='missionheader'>Mission<span style='float:right;'><button onclick="editMission()" id='editmissionbutton' class='addit'>edit mission</button></span></h1>

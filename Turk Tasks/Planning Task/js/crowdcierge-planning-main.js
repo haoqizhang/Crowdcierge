@@ -39,7 +39,6 @@ var sysStream = []; //system todo
 
 // save variables
 var unsavedChanges = false;
-var sessionStart = null;
 
 // auto complete
 var searchAutocomplete = null;
@@ -69,14 +68,24 @@ var transit = null;
 var enableEditting = false;
 var isTask = false;
 
+var username = null;
+var email = null;
+var requestId = null;
+var requestEmail = null;
+var requestItem = null;
+var state; // state of the world
+var stateId = null;
+var preferenceOrdering = null; // ordering on previous preferences
+var userKeys = []; //todo, more efficient
+var newFieldId = 0;
+var newPreferenceId = 0;
+var newChoices = [];
+var newPreferences = [];
+var planByCategory = true;
+
 // What actually happens at start
 $(document).ready(function (jQuery) {
-    sessionStart = (new Date()).getTime();
-
-    readyBoxClose();
-
     readUrlParameters(); // get userId and taskId
-    jQuery('#mobi-content').css('display', 'inline');
 
     loadTaskState(); // Load where we are current at with task
     
@@ -86,9 +95,7 @@ $(document).ready(function (jQuery) {
     loadStream(); // load all the stream info
     loadStateIntoInterface(); // now load it all into interface.
 
-    unsavedChanges = false;
-
-    GetNewActMap();
+    initActMap();
     readySearchBox();
 
     $(window).resize(function () {
@@ -96,7 +103,7 @@ $(document).ready(function (jQuery) {
         if (map != null) {
             map.Resize();
         }
-        delay(function () {
+        setTimeout(function () {
             if (map != null) {
                 map.SetCenter(map.GetCenter());
             }
@@ -161,13 +168,6 @@ function showExplanationBox() {
     } else {
         viewMission();
     }
-}
-
-// Called first in document ready to set up popup box
-function readyBoxClose() {
-    $('#boxclose').click(function () {
-        closeAdd();
-    });
 }
 
 // Hides popup box and everything inside
@@ -386,7 +386,7 @@ function readySearchBox() {
     return;
 }
 
-function GetNewActMap() {
+function initActMap() {
     newactmap = new VEMap('addmapDivMap');
 
     var mapOptions = new VEMapOptions();
@@ -658,8 +658,6 @@ function ProcessPartialRoute(route) {
         longLegs = [];
         return;
     } else {
-
-
         GetLongRoute(remainingRoute);
     }
 }
@@ -782,13 +780,6 @@ function randSign() {
     } else {
         return -1;
     }
-}
-
-function constraint(category, unit, compare, value) {
-    this.cat = category;
-    this.unit = unit;
-    this.compare = compare;
-    this.value = value;
 }
 
 function computeDistance(l1, l2) {
@@ -926,50 +917,6 @@ function initMap() {
     endPin = AddPushpin(map, endll, 'End location', end.name, false, "../img/pin-end.png");
 }
 
-var username = null;
-var email = null;
-var requestId = null;
-var requestEmail = null;
-var requestItem = null;
-var state; // state of the world
-var stateId = null;
-var preferenceOrdering = null; // ordering on previous preferences
-var userKeys = []; //todo, more efficient
-var newFieldId = 0;
-var newPreferenceId = 0;
-var newChoices = [];
-var newPreferences = [];
-var planByCategory = true;
-
-function minToTime(time) {
-    if (time > 1440) time -= 1440;
-    var AMPM = 'am';
-    var minutes = time % 60;
-    var hour = Math.floor(time / 60);
-
-    // rounding for pretty display
-    if (minutes % 10 >= 5) {
-        minutes += (10 - (minutes % 10));
-        if (minutes == 60) {
-            minutes = 0;
-            hour += 1;
-        }
-    } else if (minutes % 10 != 0) {
-        minutes += (5 - (minutes % 10));
-    }
-
-    if (hour >= 12) {
-        AMPM = 'pm';
-        if (hour > 12) {
-            hour -= 12;
-        }
-    }
-    if (minutes < 10) {
-        minutes = '0' + minutes;
-    }
-    return hour + ":" + minutes + AMPM;
-}
-
 function streamitem(type, data, time) {
     this.type = type;
     this.data = data;
@@ -982,33 +929,6 @@ function streamitem(type, data, time) {
     this.value = data.name;
     this.label = [data.name, data.description, data.categories.join(' ')].join(' ');
     this.data.start = calBegin; // for calendar
-}
-
-function readMinutes(time) {
-    var h = ' hour';
-    var hs = '';
-    var m = ' minute';
-    var ms = '';
-
-    var hour = Math.floor(time / 60);
-    var minutes = time % 60;
-
-    if (minutes > 1) {
-        ms = 's';
-    }
-    if (hour > 1) {
-        hs = 's';
-    }
-
-    if (hour == 0) {
-        return minutes + m + ms;
-    } else {
-        if (minutes == 0) {
-            return hour + h + hs;
-        } else {
-            return hour + h + hs + ' and ' + minutes + m + ms;
-        }
-    }
 }
 
 function addActivity() {
@@ -2162,27 +2082,6 @@ function displayStreamItem(id, si) {
     $(id).prepend(item);
 }
 
-function rtrim(stt) {
-    return stt.replace(/\s+$/, "");
-}
-
-function takeTill(str, maxchars) {
-    var str = rtrim(str.replace(/<br\/>/g, ' '));
-
-    var sp = str.split(' ');
-    var o = '';
-    for (var i = 0; i < sp.length; i++) {
-        if (o.length + sp[i].length > maxchars) {
-            var ret = rtrim(o) + ' [...]';
-            return ret;
-        } else {
-            o += sp[i];
-            o += ' ';
-        }
-    }
-    return rtrim(str);
-}
-
 function loadStream() {
     jQuery.ajax({
         type: "GET",
@@ -2227,7 +2126,6 @@ function loadUserData() {
 
     jQuery.ajax({
         type: "GET",
-        // dataType: "json", 
         url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkAdminUserInfo.php",
         data: ({
             type: "turktour",
@@ -2236,7 +2134,6 @@ function loadUserData() {
         }),
         async: false,
         success: function (obj) {
-            //	    alert(JSON.stringify(obj));
             if (obj == "") {} else {
                 var userArr = eval('(' + obj + ')');
                 numUsers = userArr.length;
@@ -2254,21 +2151,6 @@ function loadUserData() {
 
 }
 
-function activity(name, description, commentary, location, subactivities, duration, categories) {
-    this.name = name;
-    this.description = description;
-    this.commentary = commentary;
-    this.location = location;
-    this.subactivities = subactivities;
-    this.duration = duration;
-    this.categories = categories;
-}
-
-function note(name, description, categories) {
-    this.name = name;
-    this.description = description;
-    this.categories = categories;
-}
 
 function problemStatement(constraint, predData) {
     var statement;
@@ -2669,11 +2551,6 @@ function generatePredicate(constraintDesc) {
     return func;
 }
 
-function campuslocation(vlabel, data) {
-    this.label = vlabel;
-    this.data = data;
-}
-
 function updateItineraryDisplay() {
     // update the system generated displays in stream
     updateSysStream();
@@ -2739,36 +2616,3 @@ function updateSubmit() {
     	$('input[type=submit]').attr("disabled", "true")
     }
 }
-
-function htmlEncode(value){
-  return $('<div/>').text(value).html();
-}
-
-function htmlDecode(value){
-  return $('<div/>').html(value).text();
-}
-
-// Helpers, of some sort
-function getURLParams() {
-    var params = {}
-    var m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g)
-    if (m) {
-        for (var i = 0; i < m.length; i++) {
-            var a = m[i].match(/.([^=]+)=(.*)/)
-            params[unescapeURL(a[1])] = unescapeURL(a[2])
-        }
-    }
-    return params
-}
-
-function unescapeURL(s) {
-    return decodeURIComponent(s.replace(/\+/g, "%20"))
-}
-
-var delay = (function () {
-    var timer = 0;
-    return function (callback, ms) {
-        clearTimeout(timer);
-        timer = setTimeout(callback, ms);
-    };
-})();
