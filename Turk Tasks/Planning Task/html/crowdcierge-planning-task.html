@@ -14,6 +14,8 @@
         <link rel='stylesheet' type='text/css' href='../less/common.css' />
         <link rel='stylesheet' type='text/css' href='../less/box.css' />
         <link rel='stylesheet' type='text/css' href='../less/itinerary.css' />
+        <link rel='stylesheet' type='text/css' href='../less/todo.css' />
+        <link rel='stylesheet' type='text/css' href='../less/stream.css' />
         <link rel='stylesheet' type='text/css' href='../less/main.css' />
 
         <!-- LIBRARY JS FILES -->
@@ -23,12 +25,15 @@
         <script type="text/javascript" src="../lib/jquery/jquery.validate.min.js"></script>
         <script type="text/javascript" src="../lib/humane.js"></script>
         <script type="text/javascript" src="../lib/handlebars.js"></script>
+        <script type="text/javascript" src="../lib/underscore.js"></script>
 
         <!-- CROWDCIERGE PLANNING JS FILES -->
         <script type="text/javascript" src="../js/objects.js"></script>
+        <script type="text/javascript" src="../js/handlebarsHelpers.js"></script>
         <script type="text/javascript" src="../js/webutils.js"></script>
         <script type="text/javascript" src="../js/timeutils.js"></script>
         <script type="text/javascript" src="../js/stringutils.js"></script>
+        <script type="text/javascript" src="../js/map.js"></script>
 
         <script type="text/javascript" src="../js/crowdcierge-planning-main.js"></script>
         <script type="text/javascript" src="../js/crowdcierge-checkitem.js"></script>
@@ -39,6 +44,42 @@
         <!-- CROWDCIERGE REPLANNING JS FILES -->
         <script type="text/javascript" src="../js/crowdcierge-replanning-templates.js"></script>
         <script type="text/javascript" src="../js/crowdcierge-replanning-init.js"></script>
+
+        <!-- CROWDCIERGE HANDLEBARS TEMPLATES -->
+
+        <script id="todo-template" type="text/x-handlebars-template">
+            <tr class="todo" id="{{id}}">
+                <td class='sitem-text-td'>
+                    <b>{{data.name}}</b>
+                    <br/>
+                    <div class="sidesc">{{#shorten data.description}}{{/shorten}}<br/>
+                        {{#each data.categories}}
+                            <a class="tagstreamitem" onclick='filterOnTag("{{.}}")'>#{{.}}</a>
+                        {{/each}}
+                    </div>
+                </td>
+                <td class="todo-badge-container">
+                    <div class="badge_todo"></div>
+                </td>
+            </tr>
+        </script>
+
+        <script id="stream-item-template" type="text/x-handlebars-template">
+            <tr class="stream-item" id="stream_{{id}}">
+                <td class='sitem-text-td'>
+                    <b>{{data.name}}</b>
+                    <br/>
+                    <div class="sidesc">{{#shorten data.description}}{{/shorten}}<br/>
+                        {{#each data.categories}}
+                            <a class="tagstreamitem" onclick='filterOnTag("{{.}}")'>#{{.}}</a>
+                        {{/each}}
+                    </div>
+                </td>
+                <td id='stime_{{id}}'>
+                    <div id='ss_{{id}}' class='sspinpos'></div>
+                </td>
+            </tr>
+        </script>
 
         <!-- DO NOT MOVE THE PLACEMENT OF THIS LINE RELATIVE TO OTHER SCRIPT INCLUSIONS -->
         <script type="text/javascript" src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>
@@ -332,8 +373,6 @@
                 <!-- Column two start -->
                 <div class='sectiontitle'>
                     Map&nbsp;&nbsp;(see the current itinerary)
-                </div>
-                <div style='padding-bottom:4px; visibility:hidden'>Trip time: <span id='totaltriptime'></span>
                 </div>
                 <div id='mapDiv' style="z-index:0;position:absolute;width:96%;height:85%"></div>
             </div>

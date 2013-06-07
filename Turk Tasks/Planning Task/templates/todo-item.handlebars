@@ -1,0 +1,13 @@
+<tr class="todo" id="{{id}}">
+    <td class='sitem-text-td' style="width: 100%;">
+        <b>{{data.name}}</b><br>
+        <div class="sidesc">{{#shorten}}{{data.description}}{{/shorten}}<br>
+            {{#each data.categories}}
+                <a class="tagstreamitem" href="#" onclick="filterOnTag({{.}})">#{{.}}</a>
+            {{/each}}
+        </div>
+    </td>
+    <td class="todo-badge-container">
+        <div class="badge_todo"></div>
+    </td>
+</tr>

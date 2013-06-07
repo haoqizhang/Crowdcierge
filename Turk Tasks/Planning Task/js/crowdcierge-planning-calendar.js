@@ -326,34 +326,34 @@ function syncEventDrop(event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent
 // Update activity durations
 // Called on even drag
 function syncEventDrag(event, dayDelta, minuteDelta, revertFunc) {
-if(!enableEditting){
-	revertFunc();
-	alert("You must accept the HIT before you can save any edits.");
-	return;
-}
+    if(!enableEditting){
+    	revertFunc();
+    	alert("You must accept the HIT before you can save any edits.");
+    	return;
+    }
 
-var si = getItem(event.itId);
-var newEnd = si.data.start + parseInt(si.data.duration) + minuteDelta;
-if (include(keepAct, event.itId) || include(finishedAct, event.itId) || newEnd > calEnd) {
-    revertFunc();
-    return;
-}
-clearTravelTimes();
+    var si = getItem(event.itId);
+    var newEnd = si.data.start + parseInt(si.data.duration) + minuteDelta;
+    if (include(keepAct, event.itId) || include(finishedAct, event.itId) || newEnd > calEnd) {
+        revertFunc();
+        return;
+    }
+    clearTravelTimes();
 
-eventSource.length = 0;
-var newEvents = $("#calendar").fullCalendar( 'clientEvents' );
-for (var i  = 0; i < newEvents.length; i++) {
-    eventSource.push(newEvents[i]);
-}
-eventSource.sort(function(a,b) {
-    return (a.start.getHours() + a.start.getMinutes()/60) - (b.start.getHours() + b.start.getMinutes()/60);
-});
+    eventSource.length = 0;
+    var newEvents = $("#calendar").fullCalendar( 'clientEvents' );
+    for (var i  = 0; i < newEvents.length; i++) {
+        eventSource.push(newEvents[i]);
+    }
+    eventSource.sort(function(a,b) {
+        return (a.start.getHours() + a.start.getMinutes()/60) - (b.start.getHours() + b.start.getMinutes()/60);
+    });
 
-var si = getItem(event.itId);
-si.data.duration = parseInt(si.data.duration) + minuteDelta + "";
-saveItemEdit(si);
-detectOverlap();
-shiftEventTimes();
+    var si = getItem(event.itId);
+    si.data.duration = parseInt(si.data.duration) + minuteDelta + "";
+    saveItemEdit(si);
+    detectOverlap();
+    shiftEventTimes();
 }
 
 // Check if there is any overlap in our current event set
@@ -497,7 +497,6 @@ function saveItemEdit(oldsi) {
     // add it to local stream
     userStream.unshift(si);
     searchAutocomplete.autocomplete("option", "source", userStream);
-    newStream.unshift(si);
 
     // 3. what about itinerary?
     // 3a... in itinerary list, get rid of old and insert new

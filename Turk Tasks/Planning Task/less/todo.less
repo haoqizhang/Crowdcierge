@@ -1,0 +1,21 @@
+@import "common.less";
+
+@todo-item-color:#fbf7d4;
+
+.badge_todo {
+    background: url('../img/exclamation-icon.png');
+    background-position:top center;
+    background-repeat:no-repeat;
+    width:25px;
+    height:26px;
+}
+
+#brainstream {
+    .todo {
+        background: @todo-item-color;
+
+        &:hover {
+            background-color: darken(@todo-item-color, 20%);
+        }
+    }
+}

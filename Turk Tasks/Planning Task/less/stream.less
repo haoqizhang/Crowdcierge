@@ -1,0 +1,31 @@
+@import "common.less";
+
+@stream-item-color: white;
+
+#brainstream {
+    td {
+        padding-left:6px;
+        padding-right:6px;
+    }
+    tr {
+        border-bottom: 1px solid gray;
+        vertical-align: top;
+        cursor:pointer;
+    }
+
+    .sidesc {
+        padding-left:12px;
+    }
+
+    .sitem-text-td {
+        width:100%;
+    }
+}
+
+.stream-item {
+    background-color: @stream-item-color;
+
+    &:hover {
+        background-color: darken(@stream-item-color, 20%);
+    }
+}

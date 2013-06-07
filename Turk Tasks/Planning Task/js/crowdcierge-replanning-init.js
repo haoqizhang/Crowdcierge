@@ -20,7 +20,6 @@ var currentPin;
 
 var requestCheckItem;
 
-
 var oldItinerary;
 
 var startTaskTime = (new Date()).getTime();
@@ -44,17 +43,17 @@ function loadIntermediateState() {
     
     // Place user pin at current location and center map on that location
     var locLL = new VELatLong(interLat, interLong);
-    currentPin = AddPushpin(map, locLL, "Traveler's Location", "Where the traveler is right now", false, "img/pin-user-2.png");
-	$("img[src$='img/pin-user-2.png']").parent().parent().css("z-index", 10000);
+    currentPin = AddPushpin(map, locLL, "Traveler's Location", "Where the traveler is right now", false, "../img/pin-user-2.png");
+	$("img[src$='../img/pin-user-2.png']").parent().parent().css("z-index", 10000);
     map.SetCenter(locLL);
 	
-	AddPushpin(newactmap, locLL, "Traveler's Location", "Where the traveler is right now", false, "pin-user-2.png");
+	AddPushpin(newactmap, locLL, "Traveler's Location", "Where the traveler is right now", false, "../img/pin-user-2.png");
 	
 	$("html").mouseover(function() {
-		$("img[src$='img/pin-user-2.png']").parent().parent().css("z-index", 10000);
+		$("img[src$='../img/pin-user-2.png']").parent().parent().css("z-index", 10000);
 	});
 	$("#mapDiv").mouseup(function() {
-		$("img[src$='img/pin-user-2.png']").parent().parent().css("z-index", 10000);
+		$("img[src$='../img/pin-user-2.png']").parent().parent().css("z-index", 10000);
 	});
 }
 

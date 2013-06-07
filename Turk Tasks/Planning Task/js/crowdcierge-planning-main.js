@@ -9,30 +9,8 @@ var end;
 var beginTime;
 var endTime;
 
-// map variables
-var map = null;
-var newactmap = null;
-var startPin = null;
-var endPin = null;
-var newactPin = null;
-var viewactPin = null;
-var findLayer = null;
-var slRoute = null;
-var actfindLayer = null;
-var mapCenter = null;
-var numTags = 0;
-var waylayer = null;
-var wayhash = [];
-var waypointIcon = '../img/wp.gif'; // ../img/pin2.gif
-var defaultZoom = 12;
-var newactpinMoved = false;
-var remainingRoute = [];
-var longLegs = [];
-var restDrive = null;
-var restWalk = null;
-var tolerance = 0.00005;
-
 // itinerary/stream variables
+var itinerary = [];
 var emptyText = "search or add an idea, or click on one below"; // "search or add an activity or thought";
 var userStream = []; //user comments, whichever type
 var sysStream = []; //system todo
@@ -573,7 +551,6 @@ function composeRoute() {
         $('.endtime').last().html('(' + minToTime(actualend) + ')');
 
     }
-    $('#totaltriptime').html(readMinutes(actualend - beginTime));
 
 	// Add travel times to calendar
 	drawTravelTimes(legTimes);
@@ -649,12 +626,10 @@ function ProcessPartialRoute(route) {
 
         if (actualend > endTime) {
             $('.endtime').last().html("<font color='red'>(" + minToTime(actualend) + ')</font>');
-            //	$('#totaltriptime').html("<font color='red'>" + readMinutes(actualend - beginTime) + '</font>');
+            
         } else {
             $('.endtime').last().html('(' + minToTime(actualend) + ')');
-
         }
-        $('#totaltriptime').html(readMinutes(actualend - beginTime));
         longLegs = [];
         return;
     } else {
@@ -915,20 +890,6 @@ function initMap() {
         endll = new VELatLong(parseFloat(end.lat) + dx, parseFloat(end.long) + dy);
     }
     endPin = AddPushpin(map, endll, 'End location', end.name, false, "../img/pin-end.png");
-}
-
-function streamitem(type, data, time) {
-    this.type = type;
-    this.data = data;
-    if (time == null) {
-        var t = new Date();
-        this.createTime = t.getTime();
-    } else {
-        this.createTime = time;
-    }
-    this.value = data.name;
-    this.label = [data.name, data.description, data.categories.join(' ')].join(' ');
-    this.data.start = calBegin; // for calendar
 }
 
 function addActivity() {
@@ -1970,14 +1931,15 @@ function submitEdit(si, oldid) {
     return ret;
 }
 
-function locationInfo(name, lat, long) {
-    this.name = name;
-    this.lat = lat;
-    this.long = long;
-}
-
 function createStreamItem(si) {
+    if (si.type === 'todo') {
+        return createTodoItem(si);
+    } else {
+        return createActivityNoteItem(si);
+    }
+
     var item = $(document.createElement('tr'));
+
     item.addClass(si.type);
 
     var msg = $(document.createElement('td'));
@@ -2018,6 +1980,26 @@ function createStreamItem(si) {
         openItem(si);
     });
     $(item).attr('id', 'stream_' + si.id);
+    return item;
+}
+
+function createTodoItem(si) {
+    var source = $("#todo-template").html();
+    var template = Handlebars.compile(source);
+    var item = template(si);
+    $(item).click(function () {
+        openItem(si);
+    });
+    return item;
+}
+
+function createActivityNoteItem(si) {
+    var source = $("#stream-item-template").html();
+    var template = Handlebars.compile(source);
+    var item = template(si);
+    $(item).click(function () {
+        openItem(si);
+    });
     return item;
 }
 
@@ -2379,7 +2361,7 @@ function updateScheduleConstraints(actualend) {
     var allowedEmpty = .05 * (endTime - beginTime);
 
     if (freetime > allowedEmpty) { // have time left
-        var problem = "There is still " + readMinutes(freetime) + ' left empty in the itinerary. The trip can go till ' + minToTime(endTime) + '.';
+        var problem = 'There is still too much time left empty in the itinerary. The trip can go till ' + minToTime(endTime) + '.';
         // but currently ends at ' + minToTime(actualend);
         var n = new note("Add to the itinerary or spend more time on existing activities",
         problem, ['todo', 'time']);
@@ -2487,13 +2469,6 @@ function viewMission() {
 
 function include(arr, obj) {
     return (arr.indexOf(obj) != -1);
-}
-
-function predicateResponse(response, value, activities, explain) {
-    this.response = response;
-    this.value = value;
-    this.activities = activities;
-    this.explain = explain;
 }
 
 function generatePredicate(constraintDesc) {
