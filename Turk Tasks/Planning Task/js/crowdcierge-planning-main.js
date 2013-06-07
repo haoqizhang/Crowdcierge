@@ -1987,7 +1987,7 @@ function createTodoItem(si) {
     var source = $("#todo-template").html();
     var template = Handlebars.compile(source);
     var item = template(si);
-    $(item).click(function () {
+    $('#brainstream').delegate('#' + si.id, 'click', function() {
         openItem(si);
     });
     return item;
@@ -1997,7 +1997,7 @@ function createActivityNoteItem(si) {
     var source = $("#stream-item-template").html();
     var template = Handlebars.compile(source);
     var item = template(si);
-    $(item).click(function () {
+    $('#brainstream').delegate('#stream_' + si.id, 'click', function() {
         openItem(si);
     });
     return item;
