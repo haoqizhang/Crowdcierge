@@ -3,21 +3,23 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   (function() {
-    var Session;
-
-    return Session = (function() {
+    return com.uid.crowdcierge.Session = (function() {
       function Session() {
         this.initialize = __bind(this.initialize, this);
       }
 
       Session.prototype.initialize = function() {
-        this.itineraryModel = new Backbone.Collection;
-        this.activitiesModel = new Backbone.Collection({
-          model: ActivityModel
+        this.itineraryModel = new Backbone.Collection({
+          model: com.uid.crowdcierge.ItineraryItem
         });
-        this.constraintsModel = new Backbone.Collection;
-        this.systemModel = new Backbone.Collection;
-        return this.checkItemModel = new Backbone.Collection;
+        this.activitiesModel = new Backbone.Collection({
+          model: com.uid.crowdcierge.Activity
+        });
+        this.constraintsModel = new Backbone.Collection({
+          model: com.uid.crowdcierge.Constraint
+        });
+        this.checkItemModel = new Backbone.Collection;
+        return this.currentTaskModel = new Backbone.Model;
       };
 
       return Session;

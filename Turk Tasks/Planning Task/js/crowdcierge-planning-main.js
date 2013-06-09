@@ -61,85 +61,7 @@ var newChoices = [];
 var newPreferences = [];
 var planByCategory = true;
 
-// What actually happens at start
-// $(document).ready(function (jQuery) {
-//     readUrlParameters(); // get userId and taskId
-
-//     loadTaskState(); // Load where we are current at with task
-    
-//     loadUserData();
-//     initMap();
-
-//     loadStream(); // load all the stream info
-//     loadStateIntoInterface(); // now load it all into interface.
-
-//     initActMap();
-//     readySearchBox();
-
-//     $(window).resize(function () {
-//         /// HACK TO FIX MAP RESIZE PROBLEMS
-//         if (map != null) {
-//             map.Resize();
-//         }
-//         setTimeout(function () {
-//             if (map != null) {
-//                 map.SetCenter(map.GetCenter());
-//             }
-//         }, 1000);
-//     });
-
-//     /// HACK TO FIX IE SCROLL PROBLEM
-//     if ($.browser.msie) {
-//         /// nevermind, just tell the person they should use something else
-//         alert("We have noticed that you are using Internet Explorer as your browser. Some of the functionalities of this site may not work well in Internet Explorer, so we recommend you to use any other popular browser, e.g., Firefox, Safari, or Chrome. Sorry for the inconvenience.");
-//         // make stream not scroll
-//         $('#brainstream').css('overflow', 'hidden');
-//         // make left1 (stream containing section) scrool
-//         $('#left1').css('overflow', 'auto');
-//     }
-
-    
-    
-//     calBegin = beginTime;
-// 	calEnd = endTime;
-//     inProgress = state.inProgress;
-//     if (inProgress) {
-//         loadIntermediateState();
-//     }
-
-//     initializeCalendar();
-	
-//     if (inProgress) {
-//         processRequest();
-// 		if (isTask) {
-// 			configureReplanTaskUi();
-// 		}
-//     }
-	
-//     showExplanationBox();
-	
-// 	$('#searchBox').bind('keypress', function(e) {
-// 		var code = (e.keyCode ? e.keyCode : e.which);
-// 		if(code == 13) {
-// 			addSelect();
-// 		}
-// 	});
-// });
-
 function readySearchBox() {
-    // $('#searchBox').blur(function () {
-    //     if ($(this).val() == '') {
-    //         $(this).val(emptyText);
-    //         $(this).css('color', 'gray');
-    //     }
-    // });
-
-    // $('#searchBox').focus(function () {
-    //     if ($(this).val() == emptyText) {
-    //         $(this).val('');
-    //         $(this).css('color', 'black');
-    //     }
-    // });
 
     searchAutocomplete = $('#searchBox').autocomplete({
         minLength: 2,
@@ -2110,39 +2032,6 @@ function locateCategoryIndex(c) {
 
     return -1;
 }
-
-function loadUserData() {
-
-    // check not null
-    if(uid == null) return;
-
-    jQuery.ajax({
-        type: "GET",
-        url: "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkAdminUserInfo.php",
-        data: ({
-            type: "turktour",
-            userId: uid,
-            taskId: tid
-        }),
-        async: false,
-        success: function (obj) {
-            if (obj == "") {} else {
-                var userArr = eval('(' + obj + ')');
-                numUsers = userArr.length;
-                for (var i = 0; i < userArr.length; i++) {
-                    userKeys[userArr[i]['userId']] = userArr[i]['name'];
-
-                    if (userArr[i]['userId'] == uid) {
-                        user = userArr[i];
-                    }
-                }
-            }
-        }
-    });
-
-
-}
-
 
 function problemStatement(constraint, predData) {
     var statement;

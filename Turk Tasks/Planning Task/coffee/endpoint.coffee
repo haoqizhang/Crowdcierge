@@ -2,7 +2,6 @@ do ->
   $('document').ready ( =>
     readUrlParameters()
     loadTaskState()
-    loadUserData()
     initMap()
     loadStream()
     loadStateIntoInterface()
@@ -20,6 +19,9 @@ do ->
     prepCalendar()
   
     showExplanationBox()
+
+    session = new com.uid.crowdcierge.Session
+    console.log session
   )
 
   prepareSearchBox = ->

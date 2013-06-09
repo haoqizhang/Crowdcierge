@@ -4,27 +4,23 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   (function() {
-    var ActivityModel, _ref;
+    var _ref;
 
-    return ActivityModel = (function(_super) {
-      __extends(ActivityModel, _super);
+    return com.uid.crowdcierge.Constraint = (function(_super) {
+      __extends(Constraint, _super);
 
-      function ActivityModel() {
-        _ref = ActivityModel.__super__.constructor.apply(this, arguments);
+      function Constraint() {
+        _ref = Constraint.__super__.constructor.apply(this, arguments);
         return _ref;
       }
 
-      ActivityModel.prototype.defaults = {
-        name: null,
-        description: '',
-        location: null,
-        duration: 0,
-        categories: [],
-        lastModified: 0,
-        shitId: null
+      Constraint.prototype.defaults = {
+        category: null,
+        range: null,
+        value: 0
       };
 
-      return ActivityModel;
+      return Constraint;
 
     })(Backbone.Model);
   })();

@@ -1,5 +1,5 @@
 do ->
-  class ActivityModel extends Backbone.Model
+  class com.uid.crowdcierge.Activity extends Backbone.Model
     defaults:
       name: null
       description: ''
