@@ -21,7 +21,25 @@
       };
 
       MainView.prototype.render = function() {
-        return this.$el = $('body').empty();
+        var bodyView, footerView, headerView;
+
+        this.$el = $('body').empty();
+        headerView = new com.uid.crowdcierge.HeaderView({
+          currentTaskModel: this.session.currentTaskModel,
+          constraintsModel: this.session.constraintsModel
+        });
+        bodyView = new com.uid.crowdcierge.BodyView({
+          session: this.session
+        });
+        footerView = new com.uid.crowdcierge.FooterView({
+          model: this.session.currentTaskModel
+        });
+        headerView.render();
+        bodyView.render();
+        footerView.render();
+        this.$el.append(headerView.$el);
+        this.$el.append(bodyView.$el);
+        return this.$el.append(footerView.$el);
       };
 
       return MainView;

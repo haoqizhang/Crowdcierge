@@ -5,41 +5,49 @@ do ->
     constructor: (options) ->
       @session = options.session
       @currentTaskModel = @session.currentTaskModel
+      @itineraryModel = @session.itineraryModel
+      @constraintsModel = @session.constraintsModel
+      @activitiesModel = @session.activitiesModel
 
     # Currently needs to load state async
     load: =>
-      @_readUrlParameters()
-      console.log @currentTaskModel
       if not @currentTaskModel.get('tid')?
-        console.error 'NO TASK ID SET.'
+        console.error 'No tid param set'
         return
 
       $.ajax
         type: 'GET'
+        dataType: 'json'
         url: _STATE_LOAD_URL
         data:
           type: 'turktour',
           id: @currentTaskModel.get('tid')
         async: false
         success: ((obj) =>
-            console.log obj
+            @_processState(obj)
           )
 
+    # You have got to be fucking kidding me
+    _processState: (meta) =>
+      @currentTaskModel.set 'stateId', meta.stateId
 
-    _readUrlParameters: =>
-      params = @_getUrlParams();
+      meta.state = JSON.parse meta.state
+      itinerary = meta.state.itinerary
+      itineraryTimes = meta.state.itineraryTimes
 
-      @currentTaskModel.set params
+      for i in [0..itinerary.length-1]
+        if itinerary[i].indexOf('user') != -1
+          itinerary[i] = itinerary[i].substring(5)
+        activity = @activitiesModel.get('items').get(itinerary[i])
+        @itineraryModel.push activity
 
-    _getUrlParams: =>
-      params = {}
-      m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g)
-      console.log m
-      if m?
-        for i in [0..m.length-1]
-          a = m[i].match(/.([^=]+)=(.*)/)
-          params[@_unescapeUrl a[1]] = @_unescapeUrl a[2]        
-      return params
+      # How the fuck does this happen
+      @_processAdmin meta.state.admin
 
-    _unescapeUrl: (s) =>
-      return decodeURIComponent(s.replace /\+/g, "%20" )
+    # I'm sorry
+    _processAdmin: (admin) =>
+      @currentTaskModel.set admin
+
+      for con in admin.constraints
+        constraintModel = new com.uid.crowdcierge.Constraint con
+        @constraintsModel.push constraintModel

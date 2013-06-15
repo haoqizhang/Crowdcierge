@@ -3,15 +3,18 @@
   (function() {
     return com.uid.crowdcierge.Session = (function() {
       function Session() {
-        this.itineraryModel = new Backbone.Collection({
-          model: com.uid.crowdcierge.ItineraryItem
+        var activities;
+
+        this.itineraryModel = new Backbone.Collection;
+        this.itineraryModel.model = com.uid.crowdcierge.Activity;
+        activities = new Backbone.Collection;
+        activities.model = com.uid.crowdcierge.Activity;
+        this.activitiesModel = new Backbone.Model({
+          items: activities,
+          selected: null
         });
-        this.activitiesModel = new Backbone.Collection({
-          model: com.uid.crowdcierge.Activity
-        });
-        this.constraintsModel = new Backbone.Collection({
-          model: com.uid.crowdcierge.Constraint
-        });
+        this.constraintsModel = new Backbone.Collection;
+        this.constraintsModel.model = com.uid.crowdcierge.Constraint;
         this.checkItemModel = new Backbone.Collection;
         this.currentTaskModel = new Backbone.Model;
       }

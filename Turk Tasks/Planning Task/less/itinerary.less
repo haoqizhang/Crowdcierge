@@ -3,61 +3,61 @@
 @traveltime-color: rgb(3,209,92);
 
 #itineraryColumn {
-	left:70%;
-    background:white;
-	position:absolute;
-    top:52px;
-    bottom:35px;
-    width:30%;
-    font-size:1em;
-    z-index:4;
-    overflow:hidden;
+  left:70%;
+  background:white;
+  position:absolute;
+  top:52px;
+  bottom:35px;
+  width:30%;
+  font-size:1em;
+  z-index:4;
+  overflow:hidden;
 
-    .inneriniterary {
-    	position:relative;
-	    width:96%;
-	    margin-left:2%;
-	    margin-right:2%;
-	    display:block;
+  .inneriniterary {
+    position:relative;
+    width:96%;
+    margin-left:2%;
+    margin-right:2%;
+    display:block;
+  }
+  .sectiontitle {
+    padding-bottom:11px;
+    margin-left:8px;
+  } 
+
+  #travelTimeBox {
+    width:20px;
+    height:20px;
+    background-color: @traveltime-color;
+    position: absolute;
+    margin-top:3px;
+  }
+
+  #travelTimeText {
+    font-size:70%;
+    color: @Hue-02;
+    position:relative;
+    margin-left: 25px;
+    margin-top:3px;
+  }
+
+  #calendarWrapper {
+    overflow:auto;
+    height:85%;
+
+    #calendar {
+        width:350px;
+        margin-left:2%;
+        margin-right:2%;
     }
-	.sectiontitle {
-		padding-bottom:11px;
-		margin-left:8px;
-	}	
 
-	#travelTimeBox {
-		width:20px;
-		height:20px;
-		background-color: @traveltime-color;
-		position: absolute;
-		margin-top:3px;
-	}
-
-	#travelTimeText {
-		font-size:70%;
-		color: @Hue-02;
-		position:relative;
-		margin-left: 25px;
-		margin-top:3px;
-	}
-
-	#calendarWrapper {
-		overflow:auto;
-		height:85%;
-
-		#calendar {
-		    width:350px;
-		    margin-left:2%;
-		    margin-right:2%;
-		}
-
-		#calendarEnd {
-			background-color:red; 
-			text-align:center; 
-			width:300px; 
-			margin-left:2%; 
-			margin-right:3%; 
-			padding-left:12%;
-		}
-	}
+    #calendarEnd {
+      background-color:red; 
+      text-align:center; 
+      width:300px; 
+      margin-left:2%; 
+      margin-right:3%; 
+      padding-left:12%;
+    }
+  }
 }

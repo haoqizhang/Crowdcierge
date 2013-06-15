@@ -1,6 +1,7 @@
 do ->
   class com.uid.crowdcierge.Constraint extends Backbone.Model
     defaults:
-      category: null
-      range: null
+      cat: ''
+      compare: ''
+      unit: ''
       value: 0

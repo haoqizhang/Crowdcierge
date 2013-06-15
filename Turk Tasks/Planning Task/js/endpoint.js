@@ -4,7 +4,7 @@
     _this = this;
 
   $('document').ready((function() {
-    var session, stateLoader;
+    var session, stateLoader, streamLoader, urlParser, view;
 
     readUrlParameters();
     loadTaskState();
@@ -12,9 +12,6 @@
     initMap();
     initActMap();
     loadStateIntoInterface();
-    if ($.browser.msie) {
-      alert("IE Error.");
-    }
     $(window).resize(function() {
       if (typeof map !== "undefined" && map !== null) {
         map.Resize();
@@ -24,11 +21,27 @@
     prepareSearchBox();
     prepCalendar();
     showExplanationBox();
+    if ($.browser.msie) {
+      alert("IE Error.");
+    }
     session = new com.uid.crowdcierge.Session;
+    urlParser = new com.uid.crowdcierge.UrlParser({
+      session: session
+    });
+    urlParser.readUrlParameters();
+    streamLoader = new com.uid.crowdcierge.StreamLoader({
+      session: session
+    });
+    streamLoader.load();
     stateLoader = new com.uid.crowdcierge.StateLoader({
       session: session
     });
-    return stateLoader.load();
+    stateLoader.load();
+    view = new com.uid.crowdcierge.MainView({
+      session: session
+    });
+    view.render();
+    return console.log(session);
   }));
 
   prepareSearchBox = function() {

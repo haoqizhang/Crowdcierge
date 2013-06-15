@@ -20,8 +20,8 @@
         location: null,
         duration: 0,
         categories: [],
-        lastModified: 0,
-        shitId: null
+        createTime: 0,
+        start: 0
       };
 
       return Activity;

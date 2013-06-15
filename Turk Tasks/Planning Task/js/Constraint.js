@@ -15,8 +15,9 @@
       }
 
       Constraint.prototype.defaults = {
-        category: null,
-        range: null,
+        cat: '',
+        compare: '',
+        unit: '',
         value: 0
       };
 

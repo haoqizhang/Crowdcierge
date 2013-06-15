@@ -8,24 +8,25 @@
     _STATE_LOAD_URL = "https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/loadTurkTourTaskState.php";
     return com.uid.crowdcierge.StateLoader = (function() {
       function StateLoader(options) {
-        this._unescapeUrl = __bind(this._unescapeUrl, this);
-        this._getUrlParams = __bind(this._getUrlParams, this);
-        this._readUrlParameters = __bind(this._readUrlParameters, this);
+        this._processAdmin = __bind(this._processAdmin, this);
+        this._processState = __bind(this._processState, this);
         this.load = __bind(this.load, this);        this.session = options.session;
         this.currentTaskModel = this.session.currentTaskModel;
+        this.itineraryModel = this.session.itineraryModel;
+        this.constraintsModel = this.session.constraintsModel;
+        this.activitiesModel = this.session.activitiesModel;
       }
 
       StateLoader.prototype.load = function() {
         var _this = this;
 
-        this._readUrlParameters();
-        console.log(this.currentTaskModel);
         if (this.currentTaskModel.get('tid') == null) {
-          console.error('NO TASK ID SET.');
+          console.error('No tid param set');
           return;
         }
         return $.ajax({
           type: 'GET',
+          dataType: 'json',
           url: _STATE_LOAD_URL,
           data: {
             type: 'turktour',
@@ -33,35 +34,40 @@
           },
           async: false,
           success: (function(obj) {
-            return console.log(obj);
+            return _this._processState(obj);
           })
         });
       };
 
-      StateLoader.prototype._readUrlParameters = function() {
-        var params;
+      StateLoader.prototype._processState = function(meta) {
+        var activity, i, itinerary, itineraryTimes, _i, _ref;
 
-        params = this._getUrlParams();
-        return this.currentTaskModel.set(params);
-      };
-
-      StateLoader.prototype._getUrlParams = function() {
-        var a, i, m, params, _i, _ref;
-
-        params = {};
-        m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g);
-        console.log(m);
-        if (m != null) {
-          for (i = _i = 0, _ref = m.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-            a = m[i].match(/.([^=]+)=(.*)/);
-            params[this._unescapeUrl(a[1])] = this._unescapeUrl(a[2]);
+        this.currentTaskModel.set('stateId', meta.stateId);
+        meta.state = JSON.parse(meta.state);
+        itinerary = meta.state.itinerary;
+        itineraryTimes = meta.state.itineraryTimes;
+        for (i = _i = 0, _ref = itinerary.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          if (itinerary[i].indexOf('user') !== -1) {
+            itinerary[i] = itinerary[i].substring(5);
           }
+          activity = this.activitiesModel.get('items').get(itinerary[i]);
+          this.itineraryModel.push(activity);
         }
-        return params;
+        return this._processAdmin(meta.state.admin);
       };
 
-      StateLoader.prototype._unescapeUrl = function(s) {
-        return decodeURIComponent(s.replace(/\+/g, "%20"));
+      StateLoader.prototype._processAdmin = function(admin) {
+        var con, constraintModel, _i, _len, _ref, _results;
+
+        this.currentTaskModel.set(admin);
+        _ref = admin.constraints;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          con = _ref[_i];
+          constraintModel = new com.uid.crowdcierge.Constraint(con);
+          _results.push(this.constraintsModel.push(constraintModel));
+        }
+        return _results;
       };
 
       return StateLoader;

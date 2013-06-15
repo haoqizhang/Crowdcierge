@@ -2,13 +2,16 @@ do ->
   class com.uid.crowdcierge.Session
     constructor: ->
       @itineraryModel = new Backbone.Collection
-        model: com.uid.crowdcierge.ItineraryItem
+      @itineraryModel.model = com.uid.crowdcierge.Activity
 
-      @activitiesModel = new Backbone.Collection
-        model: com.uid.crowdcierge.Activity
+      activities = new Backbone.Collection
+      activities.model = com.uid.crowdcierge.Activity
+      @activitiesModel = new Backbone.Model
+        items: activities
+        selected: null
 
       @constraintsModel = new Backbone.Collection
-        model: com.uid.crowdcierge.Constraint
+      @constraintsModel.model = com.uid.crowdcierge.Constraint
 
       @checkItemModel = new Backbone.Collection
 

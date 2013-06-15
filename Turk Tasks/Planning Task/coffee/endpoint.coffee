@@ -9,9 +9,6 @@ $('document').ready ( =>
 
   loadStateIntoInterface()
 
-  if $.browser.msie
-    alert "IE Error."
-
   $(window).resize ->
     map?.Resize()
     setTimeout map?.SetCenter(map.GetCenter()), 1000
@@ -22,11 +19,34 @@ $('document').ready ( =>
 
   showExplanationBox()
 
+  ################
+  # The good stuff
+  ################
+
+  if $.browser.msie
+    alert "IE Error."
+
   session = new com.uid.crowdcierge.Session
+  urlParser = new com.uid.crowdcierge.UrlParser
+    session: session
+  urlParser.readUrlParameters()
+
+  # Stream must be loaded before state
+  streamLoader = new com.uid.crowdcierge.StreamLoader
+    session: session
+  streamLoader.load()
 
   stateLoader = new com.uid.crowdcierge.StateLoader
     session: session
   stateLoader.load()
+
+  #TODO: create controllers
+
+  view = new com.uid.crowdcierge.MainView
+    session: session
+  view.render()
+
+  console.log session
 )
 
 prepareSearchBox = ->

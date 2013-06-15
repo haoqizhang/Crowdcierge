@@ -19,7 +19,7 @@
         <link rel='stylesheet' type='text/css' href='../less/main.css' />
 
         <!-- LIBRARY JS FILES -->
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
         <script type="text/javascript" src="../lib/jquery/jquery.validate.min.js"></script>
         <script type="text/javascript" src="../lib/underscore.js"></script>
@@ -39,11 +39,15 @@
 
         <!-- COFFEESCRIPT FILES -->
         <script type="text/javascript" src="../js/Session.js"></script>
+        <script type="text/javascript" src="../js/UrlParser.js"></script>
         <script type="text/javascript" src="../js/StateLoader.js"></script>
+        <script type="text/javascript" src="../js/StreamLoader.js"></script>
         <script type="text/javascript" src="../js/Activity.js"></script>
         <script type="text/javascript" src="../js/Constraint.js"></script>
-        <script type="text/javascript" src="../js/ItineraryItem.js"></script>
         <script type="text/javascript" src="../js/MainView.js"></script>
+        <script type="text/javascript" src="../js/HeaderView.js"></script>
+        <script type="text/javascript" src="../js/BodyView.js"></script>
+        <script type="text/javascript" src="../js/FooterView.js"></script>
         <script type="text/javascript" src="../js/endpoint.js"></script>
 
         <script type="text/javascript" src="../js/crowdcierge-planning-main.js"></script>
@@ -91,20 +95,23 @@
             </tr>
         </script>
 
+        <script id="header-view-template" type="text/x-handlebars-template">
+            <span id="eventName">{{name}}</span>
+            <button class="missionbuttons" id="revealButton">reveal mission details</button>
+            <button class="missionbuttons" id="helpButton" >What you can do</button>
+            <a target="_blank" href="http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/Mobi/Mobi_Turk_Tutorial.html">confused? check out the tutorial</a>
+        </script>
+
+        <script id="footer-view-admin-template" type="text/x-handlebars-template">
+            <p style='text-align:center'>If you are experiencing problems, please <a href="mailto:jrafidi@mit.edu">contact us</a>.
+            </p>
+        </script>
+
         <!-- DO NOT MOVE THE PLACEMENT OF THIS LINE RELATIVE TO OTHER SCRIPT INCLUSIONS -->
         <script type="text/javascript" src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3"></script>
     </head>
     
     <body>
-        <div class="header">
-            <div> 
-                <span id='eventName'></span>
-                <button class='missionbuttons'  onclick="viewMission()">reveal mission details</button>
-                <button class='missionbuttons'  onclick="viewHelp()" id="helpButton" >What you can do</button>
-                <a target='_blank' href="http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/Mobi/Mobi_Turk_Tutorial.html">confused? check out the tutorial</a>
-            </div>
-        </div>
-
         <!-- The overlay and the box -->
         <div id="overlay"></div>
         <div class="box" id="box">
@@ -404,11 +411,6 @@
                 <div id="calendar"></div>
 				<div id="calendarEnd">End</div>
             </div>
-        </div>
-
-        <div id="footer">
-            <p style='text-align:center'>If you are experiencing problems, please <a href="mailto:jrafidi@mit.edu">contact us</a>.
-            </p>
         </div>
     </body>
 </html>
