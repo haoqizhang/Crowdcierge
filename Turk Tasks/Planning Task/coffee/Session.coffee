@@ -1,6 +1,6 @@
 do ->
   class com.uid.crowdcierge.Session
-    initialize: =>
+    constructor: ->
       @itineraryModel = new Backbone.Collection
         model: com.uid.crowdcierge.ItineraryItem
 

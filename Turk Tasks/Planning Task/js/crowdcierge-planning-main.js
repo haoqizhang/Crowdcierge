@@ -54,28 +54,11 @@ var requestItem = null;
 var state; // state of the world
 var stateId = null;
 var preferenceOrdering = null; // ordering on previous preferences
-var userKeys = []; //todo, more efficient
 var newFieldId = 0;
 var newPreferenceId = 0;
 var newChoices = [];
 var newPreferences = [];
 var planByCategory = true;
-
-function readySearchBox() {
-
-    searchAutocomplete = $('#searchBox').autocomplete({
-        minLength: 2,
-        source: userStream,
-        select: function (event, ui) {
-            var item = ui.item;
-            $('#searchBox').val(item.value);
-            openItem(item);
-            return false;
-        }
-    });
-
-    return;
-}
 
 function prepCalendar() {
     calBegin = beginTime;

@@ -20,7 +20,9 @@
         return this.session = this.options.session;
       };
 
-      MainView.prototype.render = function() {};
+      MainView.prototype.render = function() {
+        return this.$el = $('body').empty();
+      };
 
       return MainView;
 

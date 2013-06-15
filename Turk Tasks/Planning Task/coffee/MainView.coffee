@@ -4,4 +4,5 @@ do ->
       @session = @options.session
 
     render: =>
+      @$el = $('body').empty()
       
