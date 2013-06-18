@@ -1,31 +1,102 @@
 @import "common.less";
 
+@stream-background-color: @Hue-08;
 @stream-item-color: white;
 
-#brainstream {
-    td {
-        padding-left:6px;
-        padding-right:6px;
+.stream-view {
+  background: @Hue-08;
+  width: 30%;
+  padding: 10px;
+  height: 100%;
+
+  .stream-title {
+    height: 25px;
+    color: @Hue-02;
+    padding: 0px;
+  }
+
+  .stream-search {
+    height: 70px;
+
+    .clear-filter {
+      padding-bottom: 10px;
+      color: @Hue-02;
     }
+
+    .tag-container {
+      padding: 0px 0px 10px 10px;
+    }
+
+    .stream-search-box {
+      input {
+        margin-top: 2px;
+        color: gray;
+        width: 80%;
+
+        &.ui-autocomplete-input {
+          max-height: 100px;
+          overflow-y: auto;
+          overflow-x: hidden;
+          padding-right: 20px;
+          z-index: 20;
+        }
+      }
+
+      button {
+        padding: 2px;
+        font-size: 75%;
+        width: 16%;
+      }
+    }
+  }
+
+  .stream-item-list {
+    border-collapse: collapse;
+    overflow: auto;
+    display: block;
+    height: 75%;
+
+    td {
+      padding-left:6px;
+      padding-right:6px;
+    }
+
     tr {
-        border-bottom: 1px solid gray;
-        vertical-align: top;
-        cursor:pointer;
+      border-bottom: 1px solid gray;
+      vertical-align: top;
+      cursor:pointer;
     }
 
     .sidesc {
-        padding-left:12px;
+      padding-left:12px;
     }
 
     .sitem-text-td {
-        width:100%;
+      width:100%;
     }
+  }
 }
 
 .stream-item {
-    background-color: @stream-item-color;
+  background-color: @stream-item-color;
 
-    &:hover {
-        background-color: darken(@stream-item-color, 20%);
-    }
+  &:hover {
+    background-color: darken(@stream-item-color, 20%);
+  }
+}
+
+.stream-item-list tr.check {
+  background: yellow;
+}
+
+.badge_check {
+  background-position:top center;
+  background-repeat:no-repeat;
+  vertical-align: top;
+  text-align: center;
+  font-weight: bold;
+  color: black;
+  width:25px;
+  height:26px;
+  font-size: 2em;
 }

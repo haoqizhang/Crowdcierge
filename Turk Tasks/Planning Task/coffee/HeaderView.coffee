@@ -5,7 +5,7 @@ do ->
     events:
       'click #revealButton': '_handleRevealButtonClick'
       'click #helpButton': '_handleHelpButtonClick'
-      
+
     initialize: =>
       @currentTaskModel = @options.currentTaskModel
       @constraintsModel = @options.constraintsModel
@@ -13,9 +13,9 @@ do ->
     render: =>
       @$el.empty()
 
-      source = $('#header-view-template').html();
-      template = Handlebars.compile(source);
-      @$el.html template(@currentTaskModel.attributes);
+      source = $('#header-view-template').html()
+      template = Handlebars.compile(source)
+      @$el.html template(@currentTaskModel.attributes)
 
     _handleHelpButtonClick: =>
       console.log 'clicked help button'

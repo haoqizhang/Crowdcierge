@@ -41,6 +41,8 @@
       session: session
     });
     view.render();
+    $('body').empty();
+    $('body').append(view.$el);
     return console.log(session);
   }));
 

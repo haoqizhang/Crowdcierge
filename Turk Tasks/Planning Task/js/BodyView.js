@@ -16,11 +16,32 @@
         return _ref;
       }
 
+      BodyView.prototype.className = 'planning-body';
+
       BodyView.prototype.initialize = function() {
         return this.session = this.options.session;
       };
 
-      BodyView.prototype.render = function() {};
+      BodyView.prototype.render = function() {
+        var itineraryView, mapView, streamView;
+
+        this.$el.empty();
+        streamView = new com.uid.crowdcierge.StreamView({
+          session: this.session
+        });
+        mapView = new com.uid.crowdcierge.MapView({
+          session: this.session
+        });
+        itineraryView = new com.uid.crowdcierge.ItineraryView({
+          session: this.session
+        });
+        streamView.render();
+        mapView.render();
+        itineraryView.render();
+        this.$el.append(streamView.$el);
+        this.$el.append(mapView.$el);
+        return this.$el.append(itineraryView.$el);
+      };
 
       return BodyView;
 

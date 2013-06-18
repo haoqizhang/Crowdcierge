@@ -16,14 +16,16 @@
         return _ref;
       }
 
+      MainView.prototype.className = 'crowdcierge-main';
+
       MainView.prototype.initialize = function() {
         return this.session = this.options.session;
       };
 
       MainView.prototype.render = function() {
-        var bodyView, footerView, headerView;
+        var bodyView, headerView;
 
-        this.$el = $('body').empty();
+        this.$el.empty();
         headerView = new com.uid.crowdcierge.HeaderView({
           currentTaskModel: this.session.currentTaskModel,
           constraintsModel: this.session.constraintsModel
@@ -31,15 +33,10 @@
         bodyView = new com.uid.crowdcierge.BodyView({
           session: this.session
         });
-        footerView = new com.uid.crowdcierge.FooterView({
-          model: this.session.currentTaskModel
-        });
         headerView.render();
         bodyView.render();
-        footerView.render();
         this.$el.append(headerView.$el);
-        this.$el.append(bodyView.$el);
-        return this.$el.append(footerView.$el);
+        return this.$el.append(bodyView.$el);
       };
 
       return MainView;

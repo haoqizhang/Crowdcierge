@@ -45,6 +45,8 @@ $('document').ready ( =>
   view = new com.uid.crowdcierge.MainView
     session: session
   view.render()
+  $('body').empty()
+  $('body').append view.$el
 
   console.log session
 )
