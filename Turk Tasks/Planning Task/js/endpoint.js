@@ -4,23 +4,8 @@
     _this = this;
 
   $('document').ready((function() {
-    var session, stateLoader, streamLoader, urlParser, view;
+    var session, stateLoader, streamLoader, todoManager, urlParser, view;
 
-    readUrlParameters();
-    loadTaskState();
-    loadStream();
-    initMap();
-    initActMap();
-    loadStateIntoInterface();
-    $(window).resize(function() {
-      if (typeof map !== "undefined" && map !== null) {
-        map.Resize();
-      }
-      return setTimeout(typeof map !== "undefined" && map !== null ? map.SetCenter(map.GetCenter()) : void 0, 1000);
-    });
-    prepareSearchBox();
-    prepCalendar();
-    showExplanationBox();
     if ($.browser.msie) {
       alert("IE Error.");
     }
@@ -37,6 +22,10 @@
       session: session
     });
     stateLoader.load();
+    todoManager = new com.uid.crowdcierge.TodoManager({
+      session: session
+    });
+    todoManager.updateTodo();
     view = new com.uid.crowdcierge.MainView({
       session: session
     });

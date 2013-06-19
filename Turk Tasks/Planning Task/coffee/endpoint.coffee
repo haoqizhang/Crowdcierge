@@ -1,23 +1,23 @@
 $('document').ready ( =>
-  readUrlParameters()
+  #readUrlParameters()
 
-  loadTaskState()
-  loadStream()
+  #loadTaskState()
+  #loadStream()
 
-  initMap()
-  initActMap()
+  #initMap()
+  #initActMap()
 
-  loadStateIntoInterface()
+  #loadStateIntoInterface()
 
-  $(window).resize ->
-    map?.Resize()
-    setTimeout map?.SetCenter(map.GetCenter()), 1000
+  #$(window).resize ->
+   # map?.Resize()
+    #setTimeout map?.SetCenter(map.GetCenter()), 1000
 
-  prepareSearchBox()
+  #prepareSearchBox()
   
-  prepCalendar()
+  #prepCalendar()
 
-  showExplanationBox()
+  #showExplanationBox()
 
   ################
   # The good stuff
@@ -27,6 +27,7 @@ $('document').ready ( =>
     alert "IE Error."
 
   session = new com.uid.crowdcierge.Session
+
   urlParser = new com.uid.crowdcierge.UrlParser
     session: session
   urlParser.readUrlParameters()
@@ -39,6 +40,10 @@ $('document').ready ( =>
   stateLoader = new com.uid.crowdcierge.StateLoader
     session: session
   stateLoader.load()
+
+  todoManager = new com.uid.crowdcierge.TodoManager
+    session: session
+  todoManager.updateTodo()
 
   #TODO: create controllers
 

@@ -5,9 +5,9 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   (function() {
-    var _ref;
+    var ActivityItemsView, CheckItemsView, TodoItemsView, _ref, _ref1, _ref2, _ref3;
 
-    return com.uid.crowdcierge.StreamView = (function(_super) {
+    com.uid.crowdcierge.StreamView = (function(_super) {
       __extends(StreamView, _super);
 
       function StreamView() {
@@ -22,7 +22,7 @@
         this.session = this.options.session;
         this.itineraryModel = this.session.itineraryModel;
         this.activitiesModel = this.session.activitiesModel;
-        this.constraintsModel = this.session.constraintsModel;
+        this.todoItemModel = this.session.todoItemModel;
         this.checkItemModel = this.session.checkItemModel;
         return this.currentTaskModel = this.session.currentTaskModel;
       };
@@ -33,10 +33,84 @@
         this.$el.empty();
         source = $('#stream-view-template').html();
         template = Handlebars.compile(source);
-        return this.$el.html(template(this.currentTaskModel.attributes));
+        this.$el.html(template(this.currentTaskModel.attributes));
+        this.checkItems = new CheckItemsView({
+          checkItemModel: this.checkItemModel
+        });
+        this.todoItems = new TodoItemsView({
+          todoItemModel: this.todoItemModel
+        });
+        this.activityItems = new ActivityItemsView({
+          activitiesModel: this.activitiesModel
+        });
+        this.checkItems.render();
+        this.todoItems.render();
+        this.activityItems.render();
+        this.$('.stream-item-list').append(this.checkItems.$el);
+        this.$('.stream-item-list').append(this.todoItems.$el);
+        return this.$('.stream-item-list').append(this.activityItems.$el);
       };
 
       return StreamView;
+
+    })(Backbone.View);
+    TodoItemsView = (function(_super) {
+      __extends(TodoItemsView, _super);
+
+      function TodoItemsView() {
+        this.render = __bind(this.render, this);
+        this.initialize = __bind(this.initialize, this);        _ref1 = TodoItemsView.__super__.constructor.apply(this, arguments);
+        return _ref1;
+      }
+
+      TodoItemsView.prototype.tag = 'tbody';
+
+      TodoItemsView.prototype.id = 'sysStreamBody';
+
+      TodoItemsView.prototype.initialize = function() {
+        this.todoItemModel = this.options.todoItemModel;
+        return this.listenTo(this.todoItemModel, 'add change remove reset', this.render);
+      };
+
+      TodoItemsView.prototype.render = function() {
+        return this.$el.empty();
+      };
+
+      return TodoItemsView;
+
+    })(Backbone.View);
+    CheckItemsView = (function(_super) {
+      __extends(CheckItemsView, _super);
+
+      function CheckItemsView() {
+        this.initialize = __bind(this.initialize, this);        _ref2 = CheckItemsView.__super__.constructor.apply(this, arguments);
+        return _ref2;
+      }
+
+      CheckItemsView.prototype.tag = 'tbody';
+
+      CheckItemsView.prototype.id = 'checkStreamBody';
+
+      CheckItemsView.prototype.initialize = function() {};
+
+      return CheckItemsView;
+
+    })(Backbone.View);
+    return ActivityItemsView = (function(_super) {
+      __extends(ActivityItemsView, _super);
+
+      function ActivityItemsView() {
+        this.initialize = __bind(this.initialize, this);        _ref3 = ActivityItemsView.__super__.constructor.apply(this, arguments);
+        return _ref3;
+      }
+
+      ActivityItemsView.prototype.tag = 'tbody';
+
+      ActivityItemsView.prototype.id = 'userStreamBody';
+
+      ActivityItemsView.prototype.initialize = function() {};
+
+      return ActivityItemsView;
 
     })(Backbone.View);
   })();

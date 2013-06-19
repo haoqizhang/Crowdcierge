@@ -13,6 +13,7 @@ do ->
       @constraintsModel = new Backbone.Collection
       @constraintsModel.model = com.uid.crowdcierge.Constraint
 
+      @todoItemModel = new Backbone.Collection
       @checkItemModel = new Backbone.Collection
 
       @currentTaskModel = new Backbone.Model

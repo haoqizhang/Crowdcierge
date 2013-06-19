@@ -39,6 +39,7 @@
 
     <!-- COFFEESCRIPT FILES -->
     <script type="text/javascript" src="../js/Session.js"></script>
+    <script type="text/javascript" src="../js/TodoManager.js"></script>
     <script type="text/javascript" src="../js/UrlParser.js"></script>
     <script type="text/javascript" src="../js/StateLoader.js"></script>
     <script type="text/javascript" src="../js/StreamLoader.js"></script>
@@ -64,13 +65,13 @@
     <!-- CROWDCIERGE HANDLEBARS TEMPLATES -->
 
     <script id="todo-template" type="text/x-handlebars-template">
-      <tr class="todo" id="{{id}}">
-        <td class='sitem-text-td'>
-          <b>{{data.name}}</b>
+      <tr class="todo">
+        <td class="sitem-text-td">
+          <b>{{name}}</b>
           <br/>
-          <div class="sidesc">{{#shorten data.description}}{{/shorten}}<br/>
-            {{#each data.categories}}
-              <a class="tagstreamitem" onclick='filterOnTag("{{.}}")'>#{{.}}</a>
+          <div class="sidesc">{{#shorten description}}{{/shorten}}<br/>
+            {{#each categories}}
+              <a class="tagstreamitem">#{{.}}</a>
             {{/each}}
           </div>
         </td>
@@ -81,18 +82,18 @@
     </script>
 
     <script id="stream-item-template" type="text/x-handlebars-template">
-      <tr class="stream-item" id="stream_{{id}}">
-        <td class='sitem-text-td'>
-          <b>{{data.name}}</b>
+      <tr class="stream-item">
+        <td class="sitem-text-td">
+          <b>{{name}}</b>
           <br/>
-          <div class="sidesc">{{#shorten data.description}}{{/shorten}}<br/>
-            {{#each data.categories}}
-              <a class="tagstreamitem" onclick='filterOnTag("{{.}}")'>#{{.}}</a>
+          <div class="sidesc">{{#shorten description}}{{/shorten}}<br/>
+            {{#each categories}}
+              <a class="tagstreamitem">#{{.}}</a>
             {{/each}}
           </div>
         </td>
-        <td id='stime_{{id}}'>
-          <div id='ss_{{id}}' class='sspinpos'></div>
+        <td>
+          <div class="sspinpos"></div>
         </td>
       </tr>
     </script>

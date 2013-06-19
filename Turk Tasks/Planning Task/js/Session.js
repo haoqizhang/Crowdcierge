@@ -15,6 +15,7 @@
         });
         this.constraintsModel = new Backbone.Collection;
         this.constraintsModel.model = com.uid.crowdcierge.Constraint;
+        this.todoItemModel = new Backbone.Collection;
         this.checkItemModel = new Backbone.Collection;
         this.currentTaskModel = new Backbone.Model;
       }
