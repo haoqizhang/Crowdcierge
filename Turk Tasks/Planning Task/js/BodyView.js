@@ -35,12 +35,13 @@
         itineraryView = new com.uid.crowdcierge.ItineraryView({
           session: this.session
         });
+        this.$el.append(streamView.$el);
+        this.$el.append(mapView.$el);
+        this.$el.append(itineraryView.$el);
         streamView.render();
         mapView.render();
         itineraryView.render();
-        this.$el.append(streamView.$el);
-        this.$el.append(mapView.$el);
-        return this.$el.append(itineraryView.$el);
+        return mapView.drawMap();
       };
 
       return BodyView;

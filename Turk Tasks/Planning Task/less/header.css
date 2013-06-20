@@ -27,6 +27,7 @@
   padding-left: 10px;
   background: #ffab07;
   padding-top: 10px;
+  height: 40px;
 }
 .header #eventName {
   font-size: 260%;

@@ -41,7 +41,8 @@
           todoItemModel: this.todoItemModel
         });
         this.activityItems = new ActivityItemsView({
-          activitiesModel: this.activitiesModel
+          activitiesModel: this.activitiesModel,
+          itineraryModel: this.itineraryModel
         });
         this.checkItems.render();
         this.todoItems.render();
@@ -58,6 +59,7 @@
       __extends(TodoItemsView, _super);
 
       function TodoItemsView() {
+        this._viewTodoItem = __bind(this._viewTodoItem, this);
         this.render = __bind(this.render, this);
         this.initialize = __bind(this.initialize, this);        _ref1 = TodoItemsView.__super__.constructor.apply(this, arguments);
         return _ref1;
@@ -67,13 +69,36 @@
 
       TodoItemsView.prototype.id = 'sysStreamBody';
 
+      TodoItemsView.prototype.events = {
+        'click .todo': '_viewTodoItem'
+      };
+
       TodoItemsView.prototype.initialize = function() {
         this.todoItemModel = this.options.todoItemModel;
         return this.listenTo(this.todoItemModel, 'add change remove reset', this.render);
       };
 
       TodoItemsView.prototype.render = function() {
-        return this.$el.empty();
+        var $item, model, source, template, _i, _len, _ref2, _results;
+
+        this.$el.empty();
+        _ref2 = this.todoItemModel.models;
+        _results = [];
+        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+          model = _ref2[_i];
+          source = $("#todo-template").html();
+          template = Handlebars.compile(source);
+          $item = $(template(model));
+          _results.push(this.$el.append($item));
+        }
+        return _results;
+      };
+
+      TodoItemsView.prototype._viewTodoItem = function(evt) {
+        var id;
+
+        id = evt.currentTarget.id;
+        return console.log(this.todoItemModel.get(id));
       };
 
       return TodoItemsView;
@@ -100,6 +125,8 @@
       __extends(ActivityItemsView, _super);
 
       function ActivityItemsView() {
+        this._selectActivity = __bind(this._selectActivity, this);
+        this.render = __bind(this.render, this);
         this.initialize = __bind(this.initialize, this);        _ref3 = ActivityItemsView.__super__.constructor.apply(this, arguments);
         return _ref3;
       }
@@ -108,7 +135,42 @@
 
       ActivityItemsView.prototype.id = 'userStreamBody';
 
-      ActivityItemsView.prototype.initialize = function() {};
+      ActivityItemsView.prototype.events = {
+        'click .stream-item': '_selectActivity'
+      };
+
+      ActivityItemsView.prototype.initialize = function() {
+        this.activitiesModel = this.options.activitiesModel;
+        this.itineraryModel = this.options.itineraryModel;
+        return this.listenTo(this.activitiesModel, 'add change remove reset', this.render);
+      };
+
+      ActivityItemsView.prototype.render = function() {
+        var $item, index, model, source, template, _i, _len, _ref4, _results;
+
+        this.$el.empty();
+        _ref4 = this.activitiesModel.get('items').models;
+        _results = [];
+        for (_i = 0, _len = _ref4.length; _i < _len; _i++) {
+          model = _ref4[_i];
+          source = $("#stream-item-template").html();
+          template = Handlebars.compile(source);
+          index = _.indexOf(this.itineraryModel.models, model) + 1;
+          $item = $(template(_.defaults({
+            ind: index,
+            inIt: index > 0
+          }, model)));
+          _results.push(this.$el.append($item));
+        }
+        return _results;
+      };
+
+      ActivityItemsView.prototype._selectActivity = function(evt) {
+        var id;
+
+        id = evt.currentTarget.id;
+        return this.activitiesModel.set('selected', this.activitiesModel.get('items').get(id));
+      };
 
       return ActivityItemsView;
 

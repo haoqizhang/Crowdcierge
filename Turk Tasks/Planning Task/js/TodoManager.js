@@ -5,7 +5,7 @@
   (function() {
     return com.uid.crowdcierge.TodoManager = (function() {
       function TodoManager(options) {
-        this._createTodoItem = __bind(this._createTodoItem, this);
+        this._buildActivityTodoObject = __bind(this._buildActivityTodoObject, this);
         this._updateTimeConstraints = __bind(this._updateTimeConstraints, this);
         this._updateCalendarConstraints = __bind(this._updateCalendarConstraints, this);
         this._updateActivityConstraints = __bind(this._updateActivityConstraints, this);
@@ -25,7 +25,7 @@
       };
 
       TodoManager.prototype._updateActivityConstraints = function() {
-        var act, activityBuckets, cat, con, correct, diff, num, timeBuckets, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _results;
+        var act, activityBuckets, cat, con, correct, diff, model, num, obj, timeBuckets, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _results;
 
         timeBuckets = {};
         activityBuckets = {};
@@ -68,7 +68,9 @@
           }
           if (!correct) {
             diff = con.get('value' - num);
-            _results.push(this.todoItemModel.push(this._createTodoItem(con, num)));
+            obj = this._buildActivityTodoObject(con, num, diff);
+            model = new Backbone.Model(obj);
+            _results.push(this.todoItemModel.push(model));
           } else {
             _results.push(void 0);
           }
@@ -80,7 +82,29 @@
 
       TodoManager.prototype._updateTimeConstraints = function() {};
 
-      TodoManager.prototype._createTodoItem = function() {};
+      TodoManager.prototype._buildActivityTodoObject = function(con, num, diff) {
+        var err, ret;
+
+        ret = {};
+        switch (con.get('compare')) {
+          case 'at most':
+            err = 'Remove some \'' + con.get('cat') + '\' from the itinerary';
+            break;
+          case 'at least':
+            err = 'Add more \'' + con.get('cat') + '\' to the itinerary';
+            break;
+          case 'exactly':
+            if (diff < 0) {
+              err = 'Remove some \'' + con.get('cat') + '\' from the itinerary';
+            } else {
+              err = 'Add more \'' + con.get('cat') + '\' to the itinerary';
+            }
+        }
+        ret.name = err;
+        ret.categories = ['todo', con.get('cat')];
+        ret.description = ret.name;
+        return ret;
+      };
 
       return TodoManager;
 

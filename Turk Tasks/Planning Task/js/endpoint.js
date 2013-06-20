@@ -29,9 +29,9 @@
     view = new com.uid.crowdcierge.MainView({
       session: session
     });
-    view.render();
     $('body').empty();
     $('body').append(view.$el);
+    view.render();
     return console.log(session);
   }));
 

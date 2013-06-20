@@ -33,10 +33,10 @@
         bodyView = new com.uid.crowdcierge.BodyView({
           session: this.session
         });
-        headerView.render();
-        bodyView.render();
         this.$el.append(headerView.$el);
-        return this.$el.append(bodyView.$el);
+        this.$el.append(bodyView.$el);
+        headerView.render();
+        return bodyView.render();
       };
 
       return MainView;

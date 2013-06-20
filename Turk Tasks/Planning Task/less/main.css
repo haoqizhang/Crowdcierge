@@ -1,3 +1,4 @@
+/* Style for overlay and box */
 .addit {
 	border: 1px outset;
 	border-color: #000000;
@@ -79,78 +80,9 @@
 	padding: 10px;
 }
 
-#left2 {
-	position: absolute;
-	left: 0;
-	top: 52px;
-	bottom: 35px;
-	width: 40%;
-	font-size: 1em;
-	z-index: 4;
-	overflow: hidden;
-}
-
-* html #left2 {
-	height: 100%;
-	top: 0;
-	bottom: 0;
-}
-
-#left2 {
-	left: 30%;
-	background: white;
-}
-
-.inner {
-	display: block;
-	padding: 0 10px 10px 10px;
-}
-
 .bold {
 	font-size: 1.5em;
 	font-weight: bold;
-}
-
-a:link {
-	color: #0000CE;
-	text-decoration: underline;
-}
-
-a:active {
-	color: #0000CE;
-	text-decoration: underline;
-}
-
-a:visited {
-	color: #0000CE;
-	text-decoration: underline;
-}
-
-a:hover {
-	color: #0000CE;
-	text-decoration: underline;
-}
-
-a.tagrowitem {
-	margin-right: 10px;
-	color: #0000CE;
-	text-decoration: none;
-	float: left;
-}
-
-a.tagstreamitem {
-	margin-right: 10px;
-	color: #0000CE;
-	text-decoration: none;
-	float: left;
-}
-
-a.tagstreamitem:hover {
-	text-decoration: underline;
-}
-
-a.tagrowitem:hover {
-	text-decoration: underline;
 }
 
 .ui-icon {
@@ -202,44 +134,22 @@ a.tagrowitem:hover {
 	white-space: no-wrap;
 }
 
-div.row {
-	clear: both;
-	padding-top: 5px;
-}
-
-div.row span.label {
-	float: left;
-	width: 20%;
-	text-align: right;
-}
-
-div.spacer {
-	clear: both;
-}
-
-div.row span.formw {
-	width: 70%;
-	text-align: left;
-	float: right;
-}
-
 .planning-body {
 	position: relative;
 	font-size: 1em;
 	z-index: 4;
 	overflow: hidden;
-	height: 100%;
+	height: 650px;
 }
 
 html,body {
-	height: 100%;
+	height: 700px;
 	margin: 0px;
 }
 
 .crowdcierge-main {
 	height: 100%;
 	width: 100%;
-	max-height: 100%;
 	overflow: hidden;
 	font: 14px Lucida Grande, Arial, sans-serif;
 	background-color: white;

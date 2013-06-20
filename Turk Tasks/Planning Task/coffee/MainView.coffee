@@ -14,9 +14,9 @@ do ->
       bodyView = new com.uid.crowdcierge.BodyView
         session: @session
 
-      headerView.render()
-      bodyView.render()
-
       @$el.append headerView.$el
       @$el.append bodyView.$el
+
+      headerView.render()
+      bodyView.render()
       

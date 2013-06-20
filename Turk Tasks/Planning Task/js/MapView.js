@@ -11,16 +11,37 @@
       __extends(MapView, _super);
 
       function MapView() {
+        this.drawMap = __bind(this.drawMap, this);
         this.render = __bind(this.render, this);
         this.initialize = __bind(this.initialize, this);        _ref = MapView.__super__.constructor.apply(this, arguments);
         return _ref;
       }
 
+      MapView.prototype.className = 'map-view';
+
       MapView.prototype.initialize = function() {
         return this.session = this.options.session;
       };
 
-      MapView.prototype.render = function() {};
+      MapView.prototype.render = function() {
+        var source, template;
+
+        this.$el.empty();
+        source = $('#map-view-template').html();
+        template = Handlebars.compile(source);
+        return this.$el.html(template());
+      };
+
+      MapView.prototype.drawMap = function() {
+        var map;
+
+        map = L.map(this.$('#map')[0]);
+        L.tileLayer('http://{s}.tile.cloudmade.com/ebeae5620c954242916bfba0601e86d8/1/256/{z}/{x}/{y}.png', {
+          attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+          maxZoom: 18
+        }).addTo(map);
+        return map.setView([51.505, -0.09], 13, true);
+      };
 
       return MapView;
 

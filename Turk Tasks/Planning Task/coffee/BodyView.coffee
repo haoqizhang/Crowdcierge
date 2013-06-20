@@ -15,10 +15,12 @@ do ->
       itineraryView = new com.uid.crowdcierge.ItineraryView
         session: @session
 
-      streamView.render()
-      mapView.render()
-      itineraryView.render()
-
       @$el.append streamView.$el
       @$el.append mapView.$el
-      @$el.append itineraryView.$el  
+      @$el.append itineraryView.$el 
+
+      streamView.render()
+      mapView.render()
+      itineraryView.render() 
+
+      mapView.drawMap()
