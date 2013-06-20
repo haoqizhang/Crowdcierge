@@ -17,10 +17,8 @@ do ->
 
       @$el.append streamView.$el
       @$el.append mapView.$el
-      @$el.append itineraryView.$el 
+      @$el.append itineraryView.$el
 
       streamView.render()
       mapView.render()
-      itineraryView.render() 
-
-      mapView.drawMap()
+      itineraryView.render()

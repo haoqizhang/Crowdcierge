@@ -5,13 +5,14 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   (function() {
-    var _ref;
+    var _CIRCLE_MARKER_SIZE, _ref;
 
+    _CIRCLE_MARKER_SIZE = 20;
     return com.uid.crowdcierge.MapView = (function(_super) {
       __extends(MapView, _super);
 
       function MapView() {
-        this.drawMap = __bind(this.drawMap, this);
+        this._plotStartEnd = __bind(this._plotStartEnd, this);
         this.render = __bind(this.render, this);
         this.initialize = __bind(this.initialize, this);        _ref = MapView.__super__.constructor.apply(this, arguments);
         return _ref;
@@ -20,7 +21,9 @@
       MapView.prototype.className = 'map-view';
 
       MapView.prototype.initialize = function() {
-        return this.session = this.options.session;
+        this.session = this.options.session;
+        this.itineraryModel = this.session.itineraryModel;
+        return this.currentTaskModel = this.session.currentTaskModel;
       };
 
       MapView.prototype.render = function() {
@@ -29,18 +32,29 @@
         this.$el.empty();
         source = $('#map-view-template').html();
         template = Handlebars.compile(source);
-        return this.$el.html(template());
-      };
-
-      MapView.prototype.drawMap = function() {
-        var map;
-
-        map = L.map(this.$('#map')[0]);
+        this.$el.html(template());
+        this.map = L.map(this.$('#map')[0]);
         L.tileLayer('http://{s}.tile.cloudmade.com/ebeae5620c954242916bfba0601e86d8/1/256/{z}/{x}/{y}.png', {
           attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
           maxZoom: 18
-        }).addTo(map);
-        return map.setView([51.505, -0.09], 13, true);
+        }).addTo(this.map);
+        return this._plotStartEnd();
+      };
+
+      MapView.prototype._plotStartEnd = function() {
+        var startIcon, startLoc, startMarker;
+
+        startLoc = this.currentTaskModel.get('start');
+        this.map.setView([startLoc.lat, startLoc.long], 15, true);
+        startIcon = L.divIcon({
+          className: 'start-marker',
+          iconSize: [_CIRCLE_MARKER_SIZE, _CIRCLE_MARKER_SIZE]
+        });
+        startMarker = L.marker([startLoc.lat, startLoc.long], {
+          icon: startIcon
+        });
+        startMarker.bindPopup('Traveler\'s starting location');
+        return startMarker.addTo(this.map);
       };
 
       return MapView;

@@ -40,8 +40,7 @@
         this.$el.append(itineraryView.$el);
         streamView.render();
         mapView.render();
-        itineraryView.render();
-        return mapView.drawMap();
+        return itineraryView.render();
       };
 
       return BodyView;
