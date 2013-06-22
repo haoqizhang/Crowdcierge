@@ -7,6 +7,7 @@
 
         this.itineraryModel = new Backbone.Collection;
         this.itineraryModel.model = com.uid.crowdcierge.Activity;
+        this.travelTimeModel = new Backbone.Collection;
         activities = new Backbone.Collection;
         activities.model = com.uid.crowdcierge.Activity;
         this.activitiesModel = new Backbone.Model({

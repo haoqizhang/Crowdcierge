@@ -27,7 +27,7 @@ do ->
             @_processState(obj)
           )
 
-    # You have got to be fucking kidding me
+    # Urg
     _processState: (meta) =>
       @currentTaskModel.set 'stateId', meta.stateId
 
@@ -41,7 +41,7 @@ do ->
         activity = @activitiesModel.get('items').get(itinerary[i])
         @itineraryModel.push activity
 
-      # How the fuck does this happen
+      # Why
       @_processAdmin meta.state.admin
 
     # I'm sorry

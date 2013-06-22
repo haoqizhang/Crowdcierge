@@ -16,11 +16,23 @@
         return _ref;
       }
 
+      ItineraryView.prototype.className = 'itinerary-view';
+
       ItineraryView.prototype.initialize = function() {
-        return this.session = this.options.session;
+        this.session = this.options.session;
+        this.currentTaskModel = this.session.currentTaskModel;
+        this.itineraryModel = this.session.itineraryModel;
+        return this.travelTimeModel = this.session.travelTimeModel;
       };
 
-      ItineraryView.prototype.render = function() {};
+      ItineraryView.prototype.render = function() {
+        var source, template;
+
+        this.$el.empty();
+        source = $('#itinerary-view-template').html();
+        template = Handlebars.compile(source);
+        return this.$el.html(template());
+      };
 
       return ItineraryView;
 
