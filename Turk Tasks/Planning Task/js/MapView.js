@@ -12,6 +12,11 @@
       __extends(MapView, _super);
 
       function MapView() {
+        this._getActivityPopupFromModel = __bind(this._getActivityPopupFromModel, this);
+        this._showSelectedActivity = __bind(this._showSelectedActivity, this);
+        this._plotItineraryRoute = __bind(this._plotItineraryRoute, this);
+        this._plotItineraryPins = __bind(this._plotItineraryPins, this);
+        this._plotItinerary = __bind(this._plotItinerary, this);
         this._plotStartEnd = __bind(this._plotStartEnd, this);
         this.render = __bind(this.render, this);
         this.initialize = __bind(this.initialize, this);        _ref = MapView.__super__.constructor.apply(this, arguments);
@@ -22,8 +27,12 @@
 
       MapView.prototype.initialize = function() {
         this.session = this.options.session;
+        this.activitiesModel = this.session.activitiesModel;
         this.itineraryModel = this.session.itineraryModel;
-        return this.currentTaskModel = this.session.currentTaskModel;
+        this.currentTaskModel = this.session.currentTaskModel;
+        this.idToMarkerMap = {};
+        this.listenTo(this.itineraryModel, 'add remove reset', this._plotItinerary);
+        return this.listenTo(this.activitiesModel, 'change:selected', this._showSelectedActivity);
       };
 
       MapView.prototype.render = function() {
@@ -34,27 +43,91 @@
         template = Handlebars.compile(source);
         this.$el.html(template());
         this.map = L.map(this.$('#map')[0]);
-        L.tileLayer('http://{s}.tile.cloudmade.com/ebeae5620c954242916bfba0601e86d8/1/256/{z}/{x}/{y}.png', {
+        L.tileLayer('http://{s}.tile.cloudmade.com/ebeae5620c954242916bfba0601e86d8/99953/256/{z}/{x}/{y}.png', {
           attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
           maxZoom: 18
         }).addTo(this.map);
-        return this._plotStartEnd();
+        this._plotStartEnd();
+        return this._plotItinerary();
       };
 
       MapView.prototype._plotStartEnd = function() {
-        var startIcon, startLoc, startMarker;
+        var endIcon, endLoc, endMarker, startIcon, startLoc, startMarker;
 
         startLoc = this.currentTaskModel.get('start');
-        this.map.setView([startLoc.lat, startLoc.long], 15, true);
+        this.map.setView([startLoc.lat, startLoc.long], 14, true);
         startIcon = L.divIcon({
           className: 'start-marker',
           iconSize: [_CIRCLE_MARKER_SIZE, _CIRCLE_MARKER_SIZE]
         });
         startMarker = L.marker([startLoc.lat, startLoc.long], {
-          icon: startIcon
+          icon: startIcon,
+          zIndexOffset: 100
         });
         startMarker.bindPopup('Traveler\'s starting location');
-        return startMarker.addTo(this.map);
+        startMarker.addTo(this.map);
+        endLoc = this.currentTaskModel.get('end');
+        endIcon = L.divIcon({
+          className: 'end-marker',
+          iconSize: [_CIRCLE_MARKER_SIZE, _CIRCLE_MARKER_SIZE]
+        });
+        endMarker = L.marker([endLoc.lat - 0.0001, endLoc.long - 0.0001], {
+          icon: endIcon
+        });
+        endMarker.bindPopup('Traveler\'s ending location');
+        return endMarker.addTo(this.map);
+      };
+
+      MapView.prototype._plotItinerary = function() {
+        this._plotItineraryPins();
+        return this._plotItineraryRoute();
+      };
+
+      MapView.prototype._plotItineraryPins = function() {
+        var i, marker, model, _i, _j, _len, _len1, _ref1, _ref2, _results;
+
+        _ref1 = _.values(this.idToMarkerMap);
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          marker = _ref1[_i];
+          this.map.removeLayer(marker);
+        }
+        this.idToMarkerMap = {};
+        _ref2 = this.itineraryModel.models;
+        _results = [];
+        for (i = _j = 0, _len1 = _ref2.length; _j < _len1; i = ++_j) {
+          model = _ref2[i];
+          marker = L.marker([model.get('location').lat, model.get('location').long], {
+            icon: new L.NumberedDivIcon({
+              number: i + 1
+            }),
+            zIndexOffset: 200
+          });
+          this.idToMarkerMap[model.id] = marker;
+          marker.bindPopup(this._getActivityPopupFromModel(model));
+          _results.push(marker.addTo(this.map));
+        }
+        return _results;
+      };
+
+      MapView.prototype._plotItineraryRoute = function() {};
+
+      MapView.prototype._showSelectedActivity = function(list, activity) {
+        if (this.selectedMarker) {
+          this.map.removeLayer(this.selectedMarker);
+        }
+        this.map.panTo([activity.get('location').lat, activity.get('location').long]);
+        if (this.idToMarkerMap[activity.id] != null) {
+          return this.idToMarkerMap[activity.id].openPopup();
+        } else {
+          this.selectedMarker = L.marker([activity.get('location').lat, activity.get('location').long]);
+          this.selectedMarker.bindPopup(this._getActivityPopupFromModel(activity));
+          this.selectedMarker.addTo(this.map);
+          return this.selectedMarker.openPopup();
+        }
+      };
+
+      MapView.prototype._getActivityPopupFromModel = function(model) {
+        return '' + model.get('name');
       };
 
       return MapView;
