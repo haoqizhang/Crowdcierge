@@ -69,8 +69,6 @@ do ->
         marker =  L.marker [model.get('location').lat, model.get('location').long]
           , {icon: new L.NumberedDivIcon({number: i+1}), zIndexOffset: 200}
         @idToMarkerMap[model.id] = marker
-
-        #TODO format proper popup
         marker.bindPopup @_getActivityPopupFromModel(model)
         marker.addTo @map
 
@@ -86,7 +84,7 @@ do ->
         @idToMarkerMap[activity.id].openPopup()
       else
         @selectedMarker = L.marker [activity.get('location').lat
-          , activity.get('location').long]
+          , activity.get('location').long], {zIndexOffset: 1000}
         @selectedMarker.bindPopup @_getActivityPopupFromModel(activity)
         @selectedMarker.addTo @map
         @selectedMarker.openPopup()

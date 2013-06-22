@@ -119,7 +119,9 @@
         if (this.idToMarkerMap[activity.id] != null) {
           return this.idToMarkerMap[activity.id].openPopup();
         } else {
-          this.selectedMarker = L.marker([activity.get('location').lat, activity.get('location').long]);
+          this.selectedMarker = L.marker([activity.get('location').lat, activity.get('location').long], {
+            zIndexOffset: 1000
+          });
           this.selectedMarker.bindPopup(this._getActivityPopupFromModel(activity));
           this.selectedMarker.addTo(this.map);
           return this.selectedMarker.openPopup();
