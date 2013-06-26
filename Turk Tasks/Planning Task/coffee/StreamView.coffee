@@ -10,6 +10,11 @@ do ->
       @checkItemModel = @session.checkItemModel
       @currentTaskModel = @session.currentTaskModel
 
+      @filterModel = new Backbone.Model
+        keyword: ''
+
+      @listenTo @filterModel, 'change', @render
+
     render: =>
       @$el.empty()
 
@@ -19,13 +24,16 @@ do ->
 
       @checkItems = new CheckItemsView
         checkItemModel: @checkItemModel
+        filterModel: @filterModel
 
       @todoItems = new TodoItemsView
         todoItemModel: @todoItemModel
+        filterModel: @filterModel
 
       @activityItems = new ActivityItemsView
         activitiesModel: @activitiesModel
         itineraryModel: @itineraryModel
+        filterModel: @filterModel
 
       @checkItems.render()
       @todoItems.render()
@@ -78,6 +86,7 @@ do ->
       @itineraryModel = @options.itineraryModel
 
       @listenTo @activitiesModel, 'add change remove reset', @render
+      @listenTo @itineraryModel, 'add change remove reset', @render
 
     render: =>
       @$el.empty()

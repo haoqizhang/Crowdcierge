@@ -19,6 +19,7 @@
       }
 
       TodoManager.prototype.updateTodo = function() {
+        this.todoItemModel.reset();
         this._updateActivityConstraints();
         this._updateCalendarConstraints();
         return this._updateTimeConstraints();

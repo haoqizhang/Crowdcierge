@@ -24,7 +24,11 @@
         this.activitiesModel = this.session.activitiesModel;
         this.todoItemModel = this.session.todoItemModel;
         this.checkItemModel = this.session.checkItemModel;
-        return this.currentTaskModel = this.session.currentTaskModel;
+        this.currentTaskModel = this.session.currentTaskModel;
+        this.filterModel = new Backbone.Model({
+          keyword: ''
+        });
+        return this.listenTo(this.filterModel, 'change', this.render);
       };
 
       StreamView.prototype.render = function() {
@@ -35,14 +39,17 @@
         template = Handlebars.compile(source);
         this.$el.html(template(this.currentTaskModel.attributes));
         this.checkItems = new CheckItemsView({
-          checkItemModel: this.checkItemModel
+          checkItemModel: this.checkItemModel,
+          filterModel: this.filterModel
         });
         this.todoItems = new TodoItemsView({
-          todoItemModel: this.todoItemModel
+          todoItemModel: this.todoItemModel,
+          filterModel: this.filterModel
         });
         this.activityItems = new ActivityItemsView({
           activitiesModel: this.activitiesModel,
-          itineraryModel: this.itineraryModel
+          itineraryModel: this.itineraryModel,
+          filterModel: this.filterModel
         });
         this.checkItems.render();
         this.todoItems.render();
@@ -142,7 +149,8 @@
       ActivityItemsView.prototype.initialize = function() {
         this.activitiesModel = this.options.activitiesModel;
         this.itineraryModel = this.options.itineraryModel;
-        return this.listenTo(this.activitiesModel, 'add change remove reset', this.render);
+        this.listenTo(this.activitiesModel, 'add change remove reset', this.render);
+        return this.listenTo(this.itineraryModel, 'add change remove reset', this.render);
       };
 
       ActivityItemsView.prototype.render = function() {

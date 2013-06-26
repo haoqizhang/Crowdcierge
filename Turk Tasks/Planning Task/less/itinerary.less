@@ -40,20 +40,6 @@
       width:330px;
     }
 
-    // #calendarEnd {
-    //   background-color: #EF7777; 
-    //   text-align: center; 
-    //   width: 280px;
-    //   padding-left: 13%;
-    // }
-
-    // .fc-slot0 {
-    //   background-color: saturate(green, 60%);
-    //   .fc-widget-content {
-    //     text-align: center;
-    //   }
-    // }
-
     .fc-view-agendaDay .fc-today {
        background: @Hue-08;
     }
@@ -72,6 +58,28 @@
       .fc-col0.fc-widget-header {
         color: @Hue-01;
         padding-right: 40px;
+      }
+    }
+
+    .fc-event-head {
+      background-color: #BBB !important;
+    }
+
+    .fc-event-time {
+      font-size: 12px;
+      display: inline;
+      float: left;
+    }
+
+    .event-close {
+      float: right;
+      font-size: 20px;
+      height: 20px;
+      margin-top: -5px;
+      margin-right: 2px;
+
+      &:hover {
+        color: red;
       }
     }
   }

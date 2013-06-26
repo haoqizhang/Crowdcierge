@@ -101,13 +101,18 @@
         Ideas
       </div>
       <div class="stream-search">
+      <!--
         <div class="clear-filter">
           <a href="#">view all</a>
         </div>
         <div class="tag-container">
+          {{#each categories}}
+            <a class="tag-filter" tag={{.}} href="#">#{{.}}</a>
+          {{/each}}
         </div>
+      -->
         <div class="stream-search-box">
-          <input type="text" maxlength="60" value="search or add an idea, or click on one below" />
+          <input type="text" maxlength="60" placeholder="search or add an idea, or click on one below" />
           <button class="addit">Add</button>
         </div>
       </div>

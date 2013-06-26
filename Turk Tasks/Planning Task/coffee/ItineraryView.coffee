@@ -22,7 +22,6 @@ do ->
       @calendar.render()
 
   _SLOT_SIZE_MINUTES = 15
-  _BACKGROUND_COLOR = '#D3F1F2'
   _CALENDAR_HEIGHT = 578
   _CALENDAR_OPTIONS =
     height: _CALENDAR_HEIGHT
@@ -38,6 +37,8 @@ do ->
   class com.uid.crowdcierge.CalendarView extends Backbone.View
     className: 'calendar-wrapper'
 
+    events:
+      'click .event-close': '_clickRemoveEvent'
     initialize: =>
       @currentTaskModel = @options.currentTaskModel
       @itineraryModel = @options.itineraryModel
@@ -90,7 +91,7 @@ do ->
       # TODO
 
     _initializeStandardCalendar: =>
-      begin = @currentTaskModel.get('beginTime') # - _SLOT_SIZE_MINUTES
+      begin = @currentTaskModel.get('beginTime')
       begin = begin/60 - @shift
       end = @currentTaskModel.get('endTime')/60 - @shift
 
@@ -101,19 +102,13 @@ do ->
         eventDrop: @_eventDrop
         eventResize: @_eventResize
         eventClick: @_eventClick
-        #eventRender: @_renderEvent
+        eventRender: @_renderEvent
         , _CALENDAR_OPTIONS))
 
       @_modifyCalendarView()
 
     _modifyCalendarView: =>
       @$calendar.fullCalendar('changeView', 'agendaDay')
-      
-      # @$('.fc-slot0 .fc-widget-content div').text('Start');
-      # source = $('#end-calendar-template').html()
-      # template = Handlebars.compile(source)
-      # $end = $(template())
-      # @$('.fc-agenda-slots tbody').append $end
 
     _addEvent: (model) =>
       startDate = new Date(@date)
@@ -153,6 +148,18 @@ do ->
 
     _eventClick: (evt) =>
       @activitiesModel.set 'selected', @itineraryModel.get(evt.id)
+
+    _renderEvent: (evt, $element) =>
+      $close = $('<div class="event-close"/>').html('&times;')
+      $close.attr('eventId', evt.id)
+
+      $element.find('.fc-event-head').append $close
+      return $element
+
+    _clickRemoveEvent: (evt) =>
+      evt.stopPropagation()
+      @itineraryModel.remove(
+        @itineraryModel.get($(evt.target).attr('eventId')))
 
     _hours: (min) =>
       return Math.floor(min/60)

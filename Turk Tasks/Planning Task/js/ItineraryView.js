@@ -5,7 +5,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   (function() {
-    var _BACKGROUND_COLOR, _CALENDAR_HEIGHT, _CALENDAR_OPTIONS, _SLOT_SIZE_MINUTES, _ref, _ref1;
+    var _CALENDAR_HEIGHT, _CALENDAR_OPTIONS, _SLOT_SIZE_MINUTES, _ref, _ref1;
 
     com.uid.crowdcierge.ItineraryView = (function(_super) {
       __extends(ItineraryView, _super);
@@ -43,7 +43,6 @@
 
     })(Backbone.View);
     _SLOT_SIZE_MINUTES = 15;
-    _BACKGROUND_COLOR = '#D3F1F2';
     _CALENDAR_HEIGHT = 578;
     _CALENDAR_OPTIONS = {
       height: _CALENDAR_HEIGHT,
@@ -60,6 +59,8 @@
 
       function CalendarView() {
         this._hours = __bind(this._hours, this);
+        this._clickRemoveEvent = __bind(this._clickRemoveEvent, this);
+        this._renderEvent = __bind(this._renderEvent, this);
         this._eventClick = __bind(this._eventClick, this);
         this._eventDrop = __bind(this._eventDrop, this);
         this._eventResize = __bind(this._eventResize, this);
@@ -76,6 +77,10 @@
       }
 
       CalendarView.prototype.className = 'calendar-wrapper';
+
+      CalendarView.prototype.events = {
+        'click .event-close': '_clickRemoveEvent'
+      };
 
       CalendarView.prototype.initialize = function() {
         this.currentTaskModel = this.options.currentTaskModel;
@@ -144,7 +149,8 @@
           editable: !(this.currentTaskModel.get('taskType') === 'preview'),
           eventDrop: this._eventDrop,
           eventResize: this._eventResize,
-          eventClick: this._eventClick
+          eventClick: this._eventClick,
+          eventRender: this._renderEvent
         }, _CALENDAR_OPTIONS));
         return this._modifyCalendarView();
       };
@@ -209,6 +215,20 @@
 
       CalendarView.prototype._eventClick = function(evt) {
         return this.activitiesModel.set('selected', this.itineraryModel.get(evt.id));
+      };
+
+      CalendarView.prototype._renderEvent = function(evt, $element) {
+        var $close;
+
+        $close = $('<div class="event-close"/>').html('&times;');
+        $close.attr('eventId', evt.id);
+        $element.find('.fc-event-head').append($close);
+        return $element;
+      };
+
+      CalendarView.prototype._clickRemoveEvent = function(evt) {
+        evt.stopPropagation();
+        return this.itineraryModel.remove(this.itineraryModel.get($(evt.target).attr('eventId')));
       };
 
       CalendarView.prototype._hours = function(min) {

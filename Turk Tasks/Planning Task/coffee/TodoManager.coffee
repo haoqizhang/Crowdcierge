@@ -14,6 +14,7 @@ do ->
       @listenTo @constraintsModel, 'add remove reset', @updateTodo
 
     updateTodo: =>
+      @todoItemModel.reset()
       @_updateActivityConstraints()
       @_updateCalendarConstraints()
       @_updateTimeConstraints()
