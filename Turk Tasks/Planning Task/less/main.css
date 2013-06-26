@@ -1,155 +1,133 @@
+/* Style for overlay and box */
 .addit {
-	border: 1px outset;
-	border-color: #000000;
-	color: #ffffff;
-	background-color: #ffab07;
-	padding: 3px;
-	cursor: pointer;
-	text-transform: lowercase;
-	text-align: center;
-	font-size: 50%;
+  border: 1px outset;
+  border-color: #000000;
+  color: #ffffff;
+  background-color: #ffab07;
+  padding: 3px;
+  cursor: pointer;
+  text-transform: lowercase;
+  text-align: center;
+  font-size: 50%;
 }
-
 .addit.big {
-	font-size: 100%;
+  font-size: 100%;
 }
-
 .addit.wide {
-	padding: 4px;
+  padding: 4px;
 }
-
 .sectiontitle {
-	font-size: 135%;
-	color: #ffab07;
-	font-weight: bold;
+  font-size: 135%;
+  color: #ffab07;
+  font-weight: bold;
 }
-
 #tabcontainer ul {
-	list-style: none;
-	padding: 0;
-	margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
-
 #tabcontainer li {
-	float: left;
-	border: 1px solid #bbb;
-	border-bottom-width: 0;
-	margin: 0;
+  float: left;
+  border: 1px solid #bbb;
+  border-bottom-width: 0;
+  margin: 0;
 }
-
 #tabcontainer a {
-	text-decoration: none;
-	display: block;
-	background: white;
-	padding: 0.24em 1em;
-	color: #7F7F7F;
-	width: 8em;
-	text-align: center;
+  text-decoration: none;
+  display: block;
+  background: white;
+  padding: 0.24em 1em;
+  color: #7F7F7F;
+  width: 8em;
+  text-align: center;
 }
-
 .tabactbut {
-	background: #ffab07;
-	border: 1px outset #ffab07;
-	color: white;
-	font-size: 90%;
-	margin-top: 5px;
-	margin-bottom: 5px;
+  background: #ffab07;
+  border: 1px outset #ffab07;
+  color: white;
+  font-size: 90%;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
-
 #tabcontainer a:hover {
-	background: white;
+  background: white;
 }
-
 #tabcontainer .selected {
-	border-color: #7f7f7f;
+  border-color: #7f7f7f;
 }
-
 #tabcontainer .selected a {
-	position: relative;
-	top: 1px;
-	background: white;
-	color: black;
+  position: relative;
+  top: 1px;
+  background: white;
+  color: black;
 }
-
 #content {
-	border: 1px solid #7F7F7F;
-	clear: both;
-	padding: 10px;
+  border: 1px solid #7F7F7F;
+  clear: both;
+  padding: 10px;
 }
-
 .bold {
-	font-size: 1.5em;
-	font-weight: bold;
+  font-size: 1.5em;
+  font-weight: bold;
 }
-
 .ui-icon {
-	list-style: none outside none;
-	margin: 0px;
-	width: 10px;
+  list-style: none outside none;
+  margin: 0px;
+  width: 10px;
 }
-
 .pinpos {
-	background: url('../img/wp.gif');
-	background-position: top center;
-	background-repeat: no-repeat;
-	vertical-align: top;
-	text-align: center;
-	font-weight: bold;
-	color: white;
-	width: 25px;
-	height: 26px;
-	font-size: 82%;
+  background: url('http://www.charliecroom.com/marker_hole.png');
+  background-position: top center;
+  background-repeat: no-repeat;
+  vertical-align: top;
+  text-align: center;
+  color: black;
+  width: 30px;
+  height: 45px;
+  font-size: 82%;
+  padding-top: 5px;
 }
-
 .sspinpos {
-	background: url('../img/wp.gif');
-	background-position: top center;
-	background-repeat: no-repeat;
-	vertical-align: top;
-	text-align: center;
-	font-weight: bold;
-	color: white;
-	width: 25px;
-	height: 26px;
-	font-size: 85%;
+  background: url('http://www.charliecroom.com/marker_hole.png');
+  background-position: top center;
+  background-repeat: no-repeat;
+  vertical-align: top;
+  text-align: center;
+  color: black;
+  width: 30px;
+  height: 45px;
+  font-size: 85%;
+  padding-top: 5px;
 }
-
 #viewNoteTable td {
-	vertical-align: baseline;
+  vertical-align: baseline;
 }
-
 #viewActivityTable td {
-	vertical-align: baseline;
+  vertical-align: baseline;
 }
-
 #viewActivityTable td.vlabel {
-	width: 120px;
+  width: 120px;
 }
-
 /* Style for overlay and box */
 .addactheader {
-	white-space: no-wrap;
+  white-space: no-wrap;
 }
-
 .planning-body {
-	position: relative;
-	font-size: 1em;
-	z-index: 4;
-	overflow: hidden;
-	height: 650px;
+  position: relative;
+  font-size: 1em;
+  z-index: 4;
+  overflow: hidden;
+  height: 600px;
 }
-
-html,body {
-	height: 700px;
-	margin: 0px;
+html,
+body {
+  height: 650px;
+  margin: 0px;
 }
-
 .crowdcierge-main {
-	height: 100%;
-	width: 100%;
-	overflow: hidden;
-	font: 14px Lucida Grande, Arial, sans-serif;
-	background-color: white;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font: 14px Lucida Grande, Arial, sans-serif;
+  background-color: white;
 }
-
-/* This beautiful CSS-File has been crafted with LESS (lesscss.org) and compiled by simpLESS (wearekiss.com/simpless) */
