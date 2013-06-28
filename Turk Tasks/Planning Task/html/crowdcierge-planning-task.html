@@ -122,7 +122,16 @@
     </script>
 
     <script id="map-popup-template" type="text/x-handlebars-template">
-      
+      <div class='map-popup' id={{id}}>
+        <div class="map-popup-title">{{attributes.name}}</div>
+        <div class="map-popup-control view-item">View</div>
+        <div class="map-popup-control edit-item">Edit</div>
+        {{#if inItinerary}}
+          <div class="map-popup-activity-control remove-activity">Remove from Itinerary</div>
+        {{else}}
+          <div class="map-popup-activity-control add-activity">Add to Itinerary</div>
+        {{/if}}
+      </div>
     </script>
 
     <script id="itinerary-view-template" type="text/x-handlebars-template">
@@ -132,19 +141,6 @@
         <span id="travelTimeBox"></span>
         <span id="travelTimeText"> = travel time </span>
       </div>
-    </script>
-
-    <script id="calendar-view-template" type="text/x-handlebars-template">
-      <div id="calendar"></div>
-    </script>
-
-    <script id="end-calendar-template" type="text/x-handlebars-template">
-      <tr id="calendarEnd">
-        <td/>
-        <td>
-          <div style="position:relative">End</div>
-        </td>
-      </tr>
     </script>
 
   </head>

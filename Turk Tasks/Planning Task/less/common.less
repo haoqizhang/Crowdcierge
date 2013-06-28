@@ -16,14 +16,22 @@
 
 
 .cc-button (@text-color, @background-color, @border-color) {
-	border:1px outset;
+	border: 1px outset;
 	border-color: @border-color;
-	color:@text-color;
-	background-color:@background-color;
-	padding:3px;
-	cursor:pointer;
+	color: @text-color;
+	background-color: @background-color;
+	padding: 3px;
+	cursor: pointer;
 	text-transform: lowercase;
 	text-align: center;
+
+	&:hover {
+		background-color: darken(@background-color, 5%);
+	}
+
+	&:active {
+		background-color: darken(@background-color, 10%);
+	}
 }
 
 // STANDARD UGLY ORANGE BUTTON

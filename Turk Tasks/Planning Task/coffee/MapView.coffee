@@ -89,6 +89,28 @@ do ->
         @selectedMarker.addTo @map
         @selectedMarker.openPopup()
 
+    # I don't get why JQuery delegate doesn't work here, 
+    # but I guess this will have to do.
     _getActivityPopupFromModel: (model) =>
-      #TODO
-      return '' + model.get('name')
+      source = $('#map-popup-template').html()
+      template = Handlebars.compile(source)
+      $popup = $(template(model))
+
+      $popup.find('.view-item').click @_handleViewItemClick
+      $popup.find('.edit-item').click @_handleEditItemClick
+      $popup.find('.add-activity').click @_handleAddItemClick
+      $popup.find('.remove-activity').click @_handleRemoveItemClick
+
+      return $popup[0]
+
+    _handleViewItemClick: (evt) =>
+      id = $(evt.target).closest('.map-popup').attr('id')
+
+    _handleEditItemClick: (evt) =>
+      id = $(evt.target).closest('.map-popup').attr('id')
+
+    _handleAddItemClick: (evt) =>
+      id = $(evt.target).closest('.map-popup').attr('id')
+
+    _handleRemoveItemClick: (evt) =>
+      id = $(evt.target).closest('.map-popup').attr('id')

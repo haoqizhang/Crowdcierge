@@ -12,6 +12,10 @@
       __extends(MapView, _super);
 
       function MapView() {
+        this._handleRemoveItemClick = __bind(this._handleRemoveItemClick, this);
+        this._handleAddItemClick = __bind(this._handleAddItemClick, this);
+        this._handleEditItemClick = __bind(this._handleEditItemClick, this);
+        this._handleViewItemClick = __bind(this._handleViewItemClick, this);
         this._getActivityPopupFromModel = __bind(this._getActivityPopupFromModel, this);
         this._showSelectedActivity = __bind(this._showSelectedActivity, this);
         this._plotItineraryRoute = __bind(this._plotItineraryRoute, this);
@@ -129,7 +133,40 @@
       };
 
       MapView.prototype._getActivityPopupFromModel = function(model) {
-        return '' + model.get('name');
+        var $popup, source, template;
+
+        source = $('#map-popup-template').html();
+        template = Handlebars.compile(source);
+        $popup = $(template(model));
+        $popup.find('.view-item').click(this._handleViewItemClick);
+        $popup.find('.edit-item').click(this._handleEditItemClick);
+        $popup.find('.add-activity').click(this._handleAddItemClick);
+        $popup.find('.remove-activity').click(this._handleRemoveItemClick);
+        return $popup[0];
+      };
+
+      MapView.prototype._handleViewItemClick = function(evt) {
+        var id;
+
+        return id = $(evt.target).closest('.map-popup').attr('id');
+      };
+
+      MapView.prototype._handleEditItemClick = function(evt) {
+        var id;
+
+        return id = $(evt.target).closest('.map-popup').attr('id');
+      };
+
+      MapView.prototype._handleAddItemClick = function(evt) {
+        var id;
+
+        return id = $(evt.target).closest('.map-popup').attr('id');
+      };
+
+      MapView.prototype._handleRemoveItemClick = function(evt) {
+        var id;
+
+        return id = $(evt.target).closest('.map-popup').attr('id');
       };
 
       return MapView;

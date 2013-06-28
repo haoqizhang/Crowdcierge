@@ -51,10 +51,7 @@ do ->
 
     render: =>
       @$el.empty()
-
-      source = $('#calendar-view-template').html()
-      template = Handlebars.compile(source)
-      @$el.html template()
+      @$el.append $('<div id="calendar"/>')
       @$calendar = @$('#calendar')
 
       @_getTripTimes()

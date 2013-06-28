@@ -27,6 +27,33 @@
   .end-marker {
     background-image: url('../img/pin-end.png');
   }
+
+  .map-popup-title {
+    font-weight: bold;
+  }
+
+  .map-popup-control {
+    display: inline;
+    width: 35%;
+    .cc-button(black, #EEE, black);
+    margin: 6px 0px 4px 0px;
+
+    &.view-item {
+      float: left;
+    }
+
+    &.edit-item {
+      float: right;
+    }
+  }
+
+  .map-popup-activity-control {
+    width: 100%;
+    text-align: center;
+    .cc-button(black, #EEE, black);
+    display: inline-block;
+    box-sizing: border-box;
+  }
 }
 
 
@@ -47,4 +74,10 @@
 
 .leaflet-control-attribution {
   font-size: 9px !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
 }

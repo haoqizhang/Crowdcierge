@@ -9,6 +9,12 @@
   text-align: center;
   font-size: 50%;
 }
+.addit:hover {
+  background-color: #ec9c00;
+}
+.addit:active {
+  background-color: #d38c00;
+}
 .addit.big {
   font-size: 100%;
 }
@@ -50,6 +56,12 @@
   margin-bottom: 3px;
   font-size: 150%;
   vertical-align: bottom;
+}
+.header .missionbuttons:hover {
+  background-color: #0000b5;
+}
+.header .missionbuttons:active {
+  background-color: #00009b;
 }
 .header a {
   float: right;

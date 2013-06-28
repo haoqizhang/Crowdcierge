@@ -93,12 +93,8 @@
       };
 
       CalendarView.prototype.render = function() {
-        var source, template;
-
         this.$el.empty();
-        source = $('#calendar-view-template').html();
-        template = Handlebars.compile(source);
-        this.$el.html(template());
+        this.$el.append($('<div id="calendar"/>'));
         this.$calendar = this.$('#calendar');
         this._getTripTimes();
         switch (this.currentTaskModel.get('taskType')) {
