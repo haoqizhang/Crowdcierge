@@ -3,6 +3,31 @@
 @stream-background-color: @Hue-08;
 @stream-item-color: white;
 
+.ui-autocomplete {
+  -webkit-padding-start: 0px;
+  -moz-padding-start: 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  width: 200px;
+  font-size: 12px;
+
+  .ui-state-hover {
+    border: none;
+  }
+
+  a {
+    padding: 3px 5px;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  li {
+    width: 100%;
+    padding: 3px 5px;
+    display: block;
+  }
+}
+
 .stream-view {
   background: @Hue-08;
   width: 25%;
@@ -10,23 +35,7 @@
   height: 100%;
   display: inline-block;
   float: left;
-  
-  a:link {
-    color: #0000CE;
-    text-decoration: underline;
-  }
-  a:active {
-    color: #0000CE;
-    text-decoration: underline;
-  }
-  a:visited {
-    color: #0000CE;
-    text-decoration: underline;
-  }
-  a:hover {
-    color: #0000CE;
-    //text-decoration: underline;
-  }
+
   a.tagrowitem {
     margin-right:10px;
     color: #0000CE;
@@ -38,12 +47,6 @@
     color: #0000CE;
     text-decoration: none;
     float:left;
-  }
-  a.tagstreamitem:hover {
-    //text-decoration: underline;
-  }
-  a.tagrowitem:hover {
-    //text-decoration: underline;
   }
 
   .stream-title {
@@ -69,14 +72,6 @@
 
       input {
         width: 80%;
-
-        &.ui-autocomplete-input {
-          max-height: 100px;
-          overflow-y: auto;
-          overflow-x: hidden;
-          padding-right: 20px;
-          z-index: 20;
-        }
       }
 
       button {
