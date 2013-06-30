@@ -3,7 +3,7 @@
 @traveltime-color: rgb(3,209,92);
 
 .itinerary-view {
-  background:white;
+  background: white;
   width: 30%;
   font-size: 1em;
   display: inline-block;
@@ -11,6 +11,7 @@
   height: 100%;
   padding: 10px;
   float: left;
+  position: relative;
 
   .sectiontitle {
     height: 25px;
@@ -18,26 +19,30 @@
 
   #travelTimeBox {
     position: absolute;
-    top: 37px;
-    width:20px;
-    height:20px;
+    top: 11px;
+    left: 229px;
+    width: 20px;
+    height: 20px;
     background-color: @traveltime-color;
   }
 
   #travelTimeText {
-    font-size:70%;
+    position: absolute;
+    top: 9px;
+    left: 229px;
+    font-size: 70%;
     color: @Hue-02;
     margin-left: 25px;
-    margin-top:3px;
+    margin-top: 3px;
   }
 
   .calendar-wrapper {
-    overflow:auto;
-    margin-top: 21px;
-    height:538px;
+    overflow: auto;
+    margin-top: 5px;
+    height: 538px;
 
     #calendar {
-      width:330px;
+      width: 330px;
     }
 
     .fc-view-agendaDay .fc-today {

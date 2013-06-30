@@ -1,20 +1,19 @@
-/* Style for overlay and box */
 .addit {
   border: 1px outset;
   border-color: #000000;
   color: #ffffff;
-  background-color: #ee7326;
-  padding: 3px;
+  background-color: #00ce00;
+  padding: 3px 5px;
   cursor: pointer;
   text-transform: lowercase;
   text-align: center;
   font-size: 50%;
 }
 .addit:hover {
-  background-color: #e86512;
+  background-color: #00b500;
 }
 .addit:active {
-  background-color: #d15a10;
+  background-color: #009b00;
 }
 .addit.big {
   font-size: 100%;
@@ -24,7 +23,7 @@
 }
 .sectiontitle {
   font-size: 135%;
-  color: #ee7326;
+  color: #00ce00;
   font-weight: bold;
 }
 #tabcontainer ul {
@@ -48,8 +47,8 @@
   text-align: center;
 }
 .tabactbut {
-  background: #ee7326;
-  border: 1px outset #ee7326;
+  background: #00ce00;
+  border: 1px outset #00ce00;
   color: white;
   font-size: 90%;
   margin-top: 5px;
@@ -105,19 +104,6 @@
   font-size: 85%;
   padding-top: 5px;
 }
-#viewNoteTable td {
-  vertical-align: baseline;
-}
-#viewActivityTable td {
-  vertical-align: baseline;
-}
-#viewActivityTable td.vlabel {
-  width: 120px;
-}
-/* Style for overlay and box */
-.addactheader {
-  white-space: no-wrap;
-}
 .planning-body {
   position: relative;
   font-size: 1em;
@@ -129,6 +115,7 @@ html,
 body {
   height: 650px;
   margin: 0px;
+  overflow: hidden;
 }
 .crowdcierge-main {
   height: 100%;

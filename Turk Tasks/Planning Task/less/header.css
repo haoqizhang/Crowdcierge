@@ -2,18 +2,18 @@
   border: 1px outset;
   border-color: #000000;
   color: #ffffff;
-  background-color: #ee7326;
-  padding: 3px;
+  background-color: #00ce00;
+  padding: 3px 5px;
   cursor: pointer;
   text-transform: lowercase;
   text-align: center;
   font-size: 50%;
 }
 .addit:hover {
-  background-color: #e86512;
+  background-color: #00b500;
 }
 .addit:active {
-  background-color: #d15a10;
+  background-color: #009b00;
 }
 .addit.big {
   font-size: 100%;
@@ -23,13 +23,13 @@
 }
 .sectiontitle {
   font-size: 135%;
-  color: #ee7326;
+  color: #00ce00;
   font-weight: bold;
 }
 .header {
   white-space: nowrap;
   padding-left: 10px;
-  background: #ee7326;
+  background: #00ce00;
   padding-top: 0px;
   height: 40px;
 }
@@ -41,30 +41,29 @@
   text-transform: lowercase;
   font-family: Arial, times, Times New Roman, times-roman, georgia, serif;
   line-height: 40px;
-  font-weight: 100;
+  font-weight: bold;
   margin-right: 5%;
-  vertical-align: bottom;
-  color: white;
+  color: whitesmoke;
 }
 .header .missionbuttons {
   border: 1px outset;
   border-color: #000000;
-  color: #ffffff;
-  background-color: #0000ce;
-  padding: 3px;
+  color: #000000;
+  background-color: #caf1f3;
+  padding: 3px 5px;
   cursor: pointer;
   text-transform: lowercase;
   text-align: center;
   margin-left: 10px;
-  margin-bottom: 3px;
+  margin-bottom: 6px;
   font-size: 120%;
   vertical-align: bottom;
 }
 .header .missionbuttons:hover {
-  background-color: #0000b5;
+  background-color: #b5ecee;
 }
 .header .missionbuttons:active {
-  background-color: #00009b;
+  background-color: #a0e6ea;
 }
 .header a {
   float: right;

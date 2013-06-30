@@ -14,8 +14,7 @@
         this.closeModal = __bind(this.closeModal, this);
         this.renderContent = __bind(this.renderContent, this);
         this.renderHeader = __bind(this.renderHeader, this);
-        this.render = __bind(this.render, this);
-        this.intiialize = __bind(this.intiialize, this);        _ref = ModalView.__super__.constructor.apply(this, arguments);
+        this.render = __bind(this.render, this);        _ref = ModalView.__super__.constructor.apply(this, arguments);
         return _ref;
       }
 
@@ -24,8 +23,6 @@
       ModalView.prototype.events = {
         'click .modal-close': 'closeModal'
       };
-
-      ModalView.prototype.intiialize = function() {};
 
       ModalView.prototype.render = function() {
         var source, template;

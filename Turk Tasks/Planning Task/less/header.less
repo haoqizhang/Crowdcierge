@@ -1,7 +1,7 @@
 @import "common.less";
 
 @header-color: @Hue-01;
-@top-button-color: @Hue-02;
+@top-button-color: @Hue-08;
 
 .header {
   white-space: nowrap;
@@ -15,22 +15,21 @@
   }
 
   #eventName {
-      font-size:260%;
-      text-transform: lowercase;
-      font-family: Arial, times, Times New Roman,
-        times-roman, georgia, serif;
-      line-height: 40px;
-      font-weight: 100;
-      margin-right:5%;
-      vertical-align: bottom;
-    color:white;
+    font-size:260%;
+    text-transform: lowercase;
+    font-family: Arial, times, Times New Roman,
+      times-roman, georgia, serif;
+    line-height: 40px;
+    font-weight: bold;
+    margin-right: 5%;
+    color: whitesmoke;
   }
 
   .missionbuttons {
-    .cc-button(white, @top-button-color, black);
-    margin-left:10px;
-    margin-bottom:3px;
-    font-size:120%;
+    .cc-button(black, @top-button-color, black);
+    margin-left: 10px;
+    margin-bottom: 6px;
+    font-size: 120%;
     vertical-align: bottom;
   }
 

@@ -1,7 +1,7 @@
 @import "common.less";
 
-@modal-header-color: @Hue-03;
-@modal-header-background: @Hue-04;
+@modal-header-color: black;
+@modal-header-background: @Hue-08;
 @modal-body-color: @Hue-05;
 @modal-border-color: @Hue-06;
 @modal-background-color: @Hue-07;
@@ -20,22 +20,21 @@
 
 .modal {
   position: fixed;
-  padding: 10px;
   top: 60px;
   left: 30%;
   right: 30%;
   background-color: @modal-background-color;
-
-  border-radius: 5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -khtml-border-radius: 5px;
 
   -moz-box-shadow: 0 1px 5px #333;
   -webkit-box-shadow: 0 1px 5px #333;
   z-index: 2000;
 
   font: 14px Lucida Grande, Arial, sans-serif;
+
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -khtml-border-radius: 5px;
 
   .modal-close {
     position: absolute;
@@ -44,11 +43,37 @@
 
     font-size: 30px;
     font-weight: bold;
-    color: black;
+    color: #999;
     cursor: pointer;
 
     &:hover {
-      color: red;
+      color: black;
     }
+  }
+
+  .modal-main {
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+  }
+
+  .modal-header {
+    color: @modal-header-color;
+    background-color: @modal-header-background;
+    padding: 10px 10px 5px 10px;
+    border-bottom: 2px solid @modal-border-color;
+
+    font-size: 130%;
+    font-weight: bold;
+
+    border-radius: 5px 5px 0px 0px;
+    -moz-border-radius: 5px 5px 0px 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
+    -khtml-border-radius: 5px 5px 0px 0px;
+  }
+
+  .modal-content {
+    padding: 5px 10px 10px 10px;
   }
 }
