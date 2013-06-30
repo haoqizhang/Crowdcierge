@@ -1,0 +1,54 @@
+@import "common.less";
+
+@modal-header-color: @Hue-03;
+@modal-header-background: @Hue-04;
+@modal-body-color: @Hue-05;
+@modal-border-color: @Hue-06;
+@modal-background-color: @Hue-07;
+
+.overlay {
+  background-color: black;
+  opacity: 0.3;
+  z-index: 1000;
+  height: 100%;
+  width: 100%;
+
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.modal {
+  position: fixed;
+  padding: 10px;
+  top: 60px;
+  left: 30%;
+  right: 30%;
+  background-color: @modal-background-color;
+
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -khtml-border-radius: 5px;
+
+  -moz-box-shadow: 0 1px 5px #333;
+  -webkit-box-shadow: 0 1px 5px #333;
+  z-index: 2000;
+
+  font: 14px Lucida Grande, Arial, sans-serif;
+
+  .modal-close {
+    position: absolute;
+    top: -4px;
+    right: 5px;
+
+    font-size: 30px;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+
+    &:hover {
+      color: red;
+    }
+  }
+}

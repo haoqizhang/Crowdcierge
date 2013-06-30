@@ -40,7 +40,12 @@
       };
 
       HeaderView.prototype._handleHelpButtonClick = function() {
-        return console.log('clicked help button');
+        var modal;
+
+        modal = new com.uid.crowdcierge.HelpModal({
+          currentTaskModel: this.currentTaskModel
+        });
+        return modal.render();
       };
 
       HeaderView.prototype._handleRevealButtonClick = function() {

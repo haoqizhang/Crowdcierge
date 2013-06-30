@@ -2,7 +2,7 @@
   border: 1px outset;
   border-color: #000000;
   color: #ffffff;
-  background-color: #ffab07;
+  background-color: #ee7326;
   padding: 3px;
   cursor: pointer;
   text-transform: lowercase;
@@ -10,10 +10,10 @@
   font-size: 50%;
 }
 .addit:hover {
-  background-color: #ec9c00;
+  background-color: #e86512;
 }
 .addit:active {
-  background-color: #d38c00;
+  background-color: #d15a10;
 }
 .addit.big {
   font-size: 100%;
@@ -23,15 +23,18 @@
 }
 .sectiontitle {
   font-size: 135%;
-  color: #ffab07;
+  color: #ee7326;
   font-weight: bold;
 }
 .header {
   white-space: nowrap;
   padding-left: 10px;
-  background: #ffab07;
-  padding-top: 10px;
+  background: #ee7326;
+  padding-top: 0px;
   height: 40px;
+}
+.header div {
+  display: inline-block;
 }
 .header #eventName {
   font-size: 260%;
@@ -54,7 +57,7 @@
   text-align: center;
   margin-left: 10px;
   margin-bottom: 3px;
-  font-size: 150%;
+  font-size: 120%;
   vertical-align: bottom;
 }
 .header .missionbuttons:hover {

@@ -94,7 +94,10 @@ do ->
     _getActivityPopupFromModel: (model) =>
       source = $('#map-popup-template').html()
       template = Handlebars.compile(source)
-      $popup = $(template(model))
+
+      inItinerary = @itineraryModel.get(model.cid)?
+
+      $popup = $(template(_.defaults {inItinerary: inItinerary}, model))
 
       $popup.find('.view-item').click @_handleViewItemClick
       $popup.find('.edit-item').click @_handleEditItemClick
@@ -111,6 +114,8 @@ do ->
 
     _handleAddItemClick: (evt) =>
       id = $(evt.target).closest('.map-popup').attr('id')
+      @itineraryModel.add @activitiesModel.get('items').get(id)
 
     _handleRemoveItemClick: (evt) =>
       id = $(evt.target).closest('.map-popup').attr('id')
+      @itineraryModel.remove id

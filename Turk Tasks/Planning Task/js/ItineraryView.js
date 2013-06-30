@@ -7,6 +7,18 @@
   (function() {
     var _CALENDAR_HEIGHT, _CALENDAR_OPTIONS, _SLOT_SIZE_MINUTES, _ref, _ref1;
 
+    _SLOT_SIZE_MINUTES = 15;
+    _CALENDAR_HEIGHT = 578;
+    _CALENDAR_OPTIONS = {
+      height: _CALENDAR_HEIGHT,
+      allDayDefault: false,
+      events: [],
+      allDaySlot: false,
+      slotMinutes: _SLOT_SIZE_MINUTES,
+      eventColor: "white",
+      eventBorderColor: "gray",
+      eventTextColor: "#000000"
+    };
     com.uid.crowdcierge.ItineraryView = (function(_super) {
       __extends(ItineraryView, _super);
 
@@ -42,18 +54,6 @@
       return ItineraryView;
 
     })(Backbone.View);
-    _SLOT_SIZE_MINUTES = 15;
-    _CALENDAR_HEIGHT = 578;
-    _CALENDAR_OPTIONS = {
-      height: _CALENDAR_HEIGHT,
-      allDayDefault: false,
-      events: [],
-      allDaySlot: false,
-      slotMinutes: _SLOT_SIZE_MINUTES,
-      eventColor: "white",
-      eventBorderColor: "gray",
-      eventTextColor: "#000000"
-    };
     return com.uid.crowdcierge.CalendarView = (function(_super) {
       __extends(CalendarView, _super);
 

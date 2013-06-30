@@ -1,4 +1,16 @@
 do ->
+  _SLOT_SIZE_MINUTES = 15
+  _CALENDAR_HEIGHT = 578
+  _CALENDAR_OPTIONS =
+    height: _CALENDAR_HEIGHT
+    allDayDefault:false
+    events: []
+    allDaySlot: false
+    slotMinutes: _SLOT_SIZE_MINUTES
+    eventColor: "white",
+    eventBorderColor: "gray",
+    eventTextColor: "#000000"
+
   class com.uid.crowdcierge.ItineraryView extends Backbone.View
     className: 'itinerary-view'
 
@@ -20,18 +32,6 @@ do ->
 
       @$el.append @calendar.$el
       @calendar.render()
-
-  _SLOT_SIZE_MINUTES = 15
-  _CALENDAR_HEIGHT = 578
-  _CALENDAR_OPTIONS =
-    height: _CALENDAR_HEIGHT
-    allDayDefault:false
-    events: []
-    allDaySlot: false
-    slotMinutes: _SLOT_SIZE_MINUTES
-    eventColor: "white",
-    eventBorderColor: "gray",
-    eventTextColor: "#000000"
 
   # Too many hacks below
   class com.uid.crowdcierge.CalendarView extends Backbone.View

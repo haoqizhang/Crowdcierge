@@ -18,7 +18,9 @@ do ->
       @$el.html template(@currentTaskModel.attributes)
 
     _handleHelpButtonClick: =>
-      console.log 'clicked help button'
+      modal = new com.uid.crowdcierge.HelpModal
+        currentTaskModel: @currentTaskModel
+      modal.render()
 
     _handleRevealButtonClick: =>
       console.log 'clicked mission button'

@@ -133,11 +133,14 @@
       };
 
       MapView.prototype._getActivityPopupFromModel = function(model) {
-        var $popup, source, template;
+        var $popup, inItinerary, source, template;
 
         source = $('#map-popup-template').html();
         template = Handlebars.compile(source);
-        $popup = $(template(model));
+        inItinerary = this.itineraryModel.get(model.cid) != null;
+        $popup = $(template(_.defaults({
+          inItinerary: inItinerary
+        }, model)));
         $popup.find('.view-item').click(this._handleViewItemClick);
         $popup.find('.edit-item').click(this._handleEditItemClick);
         $popup.find('.add-activity').click(this._handleAddItemClick);
@@ -160,13 +163,15 @@
       MapView.prototype._handleAddItemClick = function(evt) {
         var id;
 
-        return id = $(evt.target).closest('.map-popup').attr('id');
+        id = $(evt.target).closest('.map-popup').attr('id');
+        return this.itineraryModel.add(this.activitiesModel.get('items').get(id));
       };
 
       MapView.prototype._handleRemoveItemClick = function(evt) {
         var id;
 
-        return id = $(evt.target).closest('.map-popup').attr('id');
+        id = $(evt.target).closest('.map-popup').attr('id');
+        return this.itineraryModel.remove(id);
       };
 
       return MapView;
