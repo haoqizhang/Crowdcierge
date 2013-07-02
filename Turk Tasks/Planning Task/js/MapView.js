@@ -116,19 +116,21 @@
       MapView.prototype._plotItineraryRoute = function() {};
 
       MapView.prototype._showSelectedActivity = function(list, activity) {
-        if (this.selectedMarker) {
-          this.map.removeLayer(this.selectedMarker);
-        }
-        this.map.panTo([activity.get('location').lat, activity.get('location').long]);
-        if (this.idToMarkerMap[activity.id] != null) {
-          return this.idToMarkerMap[activity.id].openPopup();
-        } else {
-          this.selectedMarker = L.marker([activity.get('location').lat, activity.get('location').long], {
-            zIndexOffset: 1000
-          });
-          this.selectedMarker.bindPopup(this._getActivityPopupFromModel(activity));
-          this.selectedMarker.addTo(this.map);
-          return this.selectedMarker.openPopup();
+        if (activity != null) {
+          if (this.selectedMarker) {
+            this.map.removeLayer(this.selectedMarker);
+          }
+          this.map.panTo([activity.get('location').lat, activity.get('location').long]);
+          if (this.idToMarkerMap[activity.id] != null) {
+            return this.idToMarkerMap[activity.id].openPopup();
+          } else {
+            this.selectedMarker = L.marker([activity.get('location').lat, activity.get('location').long], {
+              zIndexOffset: 1000
+            });
+            this.selectedMarker.bindPopup(this._getActivityPopupFromModel(activity));
+            this.selectedMarker.addTo(this.map);
+            return this.selectedMarker.openPopup();
+          }
         }
       };
 
@@ -149,9 +151,17 @@
       };
 
       MapView.prototype._handleViewItemClick = function(evt) {
-        var id;
+        var id, modal;
 
-        return id = $(evt.target).closest('.map-popup').attr('id');
+        id = $(evt.target).closest('.map-popup').attr('id');
+        modal = new com.uid.crowdcierge.ViewActivityModal({
+          activity: this.activitiesModel.get('items').get(id),
+          activitiesModel: this.activitiesModel,
+          itineraryModel: this.itineraryModel,
+          currentTaskModel: this.currentTaskModel
+        });
+        modal.render();
+        return modal.prepMap();
       };
 
       MapView.prototype._handleEditItemClick = function(evt) {

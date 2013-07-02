@@ -5,32 +5,36 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   (function() {
-    var _HELP_HEADER, _ref;
+    var _MISSION_HEADER, _ref;
 
-    _HELP_HEADER = 'What you can do to help';
-    return com.uid.crowdcierge.HelpModal = (function(_super) {
-      __extends(HelpModal, _super);
+    _MISSION_HEADER = 'Trip Details';
+    return com.uid.crowdcierge.MissionView = (function(_super) {
+      __extends(MissionView, _super);
 
-      function HelpModal() {
+      function MissionView() {
         this.renderContent = __bind(this.renderContent, this);
         this.renderHeader = __bind(this.renderHeader, this);
-        this.initialize = __bind(this.initialize, this);        _ref = HelpModal.__super__.constructor.apply(this, arguments);
+        this.initialize = __bind(this.initialize, this);        _ref = MissionView.__super__.constructor.apply(this, arguments);
         return _ref;
       }
 
-      HelpModal.prototype.initialize = function() {
+      MissionView.prototype.initialize = function() {
         return this.currentTaskModel = this.options.currentTaskModel;
       };
 
-      HelpModal.prototype.renderHeader = function() {
-        return $('<div/>').text(_HELP_HEADER);
+      MissionView.prototype.renderHeader = function() {
+        return $('<div/>').text(_MISSION_HEADER);
       };
 
-      HelpModal.prototype.renderContent = function() {
-        return $('<div/>').text(_HELP_HEADER);
+      MissionView.prototype.renderContent = function() {
+        var source, template;
+
+        source = $('#mission-view-template').html();
+        template = Handlebars.compile(source);
+        return $(template(this.currentTaskModel.attributes));
       };
 
-      return HelpModal;
+      return MissionView;
 
     })(com.uid.crowdcierge.ModalView);
   })();

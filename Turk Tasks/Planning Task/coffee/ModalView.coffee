@@ -11,11 +11,12 @@ do ->
       @$el.html template()
       @$overlay = $('<div class="overlay"/>')
 
-      @$('.modal-header').append @renderHeader()
-      @$('.modal-content').append @renderContent()
-
+      # Get modal in the DOM before adding the content
       $('body').append @$el
       $('body').append @$overlay
+
+      @$('.modal-header').append @renderHeader()
+      @$('.modal-content').append @renderContent()
 
     renderHeader: =>
       console.warn "No-op render header called"

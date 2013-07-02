@@ -98,7 +98,9 @@ do ->
 
     _viewTodoItem: (evt) =>
       id = evt.currentTarget.id
-      console.log @todoItemModel.get(id)
+      modal = new com.uid.crowdcierge.TodoModal
+        todoModel: @todoItemModel.get(id)
+      modal.render()
 
   class CheckItemsView extends Backbone.View
     tag: 'tbody'
@@ -137,6 +139,7 @@ do ->
 
     _selectActivity: (evt) =>
       id = evt.currentTarget.id
+      @activitiesModel.set 'selected', null
       @activitiesModel.set 'selected', @activitiesModel.get('items').get(id)
 
   _filterModels = (models, keyword) =>

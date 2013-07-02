@@ -42,7 +42,7 @@
   font-family: Arial, times, Times New Roman, times-roman, georgia, serif;
   line-height: 40px;
   font-weight: bold;
-  margin-right: 5%;
+  margin-right: 10px;
   color: whitesmoke;
 }
 .header .missionbuttons {
@@ -58,17 +58,11 @@
   margin-bottom: 6px;
   font-size: 120%;
   vertical-align: bottom;
+  text-decoration: none;
 }
 .header .missionbuttons:hover {
   background-color: #b5ecee;
 }
 .header .missionbuttons:active {
   background-color: #a0e6ea;
-}
-.header a {
-  float: right;
-  vertical-align: bottom;
-  font-size: 130%;
-  margin-right: 40px;
-  margin-top: 10px;
 }

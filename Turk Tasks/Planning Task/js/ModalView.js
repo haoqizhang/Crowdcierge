@@ -31,10 +31,10 @@
         template = Handlebars.compile(source);
         this.$el.html(template());
         this.$overlay = $('<div class="overlay"/>');
-        this.$('.modal-header').append(this.renderHeader());
-        this.$('.modal-content').append(this.renderContent());
         $('body').append(this.$el);
-        return $('body').append(this.$overlay);
+        $('body').append(this.$overlay);
+        this.$('.modal-header').append(this.renderHeader());
+        return this.$('.modal-content').append(this.renderContent());
       };
 
       ModalView.prototype.renderHeader = function() {

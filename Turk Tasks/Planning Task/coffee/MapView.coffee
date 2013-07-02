@@ -76,18 +76,19 @@ do ->
       #TODO
 
     _showSelectedActivity: (list, activity) =>
-      if @selectedMarker
-        @map.removeLayer @selectedMarker
-      @map.panTo([activity.get('location').lat
-        , activity.get('location').long])
-      if @idToMarkerMap[activity.id]?
-        @idToMarkerMap[activity.id].openPopup()
-      else
-        @selectedMarker = L.marker [activity.get('location').lat
-          , activity.get('location').long], {zIndexOffset: 1000}
-        @selectedMarker.bindPopup @_getActivityPopupFromModel(activity)
-        @selectedMarker.addTo @map
-        @selectedMarker.openPopup()
+      if activity?
+        if @selectedMarker
+          @map.removeLayer @selectedMarker
+        @map.panTo([activity.get('location').lat
+          , activity.get('location').long])
+        if @idToMarkerMap[activity.id]?
+          @idToMarkerMap[activity.id].openPopup()
+        else
+          @selectedMarker = L.marker [activity.get('location').lat
+            , activity.get('location').long], {zIndexOffset: 1000}
+          @selectedMarker.bindPopup @_getActivityPopupFromModel(activity)
+          @selectedMarker.addTo @map
+          @selectedMarker.openPopup()
 
     # I don't get why JQuery delegate doesn't work here, 
     # but I guess this will have to do.
@@ -108,6 +109,13 @@ do ->
 
     _handleViewItemClick: (evt) =>
       id = $(evt.target).closest('.map-popup').attr('id')
+      modal = new com.uid.crowdcierge.ViewActivityModal
+        activity: @activitiesModel.get('items').get(id)
+        activitiesModel: @activitiesModel
+        itineraryModel: @itineraryModel
+        currentTaskModel: @currentTaskModel
+      modal.render()
+      modal.prepMap()
 
     _handleEditItemClick: (evt) =>
       id = $(evt.target).closest('.map-popup').attr('id')

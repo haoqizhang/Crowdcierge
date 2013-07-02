@@ -26,91 +26,6 @@
   color: #00ce00;
   font-weight: bold;
 }
-#tabcontainer ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-#tabcontainer li {
-  float: left;
-  border: 1px solid #bbb;
-  border-bottom-width: 0;
-  margin: 0;
-}
-#tabcontainer a {
-  text-decoration: none;
-  display: block;
-  background: white;
-  padding: 0.24em 1em;
-  color: #7F7F7F;
-  width: 8em;
-  text-align: center;
-}
-.tabactbut {
-  background: #00ce00;
-  border: 1px outset #00ce00;
-  color: white;
-  font-size: 90%;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-#tabcontainer a:hover {
-  background: white;
-}
-#tabcontainer .selected {
-  border-color: #7f7f7f;
-}
-#tabcontainer .selected a {
-  position: relative;
-  top: 1px;
-  background: white;
-  color: black;
-}
-#content {
-  border: 1px solid #7F7F7F;
-  clear: both;
-  padding: 10px;
-}
-.bold {
-  font-size: 1.5em;
-  font-weight: bold;
-}
-.ui-icon {
-  list-style: none outside none;
-  margin: 0px;
-  width: 10px;
-}
-.pinpos {
-  background: url('http://www.charliecroom.com/marker_hole.png');
-  background-position: top center;
-  background-repeat: no-repeat;
-  vertical-align: top;
-  text-align: center;
-  color: black;
-  width: 30px;
-  height: 45px;
-  font-size: 82%;
-  padding-top: 5px;
-}
-.sspinpos {
-  background: url('http://www.charliecroom.com/marker_hole.png');
-  background-position: top center;
-  background-repeat: no-repeat;
-  vertical-align: top;
-  text-align: center;
-  color: black;
-  width: 30px;
-  height: 45px;
-  font-size: 85%;
-  padding-top: 5px;
-}
-.planning-body {
-  position: relative;
-  font-size: 1em;
-  z-index: 4;
-  overflow: hidden;
-  height: 610px;
-}
 html,
 body {
   height: 650px;
@@ -123,4 +38,11 @@ body {
   overflow: hidden;
   font: 14px Lucida Grande, Arial, sans-serif;
   background-color: white;
+}
+.planning-body {
+  position: relative;
+  font-size: 1em;
+  z-index: 4;
+  overflow: hidden;
+  height: 610px;
 }

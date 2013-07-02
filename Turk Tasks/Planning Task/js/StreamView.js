@@ -148,10 +148,13 @@
       };
 
       TodoItemsView.prototype._viewTodoItem = function(evt) {
-        var id;
+        var id, modal;
 
         id = evt.currentTarget.id;
-        return console.log(this.todoItemModel.get(id));
+        modal = new com.uid.crowdcierge.TodoModal({
+          todoModel: this.todoItemModel.get(id)
+        });
+        return modal.render();
       };
 
       return TodoItemsView;
@@ -225,6 +228,7 @@
         var id;
 
         id = evt.currentTarget.id;
+        this.activitiesModel.set('selected', null);
         return this.activitiesModel.set('selected', this.activitiesModel.get('items').get(id));
       };
 

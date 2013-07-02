@@ -3,19 +3,26 @@
 @todo-item-color:#fbf7d4;
 
 .badge_todo {
-    background: url('../img/exclamation-icon.png');
-    background-position:top center;
-    background-repeat:no-repeat;
-    width:25px;
-    height:26px;
+  background: url('../img/exclamation-icon.png');
+  background-position:top center;
+  background-repeat:no-repeat;
+  width:25px;
+  height:26px;
 }
 
 .stream-item-list {
-    .todo {
-        background: @todo-item-color;
+  .todo {
+    background: @todo-item-color;
 
-        &:hover {
-            background-color: darken(@todo-item-color, 20%);
-        }
+    &:hover {
+      background-color: darken(@todo-item-color, 20%);
     }
+  }
+}
+
+.todo-categories {
+  .category {
+    display: inline-block;
+    margin-left: 2px;
+  }
 }

@@ -11,6 +11,7 @@
       __extends(HeaderView, _super);
 
       function HeaderView() {
+        this._handleTutorialButtonClick = __bind(this._handleTutorialButtonClick, this);
         this._handleRevealButtonClick = __bind(this._handleRevealButtonClick, this);
         this._handleHelpButtonClick = __bind(this._handleHelpButtonClick, this);
         this.render = __bind(this.render, this);
@@ -22,7 +23,8 @@
 
       HeaderView.prototype.events = {
         'click #revealButton': '_handleRevealButtonClick',
-        'click #helpButton': '_handleHelpButtonClick'
+        'click #helpButton': '_handleHelpButtonClick',
+        'click #tutorialButton': '_handleTutorialButtonClick'
       };
 
       HeaderView.prototype.initialize = function() {
@@ -49,7 +51,16 @@
       };
 
       HeaderView.prototype._handleRevealButtonClick = function() {
-        return console.log('clicked mission button');
+        var modal;
+
+        modal = new com.uid.crowdcierge.MissionView({
+          currentTaskModel: this.currentTaskModel
+        });
+        return modal.render();
+      };
+
+      HeaderView.prototype._handleTutorialButtonClick = function() {
+        return window.open('http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/Mobi/Mobi_Turk_Tutorial.html');
       };
 
       return HeaderView;

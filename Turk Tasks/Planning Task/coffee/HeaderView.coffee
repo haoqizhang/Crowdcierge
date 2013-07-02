@@ -5,6 +5,7 @@ do ->
     events:
       'click #revealButton': '_handleRevealButtonClick'
       'click #helpButton': '_handleHelpButtonClick'
+      'click #tutorialButton': '_handleTutorialButtonClick'
 
     initialize: =>
       @currentTaskModel = @options.currentTaskModel
@@ -23,4 +24,9 @@ do ->
       modal.render()
 
     _handleRevealButtonClick: =>
-      console.log 'clicked mission button'
+      modal = new com.uid.crowdcierge.MissionView
+        currentTaskModel: @currentTaskModel
+      modal.render()
+
+    _handleTutorialButtonClick: =>
+      window.open 'http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/Mobi/Mobi_Turk_Tutorial.html'

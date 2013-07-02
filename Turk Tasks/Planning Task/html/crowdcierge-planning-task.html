@@ -18,6 +18,7 @@
     <link rel='stylesheet' type='text/css' href='../less/todo.css' />
     <link rel='stylesheet' type='text/css' href='../less/stream.css' />
     <link rel='stylesheet' type='text/css' href='../less/map.css' />
+    <link rel='stylesheet' type='text/css' href='../less/activityModal.css' />
     <link rel='stylesheet' type='text/css' href='../less/main.css' />
 
     <!-- LIBRARY JS FILES -->
@@ -53,6 +54,9 @@
     <script type="text/javascript" src="../js/ItineraryView.js"></script>
     <script type="text/javascript" src="../js/ModalView.js"></script>
     <script type="text/javascript" src="../js/HelpModal.js"></script>
+    <script type="text/javascript" src="../js/MissionView.js"></script>
+    <script type="text/javascript" src="../js/TodoModal.js"></script>
+    <script type="text/javascript" src="../js/ViewActivityModal.js"></script>
     <script type="text/javascript" src="../js/endpoint.js"></script>
 
     <!-- CROWDCIERGE HANDLEBARS TEMPLATES -->
@@ -94,9 +98,9 @@
 
     <script id="header-view-template" type="text/x-handlebars-template">
       <div id="eventName">{{name}}</div>
-      <div class="missionbuttons" id="revealButton">reveal mission details</div>
-      <div class="missionbuttons" id="helpButton" >What you can do</div>
-      <a target="_blank" href="http://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/Mobi/Mobi_Turk_Tutorial.html">confused? check out the tutorial</a>
+      <div class="missionbuttons" id="revealButton">trip details</div>
+      <div class="missionbuttons" id="helpButton" >instructions</div>
+      <div class="missionbuttons" id="tutorialButton">view tutorial</div>
     </script>
 
     <script id="stream-view-template" type="text/x-handlebars-template">
@@ -105,8 +109,8 @@
       </div>
       <div class="stream-search">
         <div class="stream-search-box">
-          <input type="text" maxlength="60" placeholder="search or add an idea, or click on one below" />
-          <button class="addit">Add</button>
+          <input type="text" maxlength="60" placeholder="search by keyword or hashtag" />
+          <button class="addit add-button">Add activity</button>
         </div>
       </div>
       <table class="stream-item-list">
@@ -118,7 +122,7 @@
 
     <script id="map-view-template" type="text/x-handlebars-template">
       <div class="sectiontitle">
-        Map of the Current Itinerary
+        Map of the Itinerary
       </div>
       <div id="map"/>
     </script>
@@ -151,25 +155,52 @@
       </div>
     </script>
 
+    <script id="mission-view-template" type="text/x-handlebars-template">
+      <div>
+        <div class="mission-description">{{description}}</div>
+        <br/>
+        <div class="constraint-header">In planning the trip, make sure to follow the wishes below:</div>
+        <ul class="mission-constraints">
+          {{#each constraints}}
+            <li class="constraint-item">have {{compare}} {{value}} {{unit}} of <b>{{cat}}</b> activities</li>
+          {{/each}}
+        </ul>
+      </div>
+    </script>
+
+    <script id="view-activity-template" type="text/x-handlebars-template">
+      <div class="view-activity-main">
+        <div id="viewActivityMap"/>
+        <div class="view-activity-info">
+          <div class="name"><b>Name: </b>{{name}}</div>
+          <div class="location"><b>Location: </b>{{location.name}}</div>
+          <div class="description"><b>Description: </b>{{description}}</div>
+          <div class="duration"><b>Duration: </b>{{duration}}</div>
+          <div class="categories">
+            <b>Categories:</b>
+            {{#each categories}}
+              <div class="category">#{{.}}</div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </script>
+
+    <script id="todo-view-template" type="text/x-handlebars-template">
+      <div class="todo-message">{{description}}</div>
+      <br/>
+      <div class="todo-categories">
+        Categories:
+        {{#each categories}}
+          <div class="category">#{{.}}</div>
+        {{/each}}
+      </div>
+    </script>
+
   </head>
   
   <body>
     <div class="box" id="box">
-      <a id="boxclose" onclick="closeAdd()"></a>
-      <div id='boxMain'></div>
-      <div id='viewMission' style='display:none'>
-         <h1 id='missionheader'>Mission<span style='float:right;'><button onclick="editMission()" id='editmissionbutton' class='addit'>edit mission</button></span></h1>
-
-        <div>
-          <br/>
-          <div id='description'></div>
-          <br/>
-          <div>In planning the event, please pay attention to the wishes below:
-            <br/>	<span id='missionwishes'></span>
-
-          </div>
-        </div>
-      </div>
       <div id='viewHelp' style='display:none'>
         <h1 id='helpheader'>What you can do</h1>
 
@@ -194,36 +225,6 @@
               <br/>
             </li>
           </ul>
-        </div>
-      </div>
-      <div id='viewSelect' style='display:none'>
-         <h1 id='selectheader'>Is your idea...</h1>
-
-        <div style='font-size:120%;padding-top:12px;'>
-          <button class='addit big' onclick="$('#viewSelect').hide();addActivity();">something to do or see</button>&nbsp;or
-          <button class='addit big' onclick="$('#viewSelect').hide(); addNote();">a thought about the plan</button>&nbsp;?</div>
-      </div>
-      <div id='viewNote' style='display:none'>
-        <h1 id='viewheader'>Note
-          <span style='float:right;'>
-            <button id='editnotebutton' class='addit'>edit note</button>
-          </span>
-        </h1>
-        <div>
-          <table id='viewNoteTable'>
-            <tr>
-              <td>Title:</td>
-              <td id='viewtitle'></td>
-            </tr>
-            <tr>
-              <td>Message:</td>
-              <td id='viewdesc'></td>
-            </tr>
-            <tr>
-              <td>Tags:</td>
-              <td id='viewtags'></td>
-            </tr>
-          </table>
         </div>
       </div>
       <div id='viewCheck' style='display:none'>
@@ -279,36 +280,6 @@
               <td id='viewacttags'></td>
             </tr>
           </table>
-        </div>
-      </div>
-      <div id='addNote' style='display:none'>
-         <h1 id='addheader'>Add a note<span style='float:right;'><button class='addit' onClick='saveAddNote()'>add note to the stream</button></span></h1>
-
-        <div>
-          <div class="row"><span class="label">Title:</span><span class="formw"><input id='addtitle' type='text' maxlength='60' size='30'/></span>
-          </div>
-          <div class="row"><span class="label">Message:</span><span class="formw"><textarea  id='adddesc' type='text' cols='30', rows='6'></textarea></span>
-          </div>
-          <div class="row">
-            <span class="label">Tags:</span>
-            <span id='addtags' class="formw"></span>
-          </div>
-          <div class="spacer"></div>
-        </div>
-      </div>
-      <div id='editNote' style='display:none'>
-         <h1 id='editheader'>Edit note<span style='float:right;'><button id='saveeditnotebutton' class='addit'>save changes</button></span></h1>
-
-        <div>
-          <div class="row"><span class="label">Title:</span><span class="formw"><input id='edittitle' type='text' maxlength='60' size='30'/></span>
-          </div>
-          <div class="row"><span class="label">Message:</span><span class="formw"><textarea  id='editdesc' type='text' cols='30', rows='6'></textarea></span>
-          </div>
-          <div class="row">
-            <span class="label">Tags:</span>
-            <span id='edittags' class="formw"></span>
-          </div>
-          <div class="spacer"></div>
         </div>
       </div>
       <div id='editMission' style='display:none'>
