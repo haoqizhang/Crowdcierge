@@ -31,11 +31,16 @@
       };
 
       ViewActivityModal.prototype.renderContent = function() {
-        var $content, source, template;
+        var $content, source, template, values;
 
         source = $('#view-activity-template').html();
         template = Handlebars.compile(source);
-        $content = $(template(this.activity.attributes));
+        values = _.defaults({
+          editable: this.currentTaskModel.get('taskType') !== 'preview'
+        }, {
+          inItinerary: this.itineraryModel.get(this.activity.id) != null
+        }, this.activity.attributes);
+        $content = $(template(values));
         this.$el.addClass('modal-fat');
         return $content;
       };

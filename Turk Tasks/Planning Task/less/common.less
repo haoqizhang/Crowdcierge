@@ -1,13 +1,13 @@
-@Hue-01: #00CE00; // HEADER COLOR
-@Hue-02: #0000CE;	// TOP BUTTON COLOR
+@Hue-01: darken(#00CE00,10%); // HEADER COLOR
+@Hue-02: #0000CE; // TOP BUTTON COLOR
 
-@Hue-03: #EF7777;	// BOX HEADER TEXT COLOR
-@Hue-04: #FFEFEF;	// BOX HEADER BACKGROUND COLOR
-@Hue-05: #7F7F7F;	// BOX BODY COLOR
-@Hue-06: #ccc;		// BOX BORDER COLOR
-@Hue-07: #fff;		// BOX BACKGROUND COLOR
+@Hue-03: #EF7777; // BOX HEADER TEXT COLOR
+@Hue-04: #FFEFEF; // BOX HEADER BACKGROUND COLOR
+@Hue-05: #7F7F7F; // BOX BODY COLOR
+@Hue-06: #ccc;    // BOX BORDER COLOR
+@Hue-07: #fff;    // BOX BACKGROUND COLOR
 
-@Hue-08: rgb(202, 241, 243);	// BRAINSTREAM BACKGROUND COLOR
+@Hue-08: rgb(202, 241, 243);  // BRAINSTREAM BACKGROUND COLOR
 
 @frame-height: 650px;
 @header-height: 40px;
@@ -16,36 +16,37 @@
 
 
 .cc-button (@text-color, @background-color, @border-color) {
-	border: 1px outset;
-	border-color: @border-color;
-	color: @text-color;
-	background-color: @background-color;
-	padding: 3px 5px;
-	cursor: pointer;
-	text-transform: lowercase;
-	text-align: center;
+  // border: 1px outset;
+  // border-color: @border-color;
+  border: none;
+  color: @text-color;
+  background-color: @background-color;
+  padding: 3px 5px;
+  cursor: pointer;
+  text-transform: lowercase;
+  text-align: center;
 
-	&:hover {
-		background-color: darken(@background-color, 5%);
-	}
+  &:hover {
+    background-color: darken(@background-color, 5%);
+  }
 
-	&:active {
-		background-color: darken(@background-color, 10%);
-	}
+  &:active {
+    background-color: darken(@background-color, 10%);
+  }
 }
 
 // STANDARD UGLY ORANGE BUTTON
 .addit {
-	.cc-button (white, @Hue-01, black);
-	font-size:50%;
+  .cc-button (white, @Hue-01, black);
+  font-size:50%;
 
-	&.big {
-		font-size:100%;
-	}
+  &.big {
+    font-size:100%;
+  }
 
-	&.wide {
-		padding:4px;
-	}
+  &.wide {
+    padding:4px;
+  }
 }
 
 .sectiontitle {

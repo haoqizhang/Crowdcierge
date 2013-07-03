@@ -15,7 +15,11 @@ do ->
       source = $('#view-activity-template').html()
       template = Handlebars.compile(source)
 
-      $content = $(template(@activity.attributes))
+      values = _.defaults {editable: @currentTaskModel.get('taskType') != 'preview'},
+        {inItinerary: @itineraryModel.get(@activity.id)?},
+        @activity.attributes
+
+      $content = $(template(values))
 
       @$el.addClass('modal-fat')
 

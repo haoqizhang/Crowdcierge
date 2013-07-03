@@ -36,9 +36,8 @@
     <!-- CROWDCIERGE PLANNING JS FILES -->
     <script type="text/javascript" src="../js/init.js"></script>
     <script type="text/javascript" src="../js/handlebarsHelpers.js"></script>
-    <script type="text/javascript" src="../js/stringutils.js"></script>
 
-    <!-- COFFEESCRIPT FILES -->
+    <!-- COMPILED COFFEESCRIPT FILES -->
     <script type="text/javascript" src="../js/Session.js"></script>
     <script type="text/javascript" src="../js/TodoManager.js"></script>
     <script type="text/javascript" src="../js/UrlParser.js"></script>
@@ -171,17 +170,29 @@
     <script id="view-activity-template" type="text/x-handlebars-template">
       <div class="view-activity-main">
         <div id="viewActivityMap"/>
-        <div class="view-activity-info">
-          <div class="name"><b>Name: </b>{{name}}</div>
-          <div class="location"><b>Location: </b>{{location.name}}</div>
-          <div class="description"><b>Description: </b>{{description}}</div>
-          <div class="duration"><b>Duration: </b>{{duration}}</div>
-          <div class="categories">
-            <b>Categories:</b>
-            {{#each categories}}
-              <div class="category">#{{.}}</div>
-            {{/each}}
+        <div class="view-activity-right">
+          <div class="view-activity-info">
+            <div class="name"><b>Name: </b>{{name}}</div>
+            <div class="location"><b>Location: </b>{{location.name}}</div>
+            <div class="description"><b>Description: </b>{{description}}</div>
+            <div class="duration"><b>Takes about: </b>{{#minToPrettyTime duration}}{{/minToPrettyTime}}</div>
+            <div class="categories">
+              <b>Categories:</b>
+              {{#each categories}}
+                <div class="category">#{{.}}</div>
+              {{/each}}
+            </div>
           </div>
+          {{#if editable}}
+          <div class="view-activity-control-box">
+            <div class="view-activity-control edit-activity">edit activity</div>
+            {{#if inItinerary}}
+            <div class="view-activity-control itinerary-control">remove from itinerary</div>
+            {{else}}
+            <div class="view-activity-control itinerary-control">add to itinerary</div>
+            {{/if}}
+          </div>
+          {{/if}}
         </div>
       </div>
     </script>

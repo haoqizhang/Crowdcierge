@@ -60,7 +60,7 @@ do ->
 
       @$('input').autocomplete
         source: source
-        minLength: 3
+        minLength: 1
 
     _handleInputKeypress: (evt) =>
       if evt.keyCode == 13 or evt.which == 13

@@ -88,7 +88,7 @@
         }
         return this.$('input').autocomplete({
           source: source,
-          minLength: 3
+          minLength: 1
         });
       };
 

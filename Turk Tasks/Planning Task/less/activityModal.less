@@ -1,24 +1,44 @@
 @import "common.less";
 
-.view-activity-info {
+@view-activity-height: 400px;
+
+.view-activity-right {
   width: 40%;
   display: inline-block;
-
+  height: @view-activity-height;
   vertical-align: top;
 
-  div {
-    margin-bottom: 10px;
+  .view-activity-info {
+    height: 90%;
+    div {
+      margin-bottom: 10px;
+    }
+
+    .description {
+      max-height: @view-activity-height - 210px;
+      overflow-y: auto;
+    }
+
+    .category {
+      display: inline-block;
+      margin-left: 2px;
+    }
   }
 
-  .category {
-    display: inline-block;
-    margin-left: 2px;
+  .view-activity-control-box {
+    text-align: center;
+    .view-activity-control {
+      .cc-button (white, @Hue-01, black);
+      width: 100%;
+      display: inline;
+      margin: 10px;
+    }
   }
 }
 
 #viewActivityMap {
   width: 57%;
-  height: 400px;
+  height: @view-activity-height;
   display: inline-block;
   margin-right: 2px;
 }

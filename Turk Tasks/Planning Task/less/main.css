@@ -1,8 +1,7 @@
 .addit {
-  border: 1px outset;
-  border-color: #000000;
+  border: none;
   color: #ffffff;
-  background-color: #00ce00;
+  background-color: #009b00;
   padding: 3px 5px;
   cursor: pointer;
   text-transform: lowercase;
@@ -10,10 +9,10 @@
   font-size: 50%;
 }
 .addit:hover {
-  background-color: #00b500;
+  background-color: #008200;
 }
 .addit:active {
-  background-color: #009b00;
+  background-color: #006800;
 }
 .addit.big {
   font-size: 100%;
@@ -23,7 +22,7 @@
 }
 .sectiontitle {
   font-size: 135%;
-  color: #00ce00;
+  color: #009b00;
   font-weight: bold;
 }
 html,
