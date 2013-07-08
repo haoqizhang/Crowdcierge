@@ -136,7 +136,8 @@
       };
 
       MapView.prototype._plotItineraryRoute = function() {
-        var act, i, locations, _i, _ref1, _results;
+        var act, callback, i, locations, _i, _ref1, _results,
+          _this = this;
 
         locations = (function() {
           var _i, _len, _ref1, _results;
@@ -153,12 +154,18 @@
         locations.push(this.currentTaskModel.get('end'));
         _results = [];
         for (i = _i = 0, _ref1 = locations.length - 2; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
-          _results.push(this._getRoute(locations[i], locations[i + 1], this._processRouteData));
+          callback = (function(index) {
+            return (function(obj) {
+              return _this._processRouteData(index, obj);
+            });
+          });
+          _results.push(this._getRoute(locations[i], locations[i + 1], callback(i)));
         }
         return _results;
       };
 
-      MapView.prototype._processRouteData = function(data) {
+      MapView.prototype._processRouteData = function(index, data) {
+        console.log(index);
         return console.log(data);
       };
 

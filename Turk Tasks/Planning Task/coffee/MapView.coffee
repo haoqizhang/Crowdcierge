@@ -85,15 +85,20 @@ do ->
         marker.bindPopup @_getActivityPopupFromModel(model)
         marker.addTo @map
 
+    # This is the worst
     _plotItineraryRoute: =>
       locations = (act.get('location') for act in @itineraryModel.models)
       locations.unshift @currentTaskModel.get('start')
       locations.push @currentTaskModel.get('end')
 
       for i in [0..(locations.length-2)]
-        @_getRoute locations[i], locations[i+1], @_processRouteData
+        callback = ((index) => 
+            return ((obj) => @_processRouteData(index, obj))
+          )
+        @_getRoute locations[i], locations[i+1], callback(i)
 
-    _processRouteData: (data) =>
+    _processRouteData: (index, data) =>
+      console.log index
       console.log data
 
     _plotActivitySuggestions: =>
