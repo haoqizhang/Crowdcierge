@@ -5,23 +5,34 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   (function() {
-    var _CIRCLE_MARKER_SIZE, _ref;
+    var _ACTIVITY_ICON, _CIRCLE_MARKER_SIZE, _ROUTE_KEY, _ROUTE_LOAD_URL, _ref;
 
     _CIRCLE_MARKER_SIZE = 20;
+    _ACTIVITY_ICON = L.icon({
+      iconUrl: '../img/Custom-Icon-Design-Pretty-Office-9-Circle.ico',
+      iconSize: [_CIRCLE_MARKER_SIZE - 7, _CIRCLE_MARKER_SIZE - 7]
+    });
+    _ROUTE_LOAD_URL = 'https://dev.virtualearth.net/REST/v1/Routes/Walking';
+    _ROUTE_KEY = 'AmoK7LJck9Ce_JO_n_NAiDlRv88YZROwdvPzWdLi57iP3XQeGon28HJVdnHsUSkp';
     return com.uid.crowdcierge.MapView = (function(_super) {
       __extends(MapView, _super);
 
       function MapView() {
+        this._getRoute = __bind(this._getRoute, this);
         this._handleRemoveItemClick = __bind(this._handleRemoveItemClick, this);
         this._handleAddItemClick = __bind(this._handleAddItemClick, this);
         this._handleEditItemClick = __bind(this._handleEditItemClick, this);
         this._handleViewItemClick = __bind(this._handleViewItemClick, this);
         this._getActivityPopupFromModel = __bind(this._getActivityPopupFromModel, this);
         this._showSelectedActivity = __bind(this._showSelectedActivity, this);
+        this._plotActivitySuggestions = __bind(this._plotActivitySuggestions, this);
+        this._processRouteData = __bind(this._processRouteData, this);
         this._plotItineraryRoute = __bind(this._plotItineraryRoute, this);
         this._plotItineraryPins = __bind(this._plotItineraryPins, this);
         this._plotItinerary = __bind(this._plotItinerary, this);
         this._plotStartEnd = __bind(this._plotStartEnd, this);
+        this._clearMapActivityMarkers = __bind(this._clearMapActivityMarkers, this);
+        this._replotMap = __bind(this._replotMap, this);
         this.render = __bind(this.render, this);
         this.initialize = __bind(this.initialize, this);        _ref = MapView.__super__.constructor.apply(this, arguments);
         return _ref;
@@ -35,7 +46,7 @@
         this.itineraryModel = this.session.itineraryModel;
         this.currentTaskModel = this.session.currentTaskModel;
         this.idToMarkerMap = {};
-        this.listenTo(this.itineraryModel, 'add remove reset', this._plotItinerary);
+        this.listenTo(this.itineraryModel, 'add sort remove reset', this._replotMap);
         return this.listenTo(this.activitiesModel, 'change:selected', this._showSelectedActivity);
       };
 
@@ -52,7 +63,24 @@
           maxZoom: 18
         }).addTo(this.map);
         this._plotStartEnd();
-        return this._plotItinerary();
+        return this._replotMap();
+      };
+
+      MapView.prototype._replotMap = function() {
+        this._clearMapActivityMarkers();
+        this._plotItinerary();
+        return this._plotActivitySuggestions();
+      };
+
+      MapView.prototype._clearMapActivityMarkers = function() {
+        var marker, _i, _len, _ref1;
+
+        _ref1 = _.values(this.idToMarkerMap);
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          marker = _ref1[_i];
+          this.map.removeLayer(marker);
+        }
+        return this.idToMarkerMap = {};
       };
 
       MapView.prototype._plotStartEnd = function() {
@@ -88,23 +116,17 @@
       };
 
       MapView.prototype._plotItineraryPins = function() {
-        var i, marker, model, _i, _j, _len, _len1, _ref1, _ref2, _results;
+        var i, marker, model, _i, _len, _ref1, _results;
 
-        _ref1 = _.values(this.idToMarkerMap);
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          marker = _ref1[_i];
-          this.map.removeLayer(marker);
-        }
-        this.idToMarkerMap = {};
-        _ref2 = this.itineraryModel.models;
+        _ref1 = this.itineraryModel.models;
         _results = [];
-        for (i = _j = 0, _len1 = _ref2.length; _j < _len1; i = ++_j) {
-          model = _ref2[i];
+        for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
+          model = _ref1[i];
           marker = L.marker([model.get('location').lat, model.get('location').long], {
             icon: new L.NumberedDivIcon({
               number: i + 1
             }),
-            zIndexOffset: 200
+            zIndexOffset: 1000
           });
           this.idToMarkerMap[model.id] = marker;
           marker.bindPopup(this._getActivityPopupFromModel(model));
@@ -113,24 +135,57 @@
         return _results;
       };
 
-      MapView.prototype._plotItineraryRoute = function() {};
+      MapView.prototype._plotItineraryRoute = function() {
+        var act, i, locations, _i, _ref1, _results;
+
+        locations = (function() {
+          var _i, _len, _ref1, _results;
+
+          _ref1 = this.itineraryModel.models;
+          _results = [];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            act = _ref1[_i];
+            _results.push(act.get('location'));
+          }
+          return _results;
+        }).call(this);
+        locations.unshift(this.currentTaskModel.get('start'));
+        locations.push(this.currentTaskModel.get('end'));
+        _results = [];
+        for (i = _i = 0, _ref1 = locations.length - 2; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+          _results.push(this._getRoute(locations[i], locations[i + 1], this._processRouteData));
+        }
+        return _results;
+      };
+
+      MapView.prototype._processRouteData = function(data) {
+        return console.log(data);
+      };
+
+      MapView.prototype._plotActivitySuggestions = function() {
+        var activity, i, marker, _i, _len, _ref1, _results;
+
+        _ref1 = this.activitiesModel.get('items').models;
+        _results = [];
+        for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
+          activity = _ref1[i];
+          if (this.itineraryModel.get(activity.id)) {
+            continue;
+          }
+          marker = L.marker([activity.get('location').lat, activity.get('location').long], {
+            icon: _ACTIVITY_ICON,
+            zIndexOffset: 200
+          });
+          this.idToMarkerMap[activity.id] = marker;
+          marker.bindPopup(this._getActivityPopupFromModel(activity));
+          _results.push(marker.addTo(this.map));
+        }
+        return _results;
+      };
 
       MapView.prototype._showSelectedActivity = function(list, activity) {
-        if (activity != null) {
-          if (this.selectedMarker) {
-            this.map.removeLayer(this.selectedMarker);
-          }
-          this.map.panTo([activity.get('location').lat, activity.get('location').long]);
-          if (this.idToMarkerMap[activity.id] != null) {
-            return this.idToMarkerMap[activity.id].openPopup();
-          } else {
-            this.selectedMarker = L.marker([activity.get('location').lat, activity.get('location').long], {
-              zIndexOffset: 1000
-            });
-            this.selectedMarker.bindPopup(this._getActivityPopupFromModel(activity));
-            this.selectedMarker.addTo(this.map);
-            return this.selectedMarker.openPopup();
-          }
+        if (activity !== null) {
+          return this.idToMarkerMap[activity.id].openPopup();
         }
       };
 
@@ -182,6 +237,26 @@
 
         id = $(evt.target).closest('.map-popup').attr('id');
         return this.itineraryModel.remove(id);
+      };
+
+      MapView.prototype._getRoute = function(act1, act2, callback) {
+        return $.ajax({
+          type: 'GET',
+          dataType: 'jsonp',
+          jsonp: 'jsonp',
+          url: _ROUTE_LOAD_URL,
+          data: {
+            'waypoint.1': "" + act1.lat + "," + act1.long,
+            'waypoint.2': "" + act2.lat + "," + act2.long,
+            routePathOutput: 'Points',
+            output: 'json',
+            timeType: 'Departure',
+            dateTime: '3:00:00PM',
+            distanceUnit: 'mi',
+            key: _ROUTE_KEY
+          },
+          success: callback
+        });
       };
 
       return MapView;

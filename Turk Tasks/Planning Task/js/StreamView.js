@@ -200,7 +200,7 @@
         this.itineraryModel = this.options.itineraryModel;
         this.filterModel = this.options.filterModel;
         this.listenTo(this.activitiesModel, 'add change remove reset', this.render);
-        this.listenTo(this.itineraryModel, 'add change remove reset', this.render);
+        this.listenTo(this.itineraryModel, 'add change sort remove reset', this.render);
         return this.listenTo(this.filterModel, 'change', this.render);
       };
 

@@ -6,6 +6,7 @@
     return com.uid.crowdcierge.TodoManager = (function() {
       function TodoManager(options) {
         this._buildActivityTodoObject = __bind(this._buildActivityTodoObject, this);
+        this._addOverlapTodo = __bind(this._addOverlapTodo, this);
         this._updateTimeConstraints = __bind(this._updateTimeConstraints, this);
         this._updateCalendarConstraints = __bind(this._updateCalendarConstraints, this);
         this._updateActivityConstraints = __bind(this._updateActivityConstraints, this);
@@ -14,7 +15,7 @@
         this.constraintsModel = this.session.constraintsModel;
         this.todoItemModel = this.session.todoItemModel;
         this.currentTaskModel = this.session.currentTaskModel;
-        this.listenTo(this.itineraryModel, 'add remove reset', this.updateTodo);
+        this.listenTo(this.itineraryModel, 'add change sort remove reset', this.updateTodo);
         this.listenTo(this.constraintsModel, 'add remove reset', this.updateTodo);
       }
 
@@ -79,9 +80,47 @@
         return _results;
       };
 
-      TodoManager.prototype._updateCalendarConstraints = function() {};
+      TodoManager.prototype._updateCalendarConstraints = function() {
+        var block, blocks, checkBlock, endOverlap, model, startOverlap, _i, _j, _k, _len, _len1, _len2, _ref;
+
+        blocks = [];
+        _ref = this.itineraryModel.models;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          model = _ref[_i];
+          blocks.push({
+            start: model.get('start'),
+            end: model.get('start') + parseInt(model.get('duration'))
+          });
+        }
+        for (_j = 0, _len1 = blocks.length; _j < _len1; _j++) {
+          checkBlock = blocks[_j];
+          for (_k = 0, _len2 = blocks.length; _k < _len2; _k++) {
+            block = blocks[_k];
+            if (block === checkBlock) {
+              continue;
+            }
+            startOverlap = checkBlock.start >= block.start && checkBlock.start < block.end;
+            endOverlap = checkBlock.end > block.start && checkBlock.end <= block.end;
+            if (startOverlap || endOverlap) {
+              this._addOverlapTodo();
+              return;
+            }
+          }
+        }
+      };
 
       TodoManager.prototype._updateTimeConstraints = function() {};
+
+      TodoManager.prototype._addOverlapTodo = function() {
+        var model;
+
+        model = new Backbone.Model({
+          name: 'Itinerary items are overlapping',
+          categories: ['todo'],
+          description: 'Try to rearrange the items in the calendar so that none are overlapping.'
+        });
+        return this.todoItemModel.push(model);
+      };
 
       TodoManager.prototype._buildActivityTodoObject = function(con, num, diff) {
         var err, ret;

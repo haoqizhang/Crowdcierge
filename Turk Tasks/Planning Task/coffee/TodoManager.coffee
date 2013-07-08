@@ -10,7 +10,7 @@ do ->
       @todoItemModel = @session.todoItemModel
       @currentTaskModel = @session.currentTaskModel
 
-      @listenTo @itineraryModel, 'add remove reset', @updateTodo
+      @listenTo @itineraryModel, 'add change sort remove reset', @updateTodo
       @listenTo @constraintsModel, 'add remove reset', @updateTodo
 
     updateTodo: =>
@@ -56,8 +56,30 @@ do ->
           @todoItemModel.push model 
 
     _updateCalendarConstraints: =>
+      blocks = []
+      for model in @itineraryModel.models
+        blocks.push 
+          start: model.get('start')
+          end: model.get('start') + parseInt(model.get('duration'))
+      for checkBlock in blocks
+        for block in blocks
+          if block == checkBlock
+            continue
+          startOverlap = (checkBlock.start >= block.start and checkBlock.start < block.end)
+          endOverlap = (checkBlock.end > block.start and checkBlock.end <= block.end)
+          if startOverlap or endOverlap
+            @_addOverlapTodo()
+            return
 
     _updateTimeConstraints: =>
+
+    _addOverlapTodo: =>
+      model = new Backbone.Model
+        name: 'Itinerary items are overlapping'
+        categories: ['todo']
+        description: 'Try to rearrange the items in the calendar so that none are overlapping.'
+      
+      @todoItemModel.push model
 
     _buildActivityTodoObject: (con, num, diff) =>
       ret = {}

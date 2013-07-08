@@ -133,15 +133,24 @@ do ->
       for model in collection.models
         @_addEvent(model)
 
-    _eventResize: (evt, days, minutes) =>
+    _eventResize: (evt, days, minutes, revert) =>
       model = @itineraryModel.get(evt.id)
-      oldDuration = model.get 'duration'
-      model.set 'duration', oldDuration + minutes
+      newDuration = parseInt(model.get('duration')) + minutes
+      newEnd = model.get('start') + newDuration
+      if newEnd > @currentTaskModel.get('endTime') - @shift*60
+        revert()
+      else
+        model.set 'duration', newDuration
 
-    _eventDrop: (evt, days, minutes) =>
+    _eventDrop: (evt, days, minutes, allDay, revert) =>
       model = @itineraryModel.get(evt.id)
-      oldStart = model.get 'start'
-      model.set 'start', oldStart + minutes
+      newStart = model.get('start') + minutes
+      newEnd = newStart + parseInt(model.get('duration'))
+      if newStart < @currentTaskModel.get('beginTime') - @shift*60 or newEnd > @currentTaskModel.get('endTime') - @shift*60
+        revert()
+      else
+        model.set 'start', newStart
+        @itineraryModel.sort()
 
     _eventClick: (evt) =>
       @activitiesModel.set 'selected', @itineraryModel.get(evt.id)
@@ -150,6 +159,15 @@ do ->
       $close = $('<div class="event-close"/>').html('&times;')
       $close.attr('eventId', evt.id)
 
+      model = @itineraryModel.get(evt.id)
+
+      source = $('#itinerary-item-template').html()
+      template = Handlebars.compile(source)
+      $eventBody = $(template(
+        _.defaults {ind: @itineraryModel.indexOf(model)+1}, model.attributes
+        ))
+
+      $element.find('.fc-event-content').empty().append $eventBody
       $element.find('.fc-event-head').append $close
       return $element
 

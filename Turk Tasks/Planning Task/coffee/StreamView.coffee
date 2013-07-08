@@ -121,7 +121,7 @@ do ->
       @filterModel = @options.filterModel
 
       @listenTo @activitiesModel, 'add change remove reset', @render
-      @listenTo @itineraryModel, 'add change remove reset', @render
+      @listenTo @itineraryModel, 'add change sort remove reset', @render
       @listenTo @filterModel, 'change', @render
 
     render: =>

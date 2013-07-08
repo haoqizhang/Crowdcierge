@@ -89,10 +89,15 @@
         </td>
         <td>
           {{#if inIt}}
-          <div class="sspinpos">{{ind}}</div>
+          <div class="sspinpos-stream">{{ind}}</div>
           {{/if}}
         </td>
       </tr>
+    </script>
+
+    <script id="itinerary-item-template" type="text/x-handlebars-template">
+      <div class="sspinpos-stream">{{ind}}</div>
+      <div class="item-title">{{name}}</div>
     </script>
 
     <script id="header-view-template" type="text/x-handlebars-template">

@@ -193,20 +193,31 @@
         return _results;
       };
 
-      CalendarView.prototype._eventResize = function(evt, days, minutes) {
-        var model, oldDuration;
+      CalendarView.prototype._eventResize = function(evt, days, minutes, revert) {
+        var model, newDuration, newEnd;
 
         model = this.itineraryModel.get(evt.id);
-        oldDuration = model.get('duration');
-        return model.set('duration', oldDuration + minutes);
+        newDuration = parseInt(model.get('duration')) + minutes;
+        newEnd = model.get('start') + newDuration;
+        if (newEnd > this.currentTaskModel.get('endTime') - this.shift * 60) {
+          return revert();
+        } else {
+          return model.set('duration', newDuration);
+        }
       };
 
-      CalendarView.prototype._eventDrop = function(evt, days, minutes) {
-        var model, oldStart;
+      CalendarView.prototype._eventDrop = function(evt, days, minutes, allDay, revert) {
+        var model, newEnd, newStart;
 
         model = this.itineraryModel.get(evt.id);
-        oldStart = model.get('start');
-        return model.set('start', oldStart + minutes);
+        newStart = model.get('start') + minutes;
+        newEnd = newStart + parseInt(model.get('duration'));
+        if (newStart < this.currentTaskModel.get('beginTime') - this.shift * 60 || newEnd > this.currentTaskModel.get('endTime') - this.shift * 60) {
+          return revert();
+        } else {
+          model.set('start', newStart);
+          return this.itineraryModel.sort();
+        }
       };
 
       CalendarView.prototype._eventClick = function(evt) {
@@ -214,10 +225,17 @@
       };
 
       CalendarView.prototype._renderEvent = function(evt, $element) {
-        var $close;
+        var $close, $eventBody, model, source, template;
 
         $close = $('<div class="event-close"/>').html('&times;');
         $close.attr('eventId', evt.id);
+        model = this.itineraryModel.get(evt.id);
+        source = $('#itinerary-item-template').html();
+        template = Handlebars.compile(source);
+        $eventBody = $(template(_.defaults({
+          ind: this.itineraryModel.indexOf(model) + 1
+        }, model.attributes)));
+        $element.find('.fc-event-content').empty().append($eventBody);
         $element.find('.fc-event-head').append($close);
         return $element;
       };

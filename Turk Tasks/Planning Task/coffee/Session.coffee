@@ -6,6 +6,15 @@ do ->
       @itineraryModel = new Backbone.Collection
       @itineraryModel.model = com.uid.crowdcierge.Activity
 
+      @itineraryModel.comparator = ((act1, act2) => 
+        if act1.get('start') < act2.get('start')
+          return -1
+        else if act1.get('start') > act2.get('start')
+          return 1
+        else
+          return 0
+        )
+
       @travelTimeModel = new Backbone.Collection
 
       activities = new Backbone.Collection

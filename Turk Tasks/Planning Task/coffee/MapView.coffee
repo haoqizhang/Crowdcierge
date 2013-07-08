@@ -1,6 +1,14 @@
 do ->
   _CIRCLE_MARKER_SIZE = 20
 
+  _ACTIVITY_ICON = L.icon(
+    iconUrl: '../img/Custom-Icon-Design-Pretty-Office-9-Circle.ico'
+    iconSize: [_CIRCLE_MARKER_SIZE - 7, _CIRCLE_MARKER_SIZE - 7]
+  )
+
+  _ROUTE_LOAD_URL = 'https://dev.virtualearth.net/REST/v1/Routes/Walking'
+  _ROUTE_KEY = 'AmoK7LJck9Ce_JO_n_NAiDlRv88YZROwdvPzWdLi57iP3XQeGon28HJVdnHsUSkp'
+
   class com.uid.crowdcierge.MapView extends Backbone.View
     className: 'map-view'
 
@@ -12,7 +20,7 @@ do ->
 
       @idToMarkerMap = {}
 
-      @listenTo @itineraryModel, 'add remove reset', @_plotItinerary
+      @listenTo @itineraryModel, 'add sort remove reset', @_replotMap
       @listenTo @activitiesModel, 'change:selected', @_showSelectedActivity
 
     render: =>
@@ -30,7 +38,17 @@ do ->
       }).addTo(@map)
 
       @_plotStartEnd()
+      @_replotMap()
+
+    _replotMap: =>
+      @_clearMapActivityMarkers()
       @_plotItinerary()
+      @_plotActivitySuggestions()
+
+    _clearMapActivityMarkers: =>
+      for marker in _.values(@idToMarkerMap)
+        @map.removeLayer(marker)
+      @idToMarkerMap = {}
 
     _plotStartEnd: =>
       startLoc = @currentTaskModel.get 'start'
@@ -60,35 +78,38 @@ do ->
       @_plotItineraryRoute()
 
     _plotItineraryPins: =>
-      for marker in _.values(@idToMarkerMap)
-        @map.removeLayer(marker)
-
-      @idToMarkerMap = {}
-
       for model, i in @itineraryModel.models
         marker =  L.marker [model.get('location').lat, model.get('location').long]
-          , {icon: new L.NumberedDivIcon({number: i+1}), zIndexOffset: 200}
+          , {icon: new L.NumberedDivIcon({number: i+1}), zIndexOffset: 1000}
         @idToMarkerMap[model.id] = marker
         marker.bindPopup @_getActivityPopupFromModel(model)
         marker.addTo @map
 
     _plotItineraryRoute: =>
-      #TODO
+      locations = (act.get('location') for act in @itineraryModel.models)
+      locations.unshift @currentTaskModel.get('start')
+      locations.push @currentTaskModel.get('end')
+
+      for i in [0..(locations.length-2)]
+        @_getRoute locations[i], locations[i+1], @_processRouteData
+
+    _processRouteData: (data) =>
+      console.log data
+
+    _plotActivitySuggestions: =>
+      for activity, i in @activitiesModel.get('items').models
+        if @itineraryModel.get(activity.id)
+          continue
+        marker = L.marker [activity.get('location').lat
+          , activity.get('location').long]
+          , {icon: _ACTIVITY_ICON, zIndexOffset: 200}
+        @idToMarkerMap[activity.id] = marker
+        marker.bindPopup @_getActivityPopupFromModel(activity)
+        marker.addTo @map
 
     _showSelectedActivity: (list, activity) =>
-      if activity?
-        if @selectedMarker
-          @map.removeLayer @selectedMarker
-        @map.panTo([activity.get('location').lat
-          , activity.get('location').long])
-        if @idToMarkerMap[activity.id]?
-          @idToMarkerMap[activity.id].openPopup()
-        else
-          @selectedMarker = L.marker [activity.get('location').lat
-            , activity.get('location').long], {zIndexOffset: 1000}
-          @selectedMarker.bindPopup @_getActivityPopupFromModel(activity)
-          @selectedMarker.addTo @map
-          @selectedMarker.openPopup()
+      if activity != null
+        @idToMarkerMap[activity.id].openPopup()
 
     # I don't get why JQuery delegate doesn't work here, 
     # but I guess this will have to do.
@@ -127,3 +148,20 @@ do ->
     _handleRemoveItemClick: (evt) =>
       id = $(evt.target).closest('.map-popup').attr('id')
       @itineraryModel.remove id
+
+    _getRoute: (act1, act2, callback) =>
+      $.ajax
+        type: 'GET'
+        dataType: 'jsonp'
+        jsonp: 'jsonp'
+        url: _ROUTE_LOAD_URL
+        data:
+          'waypoint.1': "#{act1.lat},#{act1.long}"
+          'waypoint.2': "#{act2.lat},#{act2.long}"
+          routePathOutput: 'Points'
+          output: 'json'
+          timeType: 'Departure'
+          dateTime: '3:00:00PM'
+          distanceUnit: 'mi'
+          key: _ROUTE_KEY
+        success: callback
