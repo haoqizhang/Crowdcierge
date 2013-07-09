@@ -2,7 +2,6 @@ do ->
   _EDIT_URL = 'https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourEdit.php'
   _ADD_URL = 'https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourEntry.php'
 
-  # I hate asynchronous ajax. This is abysmmal.
   class com.uid.crowdcierge.StreamController
     constructor: (options) ->
       _.extend @,

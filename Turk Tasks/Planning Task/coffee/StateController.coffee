@@ -1,7 +1,6 @@
 do ->
   _SAVE_ITINERARY_URL = 'https://people.csail.mit.edu/jrafidi/Crowdcierge/mobi/submitTurkTourItinerary.php'
 
-  # I feel like dying
   class com.uid.crowdcierge.StateController
     constructor: (options) ->
       _.extend @,
