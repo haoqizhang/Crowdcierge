@@ -22,7 +22,6 @@ do ->
       $.ajax
         type: 'POST'
         url: _EDIT_URL
-        async: false
         data:
           userId: 'lol'
           taskId: @currentTaskModel.get('tid')
@@ -39,7 +38,6 @@ do ->
       $.ajax
         type: 'POST'
         url: _ADD_URL
-        async: false
         data:
           userId: 'lol'
           taskId: @currentTaskModel.get('tid')

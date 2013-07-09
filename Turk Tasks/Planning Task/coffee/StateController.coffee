@@ -24,7 +24,6 @@ do ->
       $.ajax
         type: 'POST'
         url: _SAVE_ITINERARY_URL
-        async: false
         data:
           userId: 'lol'
           taskId: @currentTaskModel.get('tid')

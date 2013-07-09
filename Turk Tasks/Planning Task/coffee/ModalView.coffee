@@ -1,9 +1,6 @@
 do ->
   class com.uid.crowdcierge.ModalView extends Backbone.View
     className: 'modal'
-
-    events:
-      'click .modal-close': 'closeModal'
       
     render: =>
       source = $('#modal-view-template').html()
@@ -17,6 +14,7 @@ do ->
 
       @$('.modal-header').append @renderHeader()
       @$('.modal-content').append @renderContent()
+      @$('.modal-close').click @closeModal
 
     renderHeader: =>
       console.warn "No-op render header called"

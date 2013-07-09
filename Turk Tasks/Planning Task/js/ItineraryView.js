@@ -224,6 +224,7 @@
       };
 
       CalendarView.prototype._eventClick = function(evt) {
+        this.activitiesModel.set('selected', null);
         return this.activitiesModel.set('selected', this.itineraryModel.get(evt.id));
       };
 

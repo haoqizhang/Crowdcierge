@@ -20,10 +20,6 @@
 
       ModalView.prototype.className = 'modal';
 
-      ModalView.prototype.events = {
-        'click .modal-close': 'closeModal'
-      };
-
       ModalView.prototype.render = function() {
         var source, template;
 
@@ -34,7 +30,8 @@
         $('body').append(this.$el);
         $('body').append(this.$overlay);
         this.$('.modal-header').append(this.renderHeader());
-        return this.$('.modal-content').append(this.renderContent());
+        this.$('.modal-content').append(this.renderContent());
+        return this.$('.modal-close').click(this.closeModal);
       };
 
       ModalView.prototype.renderHeader = function() {

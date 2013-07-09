@@ -156,6 +156,7 @@ do ->
         @itineraryModel.sort()
 
     _eventClick: (evt) =>
+      @activitiesModel.set 'selected', null
       @activitiesModel.set 'selected', @itineraryModel.get(evt.id)
 
     _renderEvent: (evt, $element) =>

@@ -22,6 +22,7 @@
       }
 
       ViewActivityModal.prototype.events = {
+        'click .modal-close': 'closeModal',
         'click .add-to-itinerary': '_addToItinerary',
         'click .remove-from-itinerary': '_removeFromItinerary'
       };
@@ -45,7 +46,7 @@
         values = _.defaults({
           editable: this.currentTaskModel.get('taskType') !== 'preview'
         }, {
-          inItinerary: this.itineraryModel.get(this.activity.id) != null
+          inItinerary: this.itineraryModel.get(this.activity.cid) != null
         }, this.activity.attributes);
         $content = $(template(values));
         this.$el.addClass('modal-fat');
@@ -75,7 +76,7 @@
       };
 
       ViewActivityModal.prototype._removeFromItinerary = function() {
-        this.itineraryModel.remove(this.activity.id);
+        this.itineraryModel.remove(this.activity.cid);
         return this.closeModal();
       };
 

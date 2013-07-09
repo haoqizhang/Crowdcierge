@@ -3,6 +3,7 @@ do ->
 
   class com.uid.crowdcierge.ViewActivityModal extends com.uid.crowdcierge.ModalView
     events:
+      'click .modal-close': 'closeModal'
       'click .add-to-itinerary': '_addToItinerary'
       'click .remove-from-itinerary': '_removeFromItinerary'
 
@@ -20,7 +21,7 @@ do ->
       template = Handlebars.compile(source)
 
       values = _.defaults {editable: @currentTaskModel.get('taskType') != 'preview'},
-        {inItinerary: @itineraryModel.get(@activity.id)?},
+        {inItinerary: @itineraryModel.get(@activity.cid)?},
         @activity.attributes
 
       $content = $(template(values))
@@ -51,5 +52,5 @@ do ->
       @closeModal()
 
     _removeFromItinerary: =>
-      @itineraryModel.remove @activity.id
+      @itineraryModel.remove @activity.cid
       @closeModal()

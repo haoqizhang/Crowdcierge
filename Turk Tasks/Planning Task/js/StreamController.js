@@ -27,7 +27,6 @@
         return $.ajax({
           type: 'POST',
           url: _EDIT_URL,
-          async: false,
           data: {
             userId: 'lol',
             taskId: this.currentTaskModel.get('tid'),
@@ -51,7 +50,6 @@
         return $.ajax({
           type: 'POST',
           url: _ADD_URL,
-          async: false,
           data: {
             userId: 'lol',
             taskId: this.currentTaskModel.get('tid'),
