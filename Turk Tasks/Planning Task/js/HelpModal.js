@@ -5,9 +5,10 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   (function() {
-    var _HELP_HEADER, _ref;
+    var _ADMIN_HELP_TEXT, _HELP_HEADER, _ref;
 
     _HELP_HEADER = 'What you can do to help';
+    _ADMIN_HELP_TEXT = 'You are in admin mode and can help plan your trip from here.';
     return com.uid.crowdcierge.HelpModal = (function(_super) {
       __extends(HelpModal, _super);
 
@@ -27,7 +28,15 @@
       };
 
       HelpModal.prototype.renderContent = function() {
-        return $('<div/>').text(_HELP_HEADER);
+        var $el;
+
+        $el = $('<div/>');
+        if (this.currentTaskModel.get('taskType') === 'admin') {
+          $el.text(_ADMIN_HELP_TEXT);
+        } else {
+          $el.text('TODO');
+        }
+        return $el;
       };
 
       return HelpModal;

@@ -42,17 +42,19 @@
       StateLoader.prototype._processState = function(meta) {
         var activity, i, itinerary, itineraryTimes, _i, _ref;
 
+        this.currentTaskModel.set('state', JSON.parse(meta.state));
         this.currentTaskModel.set('stateId', meta.stateId);
         meta.state = JSON.parse(meta.state);
         itinerary = meta.state.itinerary;
         itineraryTimes = meta.state.itineraryTimes;
         for (i = _i = 0, _ref = itinerary.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-          if (itinerary[i].indexOf('user') !== -1) {
-            itinerary[i] = itinerary[i].substring(5);
+          if (itinerary[i].toString().indexOf('user') !== -1) {
+            itinerary[i] = itinerary[i].toString().substring(5);
           }
           activity = this.activitiesModel.get('items').get(itinerary[i]);
           this.itineraryModel.push(activity);
         }
+        this.itineraryModel.sort();
         return this._processAdmin(meta.state.admin);
       };
 

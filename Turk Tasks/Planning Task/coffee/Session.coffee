@@ -5,7 +5,6 @@ do ->
     constructor: ->
       @itineraryModel = new Backbone.Collection
       @itineraryModel.model = com.uid.crowdcierge.Activity
-
       @itineraryModel.comparator = ((act1, act2) => 
         if act1.get('start') < act2.get('start')
           return -1

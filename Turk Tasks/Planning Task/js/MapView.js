@@ -129,7 +129,7 @@
             }),
             zIndexOffset: 1000
           });
-          this.idToMarkerMap[model.id] = marker;
+          this.idToMarkerMap[model.cid] = marker;
           marker.bindPopup(this._getActivityPopupFromModel(model));
           _results.push(marker.addTo(this.map));
         }
@@ -188,14 +188,14 @@
         _results = [];
         for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
           activity = _ref1[i];
-          if (this.itineraryModel.get(activity.id)) {
+          if (this.itineraryModel.get(activity.cid)) {
             continue;
           }
           marker = L.marker([activity.get('location').lat, activity.get('location').long], {
             icon: _ACTIVITY_ICON,
             zIndexOffset: 200
           });
-          this.idToMarkerMap[activity.id] = marker;
+          this.idToMarkerMap[activity.cid] = marker;
           marker.bindPopup(this._getActivityPopupFromModel(activity));
           _results.push(marker.addTo(this.map));
         }
@@ -204,7 +204,7 @@
 
       MapView.prototype._showSelectedActivity = function(list, activity) {
         if (activity !== null) {
-          return this.idToMarkerMap[activity.id].openPopup();
+          return this.idToMarkerMap[activity.cid].openPopup();
         }
       };
 
@@ -225,11 +225,11 @@
       };
 
       MapView.prototype._handleViewItemClick = function(evt) {
-        var id, modal;
+        var cid, modal;
 
-        id = $(evt.target).closest('.map-popup').attr('id');
+        cid = $(evt.target).closest('.map-popup').attr('id');
         modal = new com.uid.crowdcierge.ViewActivityModal({
-          activity: this.activitiesModel.get('items').get(id),
+          activity: this.activitiesModel.get('items').get(cid),
           activitiesModel: this.activitiesModel,
           itineraryModel: this.itineraryModel,
           currentTaskModel: this.currentTaskModel
@@ -239,23 +239,23 @@
       };
 
       MapView.prototype._handleEditItemClick = function(evt) {
-        var id;
+        var cid;
 
-        return id = $(evt.target).closest('.map-popup').attr('id');
+        return cid = $(evt.target).closest('.map-popup').attr('id');
       };
 
       MapView.prototype._handleAddItemClick = function(evt) {
-        var id;
+        var cid;
 
-        id = $(evt.target).closest('.map-popup').attr('id');
-        return this.itineraryModel.add(this.activitiesModel.get('items').get(id));
+        cid = $(evt.target).closest('.map-popup').attr('id');
+        return this.itineraryModel.add(this.activitiesModel.get('items').get(cid));
       };
 
       MapView.prototype._handleRemoveItemClick = function(evt) {
-        var id;
+        var cid;
 
-        id = $(evt.target).closest('.map-popup').attr('id');
-        return this.itineraryModel.remove(id);
+        cid = $(evt.target).closest('.map-popup').attr('id');
+        return this.itineraryModel.remove(cid);
       };
 
       MapView.prototype._getRoute = function(act1, act2, callback) {

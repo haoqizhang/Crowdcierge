@@ -43,6 +43,8 @@
     <script type="text/javascript" src="../js/UrlParser.js"></script>
     <script type="text/javascript" src="../js/StateLoader.js"></script>
     <script type="text/javascript" src="../js/StreamLoader.js"></script>
+    <script type="text/javascript" src="../js/StateController.js"></script>
+    <script type="text/javascript" src="../js/StreamController.js"></script>
     <script type="text/javascript" src="../js/Activity.js"></script>
     <script type="text/javascript" src="../js/Constraint.js"></script>
     <script type="text/javascript" src="../js/MainView.js"></script>
@@ -77,7 +79,7 @@
     </script>
 
     <script id="stream-item-template" type="text/x-handlebars-template">
-      <tr class="stream-item" id={{id}}>
+      <tr class="stream-item" id={{cid}}>
         <td class="sitem-text-td">
           <b>{{attributes.name}}</b>
           <br/>
@@ -132,9 +134,9 @@
     </script>
 
     <script id="map-popup-template" type="text/x-handlebars-template">
-      <div class='map-popup' id={{id}}>
+      <div class='map-popup' id={{cid}}>
         <div class="map-popup-title">{{attributes.name}}</div>
-        <div class="map-popup-location">@{{attributes.location.name}}</div>
+        <div class="map-popup-location">@{{#superShort attributes.location.name}}{{/superShort}}</div>
         <div class="map-popup-control view-item">View</div>
         <div class="map-popup-control edit-item">Edit</div>
         {{#if inItinerary}}
@@ -195,9 +197,9 @@
           <div class="view-activity-control-box">
             <div class="view-activity-control edit-activity">edit activity</div>
             {{#if inItinerary}}
-            <div class="view-activity-control itinerary-control">remove from itinerary</div>
+            <div class="view-activity-control itinerary-control remove-from-itinerary">remove from itinerary</div>
             {{else}}
-            <div class="view-activity-control itinerary-control">add to itinerary</div>
+            <div class="view-activity-control itinerary-control add-to-itinerary">add to itinerary</div>
             {{/if}}
           </div>
           {{/if}}
@@ -270,77 +272,6 @@
             </tr>
           </table>
         </div>
-      </div>
-      <div id='viewActivity' style='display:none'>
-         <h1 id='viewactheader'>Activity<span style='float:right;'><button id='editacttoitbutton' class='addit'>edit activity</button>&nbsp;<button id='addacttoitbutton' class='addit'>add it to the itinerary</button></span></h1>
-        <div id="viewActivityMessage" style="display:none; margin-left:auto; margin-right:auto; font-size:2em; text-align:center">
-          The traveler has already done this activity today.
-        </div>
-        <div style="float:left; width:40%">
-          <table id='viewActivityTable'>
-            <tr>
-              <td class='vlabel'>Activity:</td>
-              <td id='viewacttitle'></td>
-            </tr>
-            <tr>
-              <td class='vlabel'>Location name:</td>
-              <td id='viewactloc'></td>
-            </tr>
-            <tr>
-              <td class='vlabel'>What to do/see:</td>
-              <td id='viewactdesc'></td>
-            </tr>
-            <tr>
-              <td class='vlabel'>Takes about:</td>
-              <td id='viewactduration'></td>
-            </tr>
-            <tr>
-              <td class='vlabel'>Categories:</td>
-              <td id='viewacttags'></td>
-            </tr>
-          </table>
-        </div>
-      </div>
-      <div id='editMission' style='display:none'>
-        <h1 id='editmissionheader'>Edit mission
-          <span style='float:right;'>
-	           <button id='saveeditmissionbutton' class='addit'>save changes </button>
-        </span>
-        </h1>
-        <div>
-          <div class="row">
-            <span class="label">What you are looking for:</span>
-	           <span class="formw">
-              <textarea id='editmissiondescription' type='text' style='width:100%' rows='8'></textarea>
-            </span>
-            <br/>
-          </div>
-          <div class="row" id='tabcontainer'>
-            <ul>
-              <li class="selected" id="tagtab">
-                <a onclick="showTags()" href="#">Tags</a>
-              </li>
-              <li id="reqtab">
-                <a href="#" onclick="showRequirements()">Requirements</a>
-              </li>
-            </ul>
-          </div>
-          <div id="content">
-            <div id="tagcontent">Existing tags: <span id="editmissionexistingtags"></span>
-              <br/>
-              <button class="tabactbut" onClick="createField('tour_categories', 'categorySet', '', 30)">add a tag</button>
-              <br/>
-              <div id="tour_categories"></div>
-            </div>
-            <div id="requirementcontent">
-              <button class="tabactbut" onClick="createConstraintField('tour_verbal', 'preferenceSet', '', 100, null)">add a requirement</button>
-              <br/>
-              <div class="row" id="tour_verbal"></div>
-              <br/>
-            </div>
-          </div>
-        </div>
-        <div class="spacer"></div>
       </div>
       <div id='editActivity' style='display:none'>
          <h1 id='editactheader'>Edit spsps<span style='float:right;'><button id='saveeditbutton' class='addit'>save changes</button></span></h1>

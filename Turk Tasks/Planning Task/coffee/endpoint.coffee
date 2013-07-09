@@ -1,6 +1,7 @@
 $('document').ready ( =>
   if $.browser.msie
-    alert "IE Error."
+    alert 'Please return this HIT. Unfortunately, you can\'t do this task because you are using Internet Explorer.'
+    return
 
   session = new com.uid.crowdcierge.Session
 
@@ -22,7 +23,11 @@ $('document').ready ( =>
     session: session
   todoManager.updateTodo()
 
-  #TODO: create controllers
+  stateController = new com.uid.crowdcierge.StateController
+    session: session
+  streamController = new com.uid.crowdcierge.StreamController
+    session: session
+    stateController: stateController
 
   view = new com.uid.crowdcierge.MainView
     session: session

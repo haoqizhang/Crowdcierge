@@ -29,6 +29,7 @@ do ->
 
     # Urg
     _processState: (meta) =>
+      @currentTaskModel.set 'state', JSON.parse(meta.state)
       @currentTaskModel.set 'stateId', meta.stateId
 
       meta.state = JSON.parse meta.state
@@ -36,10 +37,12 @@ do ->
       itineraryTimes = meta.state.itineraryTimes
 
       for i in [0..itinerary.length-1]
-        if itinerary[i].indexOf('user') != -1
-          itinerary[i] = itinerary[i].substring(5)
+        if itinerary[i].toString().indexOf('user') != -1
+          itinerary[i] = itinerary[i].toString().substring(5)
         activity = @activitiesModel.get('items').get(itinerary[i])
         @itineraryModel.push activity
+
+      @itineraryModel.sort()
 
       # Why
       @_processAdmin meta.state.admin

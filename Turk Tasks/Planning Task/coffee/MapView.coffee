@@ -82,7 +82,7 @@ do ->
       for model, i in @itineraryModel.models
         marker =  L.marker [model.get('location').lat, model.get('location').long]
           , {icon: new L.NumberedDivIcon({number: i+1}), zIndexOffset: 1000}
-        @idToMarkerMap[model.id] = marker
+        @idToMarkerMap[model.cid] = marker
         marker.bindPopup @_getActivityPopupFromModel(model)
         marker.addTo @map
 
@@ -111,18 +111,18 @@ do ->
 
     _plotActivitySuggestions: =>
       for activity, i in @activitiesModel.get('items').models
-        if @itineraryModel.get(activity.id)
+        if @itineraryModel.get(activity.cid)
           continue
         marker = L.marker [activity.get('location').lat
           , activity.get('location').long]
           , {icon: _ACTIVITY_ICON, zIndexOffset: 200}
-        @idToMarkerMap[activity.id] = marker
+        @idToMarkerMap[activity.cid] = marker
         marker.bindPopup @_getActivityPopupFromModel(activity)
         marker.addTo @map
 
     _showSelectedActivity: (list, activity) =>
       if activity != null
-        @idToMarkerMap[activity.id].openPopup()
+        @idToMarkerMap[activity.cid].openPopup()
 
     # I don't get why JQuery delegate doesn't work here, 
     # but I guess this will have to do.
@@ -142,9 +142,9 @@ do ->
       return $popup[0]
 
     _handleViewItemClick: (evt) =>
-      id = $(evt.target).closest('.map-popup').attr('id')
+      cid = $(evt.target).closest('.map-popup').attr('id')
       modal = new com.uid.crowdcierge.ViewActivityModal
-        activity: @activitiesModel.get('items').get(id)
+        activity: @activitiesModel.get('items').get(cid)
         activitiesModel: @activitiesModel
         itineraryModel: @itineraryModel
         currentTaskModel: @currentTaskModel
@@ -152,15 +152,15 @@ do ->
       modal.prepMap()
 
     _handleEditItemClick: (evt) =>
-      id = $(evt.target).closest('.map-popup').attr('id')
+      cid = $(evt.target).closest('.map-popup').attr('id')
 
     _handleAddItemClick: (evt) =>
-      id = $(evt.target).closest('.map-popup').attr('id')
-      @itineraryModel.add @activitiesModel.get('items').get(id)
+      cid = $(evt.target).closest('.map-popup').attr('id')
+      @itineraryModel.add @activitiesModel.get('items').get(cid)
 
     _handleRemoveItemClick: (evt) =>
-      id = $(evt.target).closest('.map-popup').attr('id')
-      @itineraryModel.remove id
+      cid = $(evt.target).closest('.map-popup').attr('id')
+      @itineraryModel.remove cid
 
     # This could be pushed to a controller, but it's just this ajax
     _getRoute: (act1, act2, callback) =>

@@ -12,12 +12,19 @@
       __extends(ViewActivityModal, _super);
 
       function ViewActivityModal() {
+        this._removeFromItinerary = __bind(this._removeFromItinerary, this);
+        this._addToItinerary = __bind(this._addToItinerary, this);
         this.prepMap = __bind(this.prepMap, this);
         this.renderContent = __bind(this.renderContent, this);
         this.renderHeader = __bind(this.renderHeader, this);
         this.initialize = __bind(this.initialize, this);        _ref = ViewActivityModal.__super__.constructor.apply(this, arguments);
         return _ref;
       }
+
+      ViewActivityModal.prototype.events = {
+        'click .add-to-itinerary': '_addToItinerary',
+        'click .remove-from-itinerary': '_removeFromItinerary'
+      };
 
       ViewActivityModal.prototype.initialize = function() {
         this.activity = this.options.activity;
@@ -60,6 +67,16 @@
         marker.bindPopup(this.activity.get('name'));
         marker.addTo(this.map);
         return marker.openPopup();
+      };
+
+      ViewActivityModal.prototype._addToItinerary = function() {
+        this.itineraryModel.add(this.activity);
+        return this.closeModal();
+      };
+
+      ViewActivityModal.prototype._removeFromItinerary = function() {
+        this.itineraryModel.remove(this.activity.id);
+        return this.closeModal();
       };
 
       return ViewActivityModal;

@@ -3,6 +3,10 @@
     return takeTill(string, 100);
   });
 
+  Handlebars.registerHelper('superShort', function(string) {
+    return takeTill(string, 20);
+  });
+
   Handlebars.registerHelper('minToPrettyTime', function(string) {
     var totalMinutes = parseInt(string);
     var hours = Math.floor(totalMinutes/60);

@@ -3,10 +3,11 @@
   var _this = this;
 
   $('document').ready((function() {
-    var session, stateLoader, streamLoader, todoManager, urlParser, view;
+    var session, stateController, stateLoader, streamController, streamLoader, todoManager, urlParser, view;
 
     if ($.browser.msie) {
-      alert("IE Error.");
+      alert('Please return this HIT. Unfortunately, you can\'t do this task because you are using Internet Explorer.');
+      return;
     }
     session = new com.uid.crowdcierge.Session;
     urlParser = new com.uid.crowdcierge.UrlParser({
@@ -25,6 +26,13 @@
       session: session
     });
     todoManager.updateTodo();
+    stateController = new com.uid.crowdcierge.StateController({
+      session: session
+    });
+    streamController = new com.uid.crowdcierge.StreamController({
+      session: session,
+      stateController: stateController
+    });
     view = new com.uid.crowdcierge.MainView({
       session: session
     });

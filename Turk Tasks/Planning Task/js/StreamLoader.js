@@ -44,11 +44,15 @@
           item = stream[_i];
           if (item.changeInfo == null) {
             answer = JSON.parse(item.answer);
-            if (answer.type !== 'activity') {
+            if ((answer.type != null) && answer.type !== 'activity') {
               continue;
             }
-            model = new com.uid.crowdcierge.Activity(answer.data);
-            model.id = item.hitId;
+            if (answer.data != null) {
+              model = new com.uid.crowdcierge.Activity(answer.data);
+            } else {
+              model = new com.uid.crowdcierge.Activity(answer);
+            }
+            model.id = parseInt(item.hitId);
             _results.push(this.activitiesModel.get('items').unshift(model));
           } else {
             _results.push(void 0);

@@ -111,24 +111,25 @@ do ->
 
     _addEvent: (model) =>
       startDate = new Date(@date)
-      if model.get('start') != 0
-        startDate.setHours @_hours(model.get('start'))
-        startDate.setMinutes model.get('start')%60
+      if model.get('start') == 0
+        model.set 'start', (@currentTaskModel.get('beginTime') - @shift*60)
+
+      startDate.setHours @_hours(model.get('start'))
+      startDate.setMinutes model.get('start')%60
 
       endDate = new Date(@date)
       endDate.setHours @_hours(model.get('duration')) + startDate.getHours()
       endDate.setMinutes model.get('duration')%60 + startDate.getMinutes()
 
       evt = 
-        id: model.id
+        id: model.cid
         title: model.get('name')
         start: startDate
         end: endDate
       @$calendar.fullCalendar('renderEvent', evt, true)
 
     _removeEvent: (model) =>
-      @$calendar.fullCalendar('removeEvents', model.id)
-      model.set 'start', 0
+      @$calendar.fullCalendar('removeEvents', model.cid)
 
     _resetEvents: (collection) =>
       @$calendar.fullCalendar('removeEvents')
@@ -176,8 +177,7 @@ do ->
 
     _clickRemoveEvent: (evt) =>
       evt.stopPropagation()
-      @itineraryModel.remove(
-        @itineraryModel.get($(evt.target).attr('eventId')))
+      @itineraryModel.remove $(evt.target).attr('eventId')
 
     _hours: (min) =>
       return Math.floor(min/60)

@@ -2,6 +2,10 @@ do ->
   _ACTIVITY_HEADER = 'Activity: '
 
   class com.uid.crowdcierge.ViewActivityModal extends com.uid.crowdcierge.ModalView
+    events:
+      'click .add-to-itinerary': '_addToItinerary'
+      'click .remove-from-itinerary': '_removeFromItinerary'
+
     initialize: =>
       @activity = @options.activity
       @activitiesModel = @options.activitiesModel
@@ -41,3 +45,11 @@ do ->
       marker.bindPopup @activity.get('name')
       marker.addTo @map
       marker.openPopup()
+
+    _addToItinerary: =>
+      @itineraryModel.add @activity
+      @closeModal()
+
+    _removeFromItinerary: =>
+      @itineraryModel.remove @activity.id
+      @closeModal()

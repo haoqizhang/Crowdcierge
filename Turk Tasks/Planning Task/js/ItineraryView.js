@@ -162,15 +162,16 @@
         var endDate, evt, startDate;
 
         startDate = new Date(this.date);
-        if (model.get('start') !== 0) {
-          startDate.setHours(this._hours(model.get('start')));
-          startDate.setMinutes(model.get('start') % 60);
+        if (model.get('start') === 0) {
+          model.set('start', this.currentTaskModel.get('beginTime') - this.shift * 60);
         }
+        startDate.setHours(this._hours(model.get('start')));
+        startDate.setMinutes(model.get('start') % 60);
         endDate = new Date(this.date);
         endDate.setHours(this._hours(model.get('duration')) + startDate.getHours());
         endDate.setMinutes(model.get('duration') % 60 + startDate.getMinutes());
         evt = {
-          id: model.id,
+          id: model.cid,
           title: model.get('name'),
           start: startDate,
           end: endDate
@@ -179,8 +180,7 @@
       };
 
       CalendarView.prototype._removeEvent = function(model) {
-        this.$calendar.fullCalendar('removeEvents', model.id);
-        return model.set('start', 0);
+        return this.$calendar.fullCalendar('removeEvents', model.cid);
       };
 
       CalendarView.prototype._resetEvents = function(collection) {
@@ -246,7 +246,7 @@
 
       CalendarView.prototype._clickRemoveEvent = function(evt) {
         evt.stopPropagation();
-        return this.itineraryModel.remove(this.itineraryModel.get($(evt.target).attr('eventId')));
+        return this.itineraryModel.remove($(evt.target).attr('eventId'));
       };
 
       CalendarView.prototype._hours = function(min) {

@@ -26,13 +26,18 @@ do ->
           )
 
     # I hate that this exists
+    # The data and type checks are for my testing failures
     _processStream: (stream) =>
       for item in stream
         if not item.changeInfo?
           answer = JSON.parse item.answer
-          if answer.type != 'activity'
+          if answer.type? and answer.type != 'activity'
             continue
 
-          model = new com.uid.crowdcierge.Activity answer.data
-          model.id = item.hitId
+          if answer.data?
+            model = new com.uid.crowdcierge.Activity answer.data
+          else
+            model = new com.uid.crowdcierge.Activity answer
+
+          model.id = parseInt(item.hitId)
           @activitiesModel.get('items').unshift model
