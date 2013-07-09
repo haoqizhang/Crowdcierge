@@ -58,6 +58,8 @@
       __extends(CalendarView, _super);
 
       function CalendarView() {
+        this._shiftEventTimes = __bind(this._shiftEventTimes, this);
+        this._shiftTableTimes = __bind(this._shiftTableTimes, this);
         this._hours = __bind(this._hours, this);
         this._clickRemoveEvent = __bind(this._clickRemoveEvent, this);
         this._renderEvent = __bind(this._renderEvent, this);
@@ -105,7 +107,8 @@
           default:
             this._initializeStandardCalendar();
         }
-        return this._resetEvents(this.itineraryModel);
+        this._resetEvents(this.itineraryModel);
+        return this._shiftTableTimes();
       };
 
       CalendarView.prototype._getTripTimes = function() {
@@ -237,6 +240,7 @@
         }, model.attributes)));
         $element.find('.fc-event-content').empty().append($eventBody);
         $element.find('.fc-event-head').append($close);
+        this._shiftEventTimes();
         return $element;
       };
 
@@ -247,6 +251,69 @@
 
       CalendarView.prototype._hours = function(min) {
         return Math.floor(min / 60);
+      };
+
+      CalendarView.prototype._shiftTableTimes = function() {
+        var i, newTimes, oldTimes, s, slotNum, up, _i, _j, _ref2, _results;
+
+        slotNum = (this.currentTaskModel.get('endTime') - this.currentTaskModel.get('beginTime')) / _SLOT_SIZE_MINUTES;
+        _results = [];
+        for (s = _i = 0, _ref2 = slotNum - 1; 0 <= _ref2 ? _i <= _ref2 : _i >= _ref2; s = 0 <= _ref2 ? ++_i : --_i) {
+          oldTimes = this.$(".fc-slot" + s).html();
+          newTimes = oldTimes;
+          if (newTimes) {
+            for (i = _j = 0; _j <= 12; i = ++_j) {
+              up = i + this.shift;
+              up = up % 12;
+              if (i > up && i !== 12) {
+                if (up === 0) {
+                  up = 12;
+                }
+                newTimes = newTimes.replace(">" + i + "pm", ">" + up + "AM");
+                newTimes = newTimes.replace(">" + i + "am", ">" + up + "PM");
+              } else {
+                if (up === 0) {
+                  up = 12;
+                }
+                newTimes = newTimes.replace(">" + i + "pm", ">" + up + "PM");
+                newTimes = newTimes.replace(">" + i + "am", ">" + up + "AM");
+              }
+            }
+            newTimes = newTimes.replace("AM", "am");
+            newTimes = newTimes.replace("PM", "pm");
+            _results.push(this.$(".fc-slot" + s).html(newTimes));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
+      CalendarView.prototype._shiftEventTimes = function() {
+        var i, newTimes, oldTimes, t, times, up, _i, _j, _ref2, _results;
+
+        times = this.$(".fc-event-time");
+        _results = [];
+        for (t = _i = 0, _ref2 = times.size() - 1; 0 <= _ref2 ? _i <= _ref2 : _i >= _ref2; t = 0 <= _ref2 ? ++_i : --_i) {
+          oldTimes = $(times[t]).parent().html();
+          newTimes = oldTimes;
+          if (newTimes) {
+            for (i = _j = 0; _j <= 12; i = ++_j) {
+              up = i + this.shift;
+              if (up > 12) {
+                up = up - 12;
+              }
+              newTimes = newTimes.replace(">" + i + ":", "> " + up + ":");
+              newTimes = newTimes.replace(">" + i + ":", "> " + up + ":");
+              newTimes = newTimes.replace("- " + i + ":", " -  " + up + ":");
+              newTimes = newTimes.replace("- " + i + ":", " -  " + up + ":");
+            }
+            _results.push($(times[t]).parent().html(newTimes));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
       };
 
       return CalendarView;

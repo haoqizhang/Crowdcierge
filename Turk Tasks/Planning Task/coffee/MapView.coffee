@@ -19,6 +19,7 @@ do ->
       @currentTaskModel = @session.currentTaskModel
 
       @idToMarkerMap = {}
+      @routeLines = []
 
       @listenTo @itineraryModel, 'add sort remove reset', @_replotMap
       @listenTo @activitiesModel, 'change:selected', @_showSelectedActivity
@@ -87,6 +88,9 @@ do ->
 
     # This is the worst
     _plotItineraryRoute: =>
+      for line in @routeLines
+        @map.removeLayer(line)
+
       locations = (act.get('location') for act in @itineraryModel.models)
       locations.unshift @currentTaskModel.get('start')
       locations.push @currentTaskModel.get('end')
@@ -98,8 +102,12 @@ do ->
         @_getRoute locations[i], locations[i+1], callback(i)
 
     _processRouteData: (index, data) =>
-      console.log index
-      console.log data
+      lineData = data.resourceSets[0].resources[0].routePath.line.coordinates
+
+      polyline = L.polyline lineData, {color: 'blue'}
+      polyline.addTo(@map)
+
+      @routeLines.push polyline
 
     _plotActivitySuggestions: =>
       for activity, i in @activitiesModel.get('items').models
@@ -154,6 +162,7 @@ do ->
       id = $(evt.target).closest('.map-popup').attr('id')
       @itineraryModel.remove id
 
+    # This could be pushed to a controller, but it's just this ajax
     _getRoute: (act1, act2, callback) =>
       $.ajax
         type: 'GET'

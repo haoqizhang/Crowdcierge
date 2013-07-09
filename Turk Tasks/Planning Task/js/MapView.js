@@ -46,6 +46,7 @@
         this.itineraryModel = this.session.itineraryModel;
         this.currentTaskModel = this.session.currentTaskModel;
         this.idToMarkerMap = {};
+        this.routeLines = [];
         this.listenTo(this.itineraryModel, 'add sort remove reset', this._replotMap);
         return this.listenTo(this.activitiesModel, 'change:selected', this._showSelectedActivity);
       };
@@ -136,16 +137,21 @@
       };
 
       MapView.prototype._plotItineraryRoute = function() {
-        var act, callback, i, locations, _i, _ref1, _results,
+        var act, callback, i, line, locations, _i, _j, _len, _ref1, _ref2, _results,
           _this = this;
 
+        _ref1 = this.routeLines;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          line = _ref1[_i];
+          this.map.removeLayer(line);
+        }
         locations = (function() {
-          var _i, _len, _ref1, _results;
+          var _j, _len1, _ref2, _results;
 
-          _ref1 = this.itineraryModel.models;
+          _ref2 = this.itineraryModel.models;
           _results = [];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            act = _ref1[_i];
+          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+            act = _ref2[_j];
             _results.push(act.get('location'));
           }
           return _results;
@@ -153,7 +159,7 @@
         locations.unshift(this.currentTaskModel.get('start'));
         locations.push(this.currentTaskModel.get('end'));
         _results = [];
-        for (i = _i = 0, _ref1 = locations.length - 2; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+        for (i = _j = 0, _ref2 = locations.length - 2; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; i = 0 <= _ref2 ? ++_j : --_j) {
           callback = (function(index) {
             return (function(obj) {
               return _this._processRouteData(index, obj);
@@ -165,8 +171,14 @@
       };
 
       MapView.prototype._processRouteData = function(index, data) {
-        console.log(index);
-        return console.log(data);
+        var lineData, polyline;
+
+        lineData = data.resourceSets[0].resources[0].routePath.line.coordinates;
+        polyline = L.polyline(lineData, {
+          color: 'blue'
+        });
+        polyline.addTo(this.map);
+        return this.routeLines.push(polyline);
       };
 
       MapView.prototype._plotActivitySuggestions = function() {

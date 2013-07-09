@@ -134,6 +134,7 @@
     <script id="map-popup-template" type="text/x-handlebars-template">
       <div class='map-popup' id={{id}}>
         <div class="map-popup-title">{{attributes.name}}</div>
+        <div class="map-popup-location">@{{attributes.location.name}}</div>
         <div class="map-popup-control view-item">View</div>
         <div class="map-popup-control edit-item">Edit</div>
         {{#if inItinerary}}
@@ -146,8 +147,10 @@
 
     <script id="itinerary-view-template" type="text/x-handlebars-template">
       <div class='sectiontitle'>Itinerary Calendar
+        <!--
         <span id="travelTimeBox"></span>
         <span id="travelTimeText"> = travel time </span>
+        -->
       </div>
     </script>
 

@@ -12,6 +12,7 @@
         this._updateActivityConstraints = __bind(this._updateActivityConstraints, this);
         this.updateTodo = __bind(this.updateTodo, this);        _.extend(this, Backbone.Events, options);
         this.itineraryModel = this.session.itineraryModel;
+        this.travelTimeModel = this.session.travelTimeModel;
         this.constraintsModel = this.session.constraintsModel;
         this.todoItemModel = this.session.todoItemModel;
         this.currentTaskModel = this.session.currentTaskModel;

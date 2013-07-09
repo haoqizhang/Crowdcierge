@@ -64,6 +64,8 @@ do ->
 
       @_resetEvents(@itineraryModel)
 
+      @_shiftTableTimes()
+
     _getTripTimes: =>
       if @currentTaskModel.get('endTime') > 1440
         @shift = (@currentTaskModel.get('endTime') - 1440) / 60
@@ -169,6 +171,7 @@ do ->
 
       $element.find('.fc-event-content').empty().append $eventBody
       $element.find('.fc-event-head').append $close
+      @_shiftEventTimes()
       return $element
 
     _clickRemoveEvent: (evt) =>
@@ -178,3 +181,44 @@ do ->
 
     _hours: (min) =>
       return Math.floor(min/60)
+
+    # I will go to hell for this
+    _shiftTableTimes: =>
+      slotNum = (@currentTaskModel.get('endTime') - @currentTaskModel.get('beginTime'))/_SLOT_SIZE_MINUTES
+      for s in [0..slotNum-1]
+        oldTimes = @$(".fc-slot" + s).html()
+        newTimes = oldTimes
+        if newTimes 
+          for i in [0..12]
+            up = i + @shift
+            up = up%12
+            if i > up and i != 12
+              if up == 0 
+                up = 12
+              newTimes = newTimes.replace(">" + i + "pm", ">" + up + "AM")
+              newTimes = newTimes.replace(">" + i + "am", ">" + up + "PM")
+            else 
+              if up == 0
+                up = 12
+              newTimes = newTimes.replace(">" + i + "pm", ">" + up + "PM")
+              newTimes = newTimes.replace(">" + i + "am", ">" + up + "AM")
+          newTimes = newTimes.replace("AM", "am")
+          newTimes = newTimes.replace("PM", "pm")                  
+          @$(".fc-slot" + s).html(newTimes)
+
+    # I will go to hell again for this too
+    _shiftEventTimes: =>
+      times = @$(".fc-event-time")
+      for t in [0..(times.size()-1)]
+        oldTimes = $(times[t]).parent().html()
+        newTimes = oldTimes
+        if newTimes
+          for i in [0..12]
+            up = i + @shift;
+            if up > 12
+              up = up - 12
+            newTimes = newTimes.replace(">" + i + ":", "> " + up + ":")
+            newTimes = newTimes.replace(">" + i + ":", "> " + up + ":")
+            newTimes = newTimes.replace("- " + i + ":", " -  " + up + ":")
+            newTimes = newTimes.replace("- " + i + ":", " -  " + up + ":")
+          $(times[t]).parent().html(newTimes)

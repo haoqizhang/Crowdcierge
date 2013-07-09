@@ -6,6 +6,7 @@ do ->
         options
 
       @itineraryModel = @session.itineraryModel
+      @travelTimeModel = @session.travelTimeModel
       @constraintsModel = @session.constraintsModel
       @todoItemModel = @session.todoItemModel
       @currentTaskModel = @session.currentTaskModel
