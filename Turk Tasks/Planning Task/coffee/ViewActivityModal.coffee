@@ -3,7 +3,6 @@ do ->
 
   class com.uid.crowdcierge.ViewActivityModal extends com.uid.crowdcierge.ModalView
     events:
-      'click .modal-close': 'closeModal'
       'click .add-to-itinerary': '_addToItinerary'
       'click .remove-from-itinerary': '_removeFromItinerary'
 

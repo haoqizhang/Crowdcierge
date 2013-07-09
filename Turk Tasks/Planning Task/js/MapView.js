@@ -88,7 +88,7 @@
         var endIcon, endLoc, endMarker, startIcon, startLoc, startMarker;
 
         startLoc = this.currentTaskModel.get('start');
-        this.map.setView([startLoc.lat, startLoc.long], 14, true);
+        this.map.setView([startLoc.lat, startLoc.long], 13, true);
         startIcon = L.divIcon({
           className: 'start-marker',
           iconSize: [_CIRCLE_MARKER_SIZE, _CIRCLE_MARKER_SIZE]

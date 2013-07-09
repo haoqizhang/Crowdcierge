@@ -53,7 +53,7 @@ do ->
 
     _plotStartEnd: =>
       startLoc = @currentTaskModel.get 'start'
-      @map.setView [startLoc.lat, startLoc.long], 14, true
+      @map.setView [startLoc.lat, startLoc.long], 13, true
 
       startIcon = L.divIcon
         className: 'start-marker'

@@ -22,7 +22,6 @@
       }
 
       ViewActivityModal.prototype.events = {
-        'click .modal-close': 'closeModal',
         'click .add-to-itinerary': '_addToItinerary',
         'click .remove-from-itinerary': '_removeFromItinerary'
       };
