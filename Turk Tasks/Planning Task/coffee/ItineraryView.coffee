@@ -126,6 +126,7 @@ do ->
         title: model.get('name')
         start: startDate
         end: endDate
+
       @$calendar.fullCalendar('renderEvent', evt, true)
 
     _removeEvent: (model) =>

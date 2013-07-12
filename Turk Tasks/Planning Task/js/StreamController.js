@@ -36,8 +36,8 @@
           success: function(data) {
             data = data.replace(/(\r\n|\n|\r)/gm, '');
             activity.id = parseInt(data);
-            _this.stateController.saveState();
-            return _this.activitiesModel.get('items').sort();
+            _this.activitiesModel.get('items').sort();
+            return _this.stateController.saveState();
           }
         });
       };

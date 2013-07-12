@@ -4,6 +4,7 @@ do ->
 
     events:
       'keyup input': '_handleInputKeypress'
+      'click .add-button': '_handleAddActivity'
 
     initialize: =>
       @session = @options.session
@@ -70,6 +71,14 @@ do ->
       if @$('input').val() == ''
         @filterModel.set 'keyword', ''
         @$('input').autocomplete('close')
+
+    _handleAddActivity: =>
+      modal = new com.uid.crowdcierge.CreateActivityModal
+        activitiesModel: @activitiesModel
+        itineraryModel: @itineraryModel
+        currentTaskModel: @currentTaskModel
+      modal.render()
+      modal.prepMap()
 
   class TodoItemsView extends Backbone.View
     tag: 'tbody'

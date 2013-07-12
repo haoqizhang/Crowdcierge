@@ -3,6 +3,9 @@ do ->
     className: 'modal'
       
     render: =>
+      $('body').remove('.overlay')
+      $('body').remove('modal')
+
       source = $('#modal-view-template').html()
       template = Handlebars.compile(source)
       @$el.html template()

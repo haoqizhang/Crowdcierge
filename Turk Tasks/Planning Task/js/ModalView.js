@@ -21,6 +21,8 @@
 
       ModalView.prototype.render = function() {
         var source, template;
+        $('body').remove('.overlay');
+        $('body').remove('modal');
         source = $('#modal-view-template').html();
         template = Handlebars.compile(source);
         this.$el.html(template());

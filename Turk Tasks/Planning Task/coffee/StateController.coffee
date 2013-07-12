@@ -10,7 +10,7 @@ do ->
       @itineraryModel = @session.itineraryModel
       @currentTaskModel = @session.currentTaskModel
 
-      @listenTo @itineraryModel, 'remove', @saveState
+      @listenTo @itineraryModel, 'add remove', @saveState
 
     saveState: =>
       itinerary = []

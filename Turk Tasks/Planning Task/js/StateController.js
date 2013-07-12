@@ -10,7 +10,7 @@
         _.extend(this, options, Backbone.Events);
         this.itineraryModel = this.session.itineraryModel;
         this.currentTaskModel = this.session.currentTaskModel;
-        this.listenTo(this.itineraryModel, 'remove', this.saveState);
+        this.listenTo(this.itineraryModel, 'add remove', this.saveState);
       }
 
       StateController.prototype.saveState = function() {

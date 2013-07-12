@@ -7,6 +7,7 @@
   display: inline-block;
   height: @view-activity-height;
   vertical-align: top;
+  margin-left: 10px;
 
   .view-activity-info {
     height: 90%;
@@ -32,6 +33,10 @@
       width: 100%;
       display: inline;
       margin: 10px;
+
+      &.save-activity {
+        margin: 5px;
+      }
     }
   }
 }
@@ -41,4 +46,32 @@
   height: @view-activity-height;
   display: inline-block;
   margin-right: 2px;
+}
+
+.edit-activity-main {
+
+  .edit-activity-left {
+    width: 55%;
+    display: inline-block;
+  }
+
+  #editActivityMap {
+    width: 100%;
+    height: @view-activity-height - 40px;
+    display: inline-block;
+    margin-right: 2px;
+    vertical-align: bottom;
+  }
+
+  #editActivityLocation {
+    width: 185px;
+  }
+
+  #editActivityDescription {
+    width: 84%;
+  }
+
+  #editActivityDuration {
+    width: 55%;
+  }
 }

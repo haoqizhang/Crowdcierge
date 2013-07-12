@@ -10,6 +10,7 @@
       __extends(StreamView, _super);
 
       function StreamView() {
+        this._handleAddActivity = __bind(this._handleAddActivity, this);
         this._handleInputKeypress = __bind(this._handleInputKeypress, this);
         this._initializeSearchbox = __bind(this._initializeSearchbox, this);
         this.render = __bind(this.render, this);
@@ -21,7 +22,8 @@
       StreamView.prototype.className = 'stream-view';
 
       StreamView.prototype.events = {
-        'keyup input': '_handleInputKeypress'
+        'keyup input': '_handleInputKeypress',
+        'click .add-button': '_handleAddActivity'
       };
 
       StreamView.prototype.initialize = function() {
@@ -98,6 +100,17 @@
           this.filterModel.set('keyword', '');
           return this.$('input').autocomplete('close');
         }
+      };
+
+      StreamView.prototype._handleAddActivity = function() {
+        var modal;
+        modal = new com.uid.crowdcierge.CreateActivityModal({
+          activitiesModel: this.activitiesModel,
+          itineraryModel: this.itineraryModel,
+          currentTaskModel: this.currentTaskModel
+        });
+        modal.render();
+        return modal.prepMap();
       };
 
       return StreamView;

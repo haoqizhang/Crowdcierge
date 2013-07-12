@@ -31,8 +31,8 @@ do ->
         success: (data) =>
           data = data.replace(/(\r\n|\n|\r)/gm,'')
           activity.id = parseInt(data)
-          @stateController.saveState()
           @activitiesModel.get('items').sort()
+          @stateController.saveState()
 
     _submitAdd: (activity) =>
       $.ajax

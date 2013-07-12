@@ -58,6 +58,7 @@
     <script type="text/javascript" src="../js/MissionView.js"></script>
     <script type="text/javascript" src="../js/TodoModal.js"></script>
     <script type="text/javascript" src="../js/ViewActivityModal.js"></script>
+    <script type="text/javascript" src="../js/EditActivityModal.js"></script>
     <script type="text/javascript" src="../js/endpoint.js"></script>
 
     <!-- CROWDCIERGE HANDLEBARS TEMPLATES -->
@@ -210,34 +211,43 @@
     <!-- Reuse of styles here... not the best, I know. -->
     <script id="edit-activity-template" type="text/x-handlebars-template">
       <div class="edit-activity-main">
-        <div id="editActivityMap"/>
+        <div class="edit-activity-left">
+          <div>Drag the blue marker below to the location, or type a location in and see the suggestions.</div>
+          <div id="editActivityMap"/>
+        </div>
         <div class="view-activity-right">
           <div class="view-activity-info">
             <div class="name"><b>Activity Name: </b>
-              <input id="editActivityLocation" type="text" maxlength="60" size="30">{{name}}</input>
+              <input id="editActivityName" type="text" maxlength="60">{{name}}</input>
             </div>
             <div class="location"><b>Location: </b>
-              <input id="editActivityLocation" type="text" maxlength="60" size="30">{{location.name}}</input>
+              <input id="editActivityLocation" type="text">{{location.name}}</input>
             </div>
-            <div class="description"><b>What to do: </b>
+            <div class="description"><b>What to do: </b> <br/>
               <textarea id='editActivityDescription' type='text'rows='6'>{{description}}</textarea>
             </div>
             <div class="duration"><b>Takes about: </b>
               <select id="editActivityDuration">
                 {{#each timeOption}}
-                  <option value="{{.}}">{{#minToPrettyTime .}}{{/minToPrettyTime}}</div>
+                  <option value="{{.}}">{{#minToPrettyTime .}}{{/minToPrettyTime}}</option>
                 {{/each}}
               </select>
+            </div>
             <div class="categories">
               <b>Categories:</b>
               {{#each categories}}
-                <input type="checkbox" value="{{.}}">{{.}}<br>
+                <input type="checkbox" value="{{.}}">{{.}}</input>
               {{/each}}
             </div>
           </div>
           <div class="view-activity-control-box">
+            {{#if inItinerary}}
+            <div class="view-activity-control save-activity">save activity</div>
+            <div class="view-activity-control save-activity add-to-itinerary">save and add to itinerary</div>
+            {{else}}
             <div class="view-activity-control save-activity">save as idea</div>
-            <div class="view-activity-control save-activity">save and add to itinerary</div>
+            <div class="view-activity-control save-activity add-to-itinerary">save and add to itinerary</div>
+            {{/if}}
           </div>
         </div>
       </div>
