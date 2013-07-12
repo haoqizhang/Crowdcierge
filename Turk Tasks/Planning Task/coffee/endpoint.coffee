@@ -23,6 +23,7 @@ $('document').ready ( =>
     session: session
   todoManager.updateTodo()
 
+  # State and stream controllers
   stateController = new com.uid.crowdcierge.StateController
     session: session
   streamController = new com.uid.crowdcierge.StreamController
@@ -37,4 +38,5 @@ $('document').ready ( =>
   view.render()
 
   console.log session
+  #C:\Users\Joey Rafidi\Documents\GitHub\Crowdcierge\Turk Tasks\Planning Task\coffee
 )

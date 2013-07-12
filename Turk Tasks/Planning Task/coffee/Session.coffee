@@ -5,14 +5,7 @@ do ->
     constructor: ->
       @itineraryModel = new Backbone.Collection
       @itineraryModel.model = com.uid.crowdcierge.Activity
-      @itineraryModel.comparator = ((act1, act2) => 
-        if act1.get('start') < act2.get('start')
-          return -1
-        else if act1.get('start') > act2.get('start')
-          return 1
-        else
-          return 0
-        )
+      @itineraryModel.comparator = ((act) => act.get('start'))
 
       @travelTimeModel = new Backbone.Collection
 
@@ -21,6 +14,7 @@ do ->
       @activitiesModel = new Backbone.Model
         items: activities
         selected: null
+      @activitiesModel.get('items').comparator = ((act) => return -act.id)
 
       @constraintsModel = new Backbone.Collection
       @constraintsModel.model = com.uid.crowdcierge.Constraint

@@ -15,7 +15,7 @@ do ->
     saveState: =>
       itinerary = []
       for shit in @itineraryModel.models
-        itinerary.push shit.id
+        itinerary.push 'user_' + shit.id
 
       @currentTaskModel.get('state').itinerary = itinerary
       state = @currentTaskModel.get('state')

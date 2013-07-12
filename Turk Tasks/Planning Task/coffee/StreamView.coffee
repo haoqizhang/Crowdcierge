@@ -120,7 +120,7 @@ do ->
       @itineraryModel = @options.itineraryModel
       @filterModel = @options.filterModel
 
-      @listenTo @activitiesModel, 'add change remove reset', @render
+      @listenTo @activitiesModel.get('items'), 'add change sort remove reset', @render
       @listenTo @itineraryModel, 'add change sort remove reset', @render
       @listenTo @filterModel, 'change', @render
 

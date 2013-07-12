@@ -6,37 +6,35 @@
   (function() {
     var _ACTIVITY_HEADER, _ref;
     _ACTIVITY_HEADER = 'Activity: ';
-    return com.uid.crowdcierge.ViewActivityModal = (function(_super) {
-      __extends(ViewActivityModal, _super);
+    return com.uid.crowdcierge.EditActivityModal = (function(_super) {
+      __extends(EditActivityModal, _super);
 
-      function ViewActivityModal() {
-        this._removeFromItinerary = __bind(this._removeFromItinerary, this);
-        this._addToItinerary = __bind(this._addToItinerary, this);
+      function EditActivityModal() {
         this.prepMap = __bind(this.prepMap, this);
         this.renderContent = __bind(this.renderContent, this);
         this.renderHeader = __bind(this.renderHeader, this);
         this.initialize = __bind(this.initialize, this);
-        _ref = ViewActivityModal.__super__.constructor.apply(this, arguments);
+        _ref = EditActivityModal.__super__.constructor.apply(this, arguments);
         return _ref;
       }
 
-      ViewActivityModal.prototype.events = {
+      EditActivityModal.prototype.events = {
         'click .add-to-itinerary': '_addToItinerary',
         'click .remove-from-itinerary': '_removeFromItinerary'
       };
 
-      ViewActivityModal.prototype.initialize = function() {
+      EditActivityModal.prototype.initialize = function() {
         this.activity = this.options.activity;
         this.activitiesModel = this.options.activitiesModel;
         this.itineraryModel = this.options.itineraryModel;
         return this.currentTaskModel = this.options.currentTaskModel;
       };
 
-      ViewActivityModal.prototype.renderHeader = function() {
+      EditActivityModal.prototype.renderHeader = function() {
         return $('<div/>').text(_ACTIVITY_HEADER + this.activity.get('name'));
       };
 
-      ViewActivityModal.prototype.renderContent = function() {
+      EditActivityModal.prototype.renderContent = function() {
         var $content, source, template, values;
         source = $('#view-activity-template').html();
         template = Handlebars.compile(source);
@@ -50,33 +48,15 @@
         return $content;
       };
 
-      ViewActivityModal.prototype.prepMap = function() {
-        var marker;
+      EditActivityModal.prototype.prepMap = function() {
         this.map = L.map(this.$('#viewActivityMap')[0]);
-        L.tileLayer('http://{s}.tile.cloudmade.com/ebeae5620c954242916bfba0601e86d8/99953/256/{z}/{x}/{y}.png', {
+        return L.tileLayer('http://{s}.tile.cloudmade.com/ebeae5620c954242916bfba0601e86d8/99953/256/{z}/{x}/{y}.png', {
           attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
           maxZoom: 18
         }).addTo(this.map);
-        this.map.setView([this.activity.get('location').lat, this.activity.get('location').long], 13);
-        marker = L.marker([this.activity.get('location').lat, this.activity.get('location').long], {
-          zIndexOffset: 10000
-        });
-        marker.bindPopup(this.activity.get('name'));
-        marker.addTo(this.map);
-        return marker.openPopup();
       };
 
-      ViewActivityModal.prototype._addToItinerary = function() {
-        this.itineraryModel.add(this.activity);
-        return this.closeModal();
-      };
-
-      ViewActivityModal.prototype._removeFromItinerary = function() {
-        this.itineraryModel.remove(this.activity.cid);
-        return this.closeModal();
-      };
-
-      return ViewActivityModal;
+      return EditActivityModal;
 
     })(com.uid.crowdcierge.ModalView);
   })();

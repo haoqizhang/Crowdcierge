@@ -11,15 +11,15 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
 
     <!-- CROWDCIERGE CSS FILES -->
-    <link rel='stylesheet' type='text/css' href='../less/header.css' />
-    <link rel='stylesheet' type='text/css' href='../less/common.css' />
-    <link rel='stylesheet' type='text/css' href='../less/modal.css' />
-    <link rel='stylesheet' type='text/css' href='../less/itinerary.css' />
-    <link rel='stylesheet' type='text/css' href='../less/todo.css' />
-    <link rel='stylesheet' type='text/css' href='../less/stream.css' />
-    <link rel='stylesheet' type='text/css' href='../less/map.css' />
-    <link rel='stylesheet' type='text/css' href='../less/activityModal.css' />
-    <link rel='stylesheet' type='text/css' href='../less/main.css' />
+    <link rel='stylesheet' type='text/css' href='../css/header.css' />
+    <link rel='stylesheet' type='text/css' href='../css/common.css' />
+    <link rel='stylesheet' type='text/css' href='../css/modal.css' />
+    <link rel='stylesheet' type='text/css' href='../css/itinerary.css' />
+    <link rel='stylesheet' type='text/css' href='../css/todo.css' />
+    <link rel='stylesheet' type='text/css' href='../css/stream.css' />
+    <link rel='stylesheet' type='text/css' href='../css/map.css' />
+    <link rel='stylesheet' type='text/css' href='../css/activityModal.css' />
+    <link rel='stylesheet' type='text/css' href='../css/main.css' />
 
     <!-- LIBRARY JS FILES -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
@@ -203,6 +203,42 @@
             {{/if}}
           </div>
           {{/if}}
+        </div>
+      </div>
+    </script>
+
+    <!-- Reuse of styles here... not the best, I know. -->
+    <script id="edit-activity-template" type="text/x-handlebars-template">
+      <div class="edit-activity-main">
+        <div id="editActivityMap"/>
+        <div class="view-activity-right">
+          <div class="view-activity-info">
+            <div class="name"><b>Activity Name: </b>
+              <input id="editActivityLocation" type="text" maxlength="60" size="30">{{name}}</input>
+            </div>
+            <div class="location"><b>Location: </b>
+              <input id="editActivityLocation" type="text" maxlength="60" size="30">{{location.name}}</input>
+            </div>
+            <div class="description"><b>What to do: </b>
+              <textarea id='editActivityDescription' type='text'rows='6'>{{description}}</textarea>
+            </div>
+            <div class="duration"><b>Takes about: </b>
+              <select id="editActivityDuration">
+                {{#each timeOption}}
+                  <option value="{{.}}">{{#minToPrettyTime .}}{{/minToPrettyTime}}</div>
+                {{/each}}
+              </select>
+            <div class="categories">
+              <b>Categories:</b>
+              {{#each categories}}
+                <input type="checkbox" value="{{.}}">{{.}}<br>
+              {{/each}}
+            </div>
+          </div>
+          <div class="view-activity-control-box">
+            <div class="view-activity-control save-activity">save as idea</div>
+            <div class="view-activity-control save-activity">save and add to itinerary</div>
+          </div>
         </div>
       </div>
     </script>
