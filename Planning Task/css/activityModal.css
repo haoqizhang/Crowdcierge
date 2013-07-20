@@ -1,0 +1,97 @@
+.addit {
+  border: none;
+  color: #ffffff;
+  background-color: #009b00;
+  padding: 3px 5px;
+  cursor: pointer;
+  text-transform: lowercase;
+  text-align: center;
+  font-size: 50%;
+}
+.addit:hover {
+  background-color: #008200;
+}
+.addit:active {
+  background-color: #006800;
+}
+.addit.big {
+  font-size: 100%;
+}
+.addit.wide {
+  padding: 4px;
+}
+.sectiontitle {
+  font-size: 135%;
+  color: #009b00;
+  font-weight: bold;
+}
+.view-activity-right {
+  width: 40%;
+  display: inline-block;
+  height: 400px;
+  vertical-align: top;
+  margin-left: 10px;
+}
+.view-activity-right .view-activity-info {
+  height: 84%;
+}
+.view-activity-right .view-activity-info div {
+  margin-bottom: 10px;
+}
+.view-activity-right .view-activity-info .description {
+  max-height: 190px;
+  overflow-y: auto;
+}
+.view-activity-right .view-activity-info .category {
+  display: inline-block;
+  margin-left: 2px;
+}
+.view-activity-right .view-activity-control-box {
+  text-align: center;
+}
+.view-activity-right .view-activity-control-box .view-activity-control {
+  border: none;
+  color: #ffffff;
+  background-color: #009b00;
+  padding: 3px 5px;
+  cursor: pointer;
+  text-transform: lowercase;
+  text-align: center;
+  width: 100%;
+  margin: 10px 10px 10px 0px;
+}
+.view-activity-right .view-activity-control-box .view-activity-control:hover {
+  background-color: #008200;
+}
+.view-activity-right .view-activity-control-box .view-activity-control:active {
+  background-color: #006800;
+}
+.view-activity-right .view-activity-control-box .view-activity-control.save-activity {
+  margin: 5px;
+}
+#viewActivityMap {
+  width: 55%;
+  height: 400px;
+  display: inline-block;
+  margin-right: 2px;
+}
+.edit-activity-main .edit-activity-left {
+  width: 55%;
+  display: inline-block;
+}
+.edit-activity-main #editActivityMap {
+  width: 100%;
+  height: 360px;
+  display: inline-block;
+  margin-right: 2px;
+  vertical-align: bottom;
+}
+.edit-activity-main #editActivityLocation {
+  width: 185px;
+}
+.edit-activity-main #editActivityDescription {
+  width: 84%;
+}
+.edit-activity-main #editActivityDuration {
+  width: 55%;
+}
