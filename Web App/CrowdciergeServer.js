@@ -1,5 +1,6 @@
 (function() {
-  var PORT, app, express, http, server;
+  var PORT, app, authController, express, http, server, tripController,
+    _this = this;
 
   PORT = 5190;
 
@@ -9,9 +10,19 @@
 
   app = express();
 
+  app.configure(function() {
+    return app.use(express.bodyParser());
+  });
+
   server = http.createServer(app);
 
-  app.get('/');
+  tripController = require('./TripController');
+
+  tripController.bindHandlers(app);
+
+  authController = require('./AuthController');
+
+  authController.bindHandlers(app);
 
   app.use(express["static"](__dirname));
 

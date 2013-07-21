@@ -38,5 +38,4 @@ $('document').ready ( =>
   view.render()
 
   console.log session
-  #C:\Users\Joey Rafidi\Documents\GitHub\Crowdcierge\Turk Tasks\Planning Task\coffee
 )
